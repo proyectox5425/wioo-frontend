@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Panel del Chofer – Wioo</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet" />
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(135deg, #14002d, #1a003a);
+      color: white;
+      padding: 20px;
+    }
+
+    h1 {
+      text-align: center;
+      color: #c79eff;
+      margin-bottom: 30px;
+    }
+
+    .contenedor {
+      max-width: 600px;
+      margin: auto;
+      background: rgba(255,255,255,0.05);
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 0 15px #8000ff40;
+    }
+
+    .codigo {
+      font-size: 48px;
+      font-weight: bold;
+      text-align: center;
+      margin-bottom: 15px;
+      color: #ffffff;
+      background-color: #36006a;
+      padding: 15px 0;
+      border-radius: 8px;
+    }
+
+    .botones {
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+      margin: 20px 0;
+    }
+
+    .botones button {
+      padding: 12px 20px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      background-color: #8000ff;
+      color: white;
+      font-size: 16px;
+      transition: background 0.3s;
+    }
+
+    .botones button:hover {
+      background-color: #a04bff;
+    }
+
+    #qr {
+      display: flex;
+      justify-content: center;
+      margin-top: 15px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 30px;
+    }
+
+    thead {
+      background-color: #2d0d42;
+    }
+
+    th, td {
+      padding: 10px;
+      text-align: left;
+    }
+
+    th {
+      color: #d9b3ff;
+      border-bottom: 1px solid #8000ff;
+    }
+
+    td {
+      border-bottom: 1px solid #4f1e73;
+    }
+
+    .estado-activo { color: #00ff99; }
+    .estado-pendiente { color: #ffcc66; }
+  </style>
+</head>
+<body>
+
+  <h1>Panel del Chofer – Wioo</h1>
+
+  <div class="contenedor">
+    <div id="codigo-display" class="codigo">— —</div>
+
+    <div class="botones">
+      <button onclick="generarCodigo()">🔄 Generar Código</button>
+    </div>
+
+    <div id="qr"></div>
+    <!-- Historial del Día -->
+    <h2 style="margin-top:40px; color:#d2a6ff;">📅 Historial del Día</h2>
+    <table id="tabla-dia">
+      <thead>
+        <tr>
+          <th>Código</th>
+          <th>Hora</th>
+          <th>Estado</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+
+    <!-- Historial de la Semana -->
+    <h2 style="margin-top:40px; color:#d2a6ff;">📆 Historial Semanal</h2>
+    <div id="tabla-semana-contenedor">
+      <!-- Se llenará dinámicamente -->
+    </div>
+  </div>
+
+  <!-- Librería QR embed sin conexión -->
+  <script>
+    /*! QRCode.js v1.0.0 (https://github.com/davidshimjs/qrcodejs) */
+    /*! (versión reducida para espacio: incluye funciones esenciales) */
+    /* ... inserta aquí la versión minificada si quieres sin CDN ... */
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
+
+  <script>
+    function generarCodigo() {
+      const codigo = Math.floor(1000 + Math.random() * 9000).toString();
+      const now = new Date();
+      const hora = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+      const fecha = now.toISOString().split('T')[0];
+
+      const nuevo = {
+        codigo,
+        hora,
+        fecha,
+        estado: Math.random() > 0.3 ? "✅ Activado" : "⏳ Pendiente" // simulado
+      };
+
+      guardarCodigo(nuevo);
+      renderizarCodigoActual(codigo);
+      renderizarHistorial();
+    }
+
+    function guardarCodigo(data) {
+      const historial = JSON.parse(localStorage.getItem("tickets_chofer") || "[]");
+      historial.push(data);
+      localStorage.setItem("tickets_chofer", JSON.stringify(historial));
+    }
+
+    function renderizarCodigoActual(codigo) {
+      document.getElementById("codigo-display").innerText = codigo;
+      const qrContainer = document.getElementById("qr");
+      qrContainer.innerHTML = "";
+      new QRCode(qrContainer, {
+        text: codigo,
+        width: 180,
+        height: 180,
+        colorDark: "#ffffff",
+        colorLight: "#14002d",
+        correctLevel: QRCode.CorrectLevel.H
+      });
+    }
+
+    function renderizarHistorial() {
+      const hoy = new Date().toISOString().split('T')[0];
+      const data = JSON.parse(localStorage.getItem("tickets_chofer") || "[]");
+
+      // Historial del día
+      const diaFilas = data.filter(t => t.fecha === hoy);
+      const tablaDia = document.querySelector("#tabla-dia tbody");
+      tablaDia.innerHTML = "";
+      diaFilas.forEach(t => {
+        tablaDia.innerHTML += `
+          <tr>
+            <td>${t.codigo}</td>
+            <td>${t.hora}</td>
+            <td class="${t.estado.includes('Activado') ? 'estado-activo' : 'estado-pendiente'}">${t.estado}</td>
+          </tr>`;
+      });
+
+      // Historial de la semana
+      const dias = {};
+      data.forEach(t => {
+        if (!dias[t.fecha]) dias[t.fecha] = [];
+        dias[t.fecha].push(t);
+      });
+
+      const semanaContenedor = document.getElementById("tabla-semana-contenedor");
+      semanaContenedor.innerHTML = "";
+      Object.keys(dias).sort((a,b)=>b.localeCompare(a)).forEach(fecha => {
+        semanaContenedor.innerHTML += `
+          <h3 style="color:#a477ff;">🗓️ ${fecha}</h3>
+          <table>
+            <thead>
+              <tr><th>Código</th><th>Hora</th><th>Estado</th></tr>
+            </thead>
+            <tbody>
+              ${dias[fecha].map(t => `
+                <tr>
+                  <td>${t.codigo}</td>
+                  <td>${t.hora}</td>
+                  <td class="${t.estado.includes('Activado') ? 'estado-activo' : 'estado-pendiente'}">${t.estado}</td>
+                </tr>`).join('')}
+            </tbody>
+          </table>
+        `;
+      });
+    }
+
+    // Al iniciar
+    window.onload = () => {
+      renderizarHistorial();
+    };
+  </script>
+</body>
+    </html>
