@@ -230,7 +230,63 @@
       color: white;
       font-size: 28px;
       cursor: pointer;
+      }
+
+    <script>
+  const logo = document.getElementById("logo");
+  const pantalla1 = document.getElementById("pantalla1");
+  const pantalla2 = document.getElementById("pantalla2");
+
+  setTimeout(() => {
+    logo.classList.add("animar-logo");
+    pantalla2.style.display = "flex";
+    pantalla1.style.zIndex = "0";
+  }, 4000); // tiempo en milisegundos (4 segundos)
+
+  function validarCodigo() {
+    const codigo = document.getElementById("codigoChofer").value;
+    alert("Validando código: " + codigo);
+  }
+
+  function escanearQR() {
+    alert("Escaneo QR aún no implementado");
+  }
+
+  function abrirLogin(rol) {
+    document.getElementById("login-title").innerText =
+      rol === "admin" ? "Acceso Administrativo" : "Acceso Colaborador";
+    document.getElementById("login-modal").style.display = "flex";
+    document.getElementById("login-modal").dataset.rol = rol;
+  }
+
+  function ingresar() {
+    const user = document.getElementById("user").value.toLowerCase();
+    const pass = document.getElementById("pass").value;
+    const rol = document.getElementById("login-modal").dataset.rol;
+
+    if (
+      (rol === "admin" && user === "admin" && pass === "clave123") ||
+      (rol === "colaborador" && user === "chofer" && pass === "clave123")
+    ) {
+      const destino = rol === "admin" ? "admin-panel.html" : "chofer-panel.html";
+      window.location.href = destino;
+    } else {
+      alert("Credenciales incorrectas");
     }
+  }
+
+  document.getElementById("close-modal").addEventListener("click", () => {
+    document.getElementById("login-modal").style.display = "none";
+  });
+
+  document.getElementById("menu-toggle").addEventListener("click", () => {
+    document.getElementById("menu-lateral").classList.add("menu-abierto");
+  });
+
+  document.getElementById("cerrar-menu").addEventListener("click", () => {
+    document.getElementById("menu-lateral").classList.remove("menu-abierto");
+  });
+</script>
   </style>
 </head>
 <body>
