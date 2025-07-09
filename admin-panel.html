@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Panel Wioo</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(135deg, #000000, #2D0D42);
+      color: white;
+    }
+
+    header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 20px;
+      position: sticky;
+      top: 0;
+      background: rgba(0,0,0,0.6);
+      backdrop-filter: blur(4px);
+      z-index: 11;
+    }
+
+    .hamburger {
+      background: none;
+      border: none;
+      font-size: 26px;
+      color: #cfaaff;
+      cursor: pointer;
+      display: none;
+    }
+
+    #sidebar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 220px;
+      height: 100%;
+      background-color: #1a002a;
+      padding: 20px 10px;
+      box-shadow: 4px 0 8px rgba(0,0,0,0.3);
+      transform: translateX(0);
+      transition: transform 0.3s ease-in-out;
+      z-index: 12;
+    }
+
+    #sidebar.hidden {
+      transform: translateX(-220px);
+    }
+
+    #overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      height: 100%;
+      width: 100%;
+      background: rgba(0,0,0,0.4);
+      display: none;
+      z-index: 10;
+    }
+
+    #overlay.active {
+      display: block;
+    }
+
+    #sidebar img {
+      height: 60px;
+      margin-bottom: 20px;
+    }
+
+    #sidebar h2 {
+      font-size: 16px;
+      margin-bottom: 30px;
+      color: #b87fff;
+      text-align: center;
+    }
+
+    .nav-link {
+      background: none;
+      border: none;
+      color: #cfaaff;
+      font-size: 14px;
+      margin: 10px 0;
+      cursor: pointer;
+      text-align: center;
+      width: 100%;
+    }
+
+    .nav-link:hover {
+      color: #ffffff;
+      font-weight: bold;
+    }
+
+    main {
+      margin-left: 220px;
+      padding: 20px;
+      transition: margin-left 0.3s ease-in-out;
+    }
+
+    #sidebar.hidden + #overlay + main {
+      margin-left: 0;
+    }
+
+    h1 {
+      font-size: 22px;
+      color: #c79eff;
+      margin-bottom: 20px;
+    }
+
+    .section { display: none; }
+    .section.active { display: block; }
+
+    .card-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+      gap: 20px;
+    }
+
+    .card {
+      background: rgba(255,255,255,0.05);
+      border-left: 4px solid #9e5dff;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px #8000ff40;
+    }
+
+    .card h3 {
+      margin: 0 0 10px;
+      font-size: 16px;
+      color: #d2a6ff;
+    }
+
+    .card p {
+      font-size: 22px;
+      font-weight: bold;
+    }
+
+    @media (max-width: 768px) {
+      .hamburger { display: block; }
+      #sidebar { transform: translateX(-220px); }
+      #sidebar.show { transform: translateX(0); }
+      main { margin-left: 0 !important; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <button class="hamburger" onclick="toggleSidebar()">☰</button>
+    <h1>Panel de administración – Wioo</h1>
+  </header>
+
+  <div id="sidebar" class="hidden">
+    <img src="logo.png" alt="Logo Wioo" />
+    <h2>Panel Wioo</h2>
+    <button class="nav-link" onclick="showSection('resumen')">📊 Resumen</button>
+    <button class="nav-link" onclick="showSection('usuarios')">🧾 Usuarios</button>
+    <button class="nav-link" onclick="showSection('estadisticas')">📈 Estadísticas</button>
+<button class="nav-link" onclick="showSection('rutas')">🗺️ Rutas</button>
+<button type="submit" style="margin-top:15px; background-color:#9e5dff; color:white; border:none; padding:10px 20px; border-radius:6px; cursor:pointer;">
+  Registrar
+</button>
+  .
+</button>
+    <button class="nav-link" onclick="showSection('anuncios')">📺 Anuncios</button>
+  </div>
+
+  <div id="overlay" onclick="closeSidebar()"></div>
+
+  <main>
+    <section id="resumen" class="section active">
+      <h1>Resumen Diario</h1>
+      <div class="card-container">
+        <div class="card">
+          <h3>Tickets activos hoy</h3>
+          <p>124</p>
+        </div>
+        <div class="card">
+          <h3>Tickets vencidos hoy</h3>
+          <p>39</p>
+        </div>
+        <div class="card">
+          <h3>Rutas más activas</h3>
+          <p>Ruta 14 · Ruta 9 · Ruta 3</p>
+        </div>
+      </div>
+    </section>
+
+ <section id="usuarios" class="section">
+  <h1>Usuarios conectados</h1>
+  <div style="overflow-x:auto;">
+    <table style="width:100%; border-collapse:collapse; min-width:600px;">
+      <thead>
+        <tr style="background-color:#2D0D42; color:#d9b3ff;">
+          <th style="text-align:left; padding:10px; border-bottom:1px solid #8000ff;">IP</th>
+          <th style="text-align:left; padding:10px; border-bottom:1px solid #8000ff;">Ruta asignada</th>
+          <th style="text-align:left; padding:10px; border-bottom:1px solid #8000ff;">Ticket activo</th>
+          <th style="text-align:left; padding:10px; border-bottom:1px solid #8000ff;">Último acceso</th>
+          <th style="text-align:left; padding:10px; border-bottom:1px solid #8000ff;">Tipo de pago</th>
+          <th style="text-align:left; padding:10px; border-bottom:1px solid #8000ff;">Código del chofer</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr style="border-bottom:1px solid #4f1e73;">
+          <td style="padding:10px;">192.168.1.23</td>
+          <td style="padding:10px;">Ruta 14</td>
+          <td style="padding:10px; color:#00ff99;">✅ Sí</td>
+          <td style="padding:10px;">13:50</td>
+          <td style="padding:10px;">Pago móvil</td>
+          <td style="padding:10px;">CHF-1023</td>
+        </tr>
+        <tr style="border-bottom:1px solid #4f1e73;">
+          <td style="padding:10px;">192.168.1.77</td>
+          <td style="padding:10px;">Ruta 7</td>
+          <td style="padding:10px; color:#ff6666;">❌ No</td>
+          <td style="padding:10px;">14:01</td>
+          <td style="padding:10px;">Efectivo</td>
+          <td style="padding:10px;">CHF-9981</td>
+        </tr>
+        <tr style="border-bottom:1px solid #4f1e73;">
+          <td style="padding:10px;">192.168.1.99</td>
+          <td style="padding:10px;">Ruta 5</td>
+          <td style="padding:10px; color:#00ff99;">✅ Sí</td>
+          <td style="padding:10px;">12:40</td>
+          <td style="padding:10px;">Transferencia</td>
+          <td style="padding:10px;">CHF-1050</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+  <section id="estadisticas" class="section">
+  <h1>Estadísticas semanales</h1>
+  <div style="background: rgba(255,255,255,0.05); padding:20px; border-radius:10px; box-shadow: 0 0 10px #8000ff40; max-width:600px; margin:auto;">
+    <h3 style="text-align:center; color:#d2a6ff;">Tickets activos por día</h3>
+    <div style="display:flex; align-items:flex-end; justify-content:space-around; height:200px; margin-top:20px; gap:10px;">
+      <!-- Lunes -->
+      <div style="display:flex; flex-direction:column; align-items:center;">
+        <div style="width:20px; height:80px; background:#9e5dff; border-radius:4px;"></div>
+        <small style="margin-top:5px;">Lun</small>
+      </div>
+      <!-- Martes -->
+      <div style="display:flex; flex-direction:column; align-items:center;">
+        <div style="width:20px; height:110px; background:#b87fff; border-radius:4px;"></div>
+        <small style="margin-top:5px;">Mar</small>
+      </div>
+      <!-- Miércoles -->
+      <div style="display:flex; flex-direction:column; align-items:center;">
+        <div style="width:20px; height:150px; background:#d2a6ff; border-radius:4px;"></div>
+        <small style="margin-top:5px;">Mié</small>
+      </div>
+      <!-- Jueves -->
+      <div style="display:flex; flex-direction:column; align-items:center;">
+        <div style="width:20px; height:120px; background:#b87fff; border-radius:4px;"></div>
+        <small style="margin-top:5px;">Jue</small>
+      </div>
+      <!-- Viernes -->
+      <div style="display:flex; flex-direction:column; align-items:center;">
+        <div style="width:20px; height:170px; background:#c79eff; border-radius:4px;"></div>
+        <small style="margin-top:5px;">Vie</small>
+      </div>
+      <!-- Sábado -->
+      <div style="display:flex; flex-direction:column; align-items:center;">
+        <div style="width:20px; height:90px; background:#9e5dff; border-radius:4px;"></div>
+        <small style="margin-top:5px;">Sáb</small>
+      </div>
+      <!-- Domingo -->
+      <div style="display:flex; flex-direction:column; align-items:center;">
+        <div style="width:20px; height:50px; background:#6f2bcc; border-radius:4px;"></div>
+        <small style="margin-top:5px;">Dom</small>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="rutas" class="section">
+  <h1>Panel de rutas activas</h1>
+
+  <!-- Tabla de rutas y choferes -->
+  <div style="background: rgba(255,255,255,0.05); padding:20px; border-radius:10px; box-shadow: 0 0 10px #8000ff40; margin-bottom:40px;">
+    <h3 style="color:#d2a6ff;">Resumen de rutas y choferes</h3>
+    <div style="overflow-x:auto;">
+      <table style="width:100%; border-collapse:collapse; min-width:500px;">
+        <thead>
+          <tr style="background-color:#2D0D42; color:#d9b3ff;">
+            <th style="text-align:left; padding:10px; border-bottom:1px solid #8000ff;">Ruta</th>
+            <th style="text-align:left; padding:10px; border-bottom:1px solid #8000ff;">Código de chofer</th>
+            <th style="text-align:left; padding:10px; border-bottom:1px solid #8000ff;">Estado</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr style="border-bottom:1px solid #4f1e73;">
+            <td style="padding:10px;">Ruta 14</td>
+            <td style="padding:10px;">CHF-1023</td>
+            <td style="padding:10px; color:#00ff99;">✅ Activo</td>
+          </tr>
+          <tr style="border-bottom:1px solid #4f1e73;">
+            <td style="padding:10px;">Ruta 7</td>
+            <td style="padding:10px;">CHF-1050</td>
+            <td style="padding:10px; color:#00ff99;">✅ Activo</td>
+          </tr>
+          <tr style="border-bottom:1px solid #4f1e73;">
+            <td style="padding:10px;">Ruta 5</td>
+            <td style="padding:10px;">CHF-9981</td>
+            <td style="padding:10px; color:#ff6666;">⛔ Inactivo</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Subsección: Accesos por códigos de chofer (efectivo) -->
+  <div style="background: rgba(255,255,255,0.05); padding:20px; border-radius:10px; box-shadow: 0 0 10px #8000ff40;">
+    <h3 style="color:#d2a6ff;">Accesos por código de chofer (pago en efectivo)</h3>
+    <div style="overflow-x:auto;">
+      <table style="width:100%; border-collapse:collapse; min-width:650px;">
+        <thead>
+          <tr style="background-color:#2D0D42; color:#d9b3ff;">
+            <th style="padding:10px; text-align:left; border-bottom:1px solid #8000ff;">Código de chofer</th>
+            <th style="padding:10px; text-align:left; border-bottom:1px solid #8000ff;">Ruta</th>
+            <th style="padding:10px; text-align:left; border-bottom:1px solid #8000ff;">IP del pasajero</th>
+            <th style="padding:10px; text-align:left; border-bottom:1px solid #8000ff;">Hora</th>
+            <th style="padding:10px; text-align:left; border-bottom:1px solid #8000ff;">Ticket activo</th>
+            <th style="padding:10px; text-align:left; border-bottom:1px solid #8000ff;">Monto declarado</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr style="border-bottom:1px solid #4f1e73;">
+            <td style="padding:10px;">CHF-1023</td>
+            <td style="padding:10px;">Ruta 14</td>
+            <td style="padding:10px;">192.168.1.15</td>
+            <td style="padding:10px;">14:22</td>
+            <td style="padding:10px; color:#00ff99;">✅ Sí</td>
+            <td style="padding:10px;">5,00 Bs</td>
+          </tr>
+          <tr style="border-bottom:1px solid #4f1e73;">
+            <td style="padding:10px;">CHF-1050</td>
+            <td style="padding:10px;">Ruta 7</td>
+            <td style="padding:10px;">192.168.1.40</td>
+            <td style="padding:10px;">13:50</td>
+            <td style="padding:10px; color:#00ff99;">✅ Sí</td>
+            <td style="padding:10px;">7,00 Bs</td>
+          </tr>
+          <tr style="border-bottom:1px solid #4f1e73;">
+            <td style="padding:10px;">CHF-9981</td>
+            <td style="padding:10px;">Ruta 5</td>
+            <td style="padding:10px;">192.168.1.90</td>
+            <td style="padding:10px;">12:45</td>
+            <td style="padding:10px; color:#ff6666;">❌ No</td>
+            <td style="padding:10px;">—</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+<!-- Gestión de choferes -->
+<div style="background: rgba(255,255,255,0.05); padding:20px; border-radius:10px; box-shadow: 0 0 10px #8000ff40; margin-top:40px;">
+  <h3 style="color:#d2a6ff;">Gestión de choferes</h3>
+  <div style="overflow-x:auto;">
+    <table style="width:100%; border-collapse:collapse; min-width:600px;">
+      <thead>
+        <tr style="background-color:#2D0D42; color:#d9b3ff;">
+          <th style="padding:10px; text-align:left; border-bottom:1px solid #8000ff;">Nombre</th>
+          <th style="padding:10px; text-align:left; border-bottom:1px solid #8000ff;">Código</th>
+          <th style="padding:10px; text-align:left; border-bottom:1px solid #8000ff;">Ruta</th>
+          <th style="padding:10px; text-align:left; border-bottom:1px solid #8000ff;">Estado</th>
+          <th style="padding:10px; text-align:left; border-bottom:1px solid #8000ff;">Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr style="border-bottom:1px solid #4f1e73;">
+          <td style="padding:10px;">José Rivas</td>
+          <td style="padding:10px;">CHF-1023</td>
+          <td style="padding:10px;">Ruta 14</td>
+          <td style="padding:10px; color:#00ff99;">✅ Activo</td>
+          <td style="padding:10px;">
+            <button style="background:none; border:none; color:#cfaaff; cursor:pointer;">✏️ Editar</button>
+            <button style="background:none; border:none; color:#ffcc66; cursor:pointer;">🔒 Inhabilitar</button>
+            <button style="background:none; border:none; color:#ff6666; cursor:pointer;">🗑️ Eliminar</button>
+          </td>
+        </tr>
+        <tr style="border-bottom:1px solid #4f1e73;">
+          <td style="padding:10px;">Karla Pérez</td>
+          <td style="padding:10px;">CHF-1050</td>
+          <td style="padding:10px;">Ruta 7</td>
+          <td style="padding:10px; color:#ff6666;">⛔ Inactivo</td>
+          <td style="padding:10px;">
+            <button style="background:none; border:none; color:#cfaaff; cursor:pointer;">✏️ Editar</button>
+            <button style="background:none; border:none; color:#00ff99; cursor:pointer;">✅ Activar</button>
+            <button style="background:none; border:none; color:#ff6666; cursor:pointer;">🗑️ Eliminar</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+<!-- Formulario visible: registro de nuevo chofer -->
+<div id="form-crear-chofer" style="background: rgba(255,255,255,0.05); padding:20px; border-radius:10px; margin-top:40px; box-shadow: 0 0 10px #8000ff40;">
+  <h3 style="color:#d2a6ff;">Registrar nuevo chofer</h3>
+  <form onsubmit="return false;">
+    <label style="display:block; margin-bottom:10px;">
+      <span>Nombre:</span><br/>
+      <input type="text" style="width:100%; padding:8px; border:none; border-radius:6px; margin-top:5px;" placeholder="Ej: Luis Martínez"/>
+    </label>
+
+    <label style="display:block; margin-bottom:10px;">
+      <span>Ruta asignada:</span><br/>
+      <input type="text" style="width:100%; padding:8px; border:none; border-radius:6px; margin-top:5px;" placeholder="Ej: Ruta 12"/>
+    </label>
+
+    <label style="display:block; margin-bottom:10px;">
+      <span>Código del chofer:</span><br/>
+      <input type="text" style="width:100%; padding:8px; border:none; border-radius:6px; margin-top:5px;" placeholder="Ej: CHF-1075"/>
+    </label>
+
+    <button type="submit" style="margin-top:15px; background-color:#9e5dff; color:white; border:none; padding:10px 20px; border-radius:6px; cursor:not-allowed;" disabled>
+      Registrar (deshabilitado por ahora)
+    </button>
+  </form>
+</div>
+</section>
+
+    <section id="anuncios" class="section">
+      <h1>Gestión de anuncios</h1>
+      <p>📺 Agrega o modifica los banners visuales del sistema</p>
+    </section>
+  </main>
+
+  <script>
+    const sidebar = document.getElementById('sidebar');
+    const overlay = document.getElementById('overlay');
+
+    function toggleSidebar() {
+      sidebar.classList.toggle('show');
+      sidebar.classList.toggle('hidden');
+      overlay.classList.toggle('active');
+    }
+
+    function closeSidebar() {
+      sidebar.classList.remove('show');
+      sidebar.classList.add('hidden');
+      overlay.classList.remove('active');
+    }
+
+    function showSection(id) {
+      document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+      document.getElementById(id).classList.add('active');
+      closeSidebar();
+    }
+  </script>
+<script>
+  function mostrarFormularioChofer() {
+    const form = document.getElementById('form-crear-chofer');
+    form.style.display = 'block';
+    alert("Formulario activado ✔️");
+  }
+</script>
+</body>
+  </html>
