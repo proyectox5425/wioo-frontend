@@ -289,11 +289,28 @@
       pantalla1.style.zIndex = "0";
     }, 4000);
 
-    function validarCodigo() {
-      const codigo = document.getElementById("codigoChofer").value;
-      alert("Validando código: " + codigo);
-    }
+   function validarCodigo() {
+  const codigoIngresado = document.getElementById("codigoChofer").value.trim();
 
+  // Simulación de códigos generados por el chofer
+  const codigosValidos = [
+    { codigo: "1023", estado: "activo" },
+    { codigo: "1050", estado: "usado" },
+    { codigo: "9981", estado: "activo" }
+  ];
+
+  const resultado = codigosValidos.find(c => c.codigo === codigoIngresado);
+
+  if (!resultado) {
+    alert("❌ Código inválido. Verifica con el chofer.");
+  } else if (resultado.estado === "usado") {
+    alert("⚠️ Este código ya fue utilizado.");
+  } else if (resultado.estado === "activo") {
+    alert("✅ Código aprobado. ¡Bienvenido a bordo!");
+    // Aquí puedes redirigir o avanzar de pantalla si quieres
+    // window.location.href = 'pantalla-3.html';
+  }
+    }
     function escanearQR() {
       alert("Escaneo QR aún no implementado");
     }
