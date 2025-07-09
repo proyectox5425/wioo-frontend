@@ -41,12 +41,13 @@
     }
 
     #logo {
-      width: 180px;
-      transition: transform 1s ease;
+      width: 320px;
+      transition: transform 1s ease, width 1s ease;
     }
 
     .logo-subido {
-      transform: translateY(-60px) scale(0.8);
+      transform: translateY(-60px);
+      width: 160px !important;
     }
 
     #menu-toggle {
@@ -87,6 +88,16 @@
       left: 0;
     }
 
+    #cerrar-menu {
+      align-self: flex-end;
+      background: none;
+      border: none;
+      color: white;
+      font-size: 20px;
+      cursor: pointer;
+      margin-bottom: 10px;
+    }
+
     .campo-codigo {
       display: flex;
       margin: 40px 0 20px;
@@ -97,10 +108,13 @@
     .campo-codigo input {
       flex: 1;
       padding: 14px;
-      font-size: 16px;
+      font-size: 18px;
       border: none;
       border-radius: 6px 0 0 6px;
       outline: none;
+      text-align: center;
+      background-color: #fff;
+      color: #000;
     }
 
     .campo-codigo button {
@@ -108,7 +122,7 @@
       border: none;
       color: white;
       padding: 14px 16px;
-      font-size: 18px;
+      font-size: 20px;
       border-radius: 0 6px 6px 0;
       cursor: pointer;
     }
@@ -128,10 +142,10 @@
     }
 
     .botones-metodo button {
-      padding: 16px;
+      padding: 18px;
       font-size: 18px;
       border: none;
-      border-radius: 8px;
+      border-radius: 10px;
       background-color: #591fc7;
       color: white;
       cursor: pointer;
@@ -141,12 +155,19 @@
     .botones-metodo button:hover {
       background-color: #8f4dff;
     }
+
+    .logo-pantalla2 {
+      width: 140px;
+      margin-top: 60px;
+      margin-bottom: 30px;
+    }
   </style>
 </head>
 <body>
 
   <!-- Menú lateral -->
   <nav id="menu-lateral">
+    <button id="cerrar-menu">❌</button>
     <a href="login-colaborador.html">👤 Colaborador</a>
     <a href="login-admin.html">🛡️ Administrador</a>
     <a href="#">❓ Ayuda</a>
@@ -161,11 +182,11 @@
   <section class="pantalla" id="pantalla2">
     <button id="menu-toggle">☰</button>
 
-    <img src="logo-wioo.png" alt="Wioo Logo" style="width:140px; margin-top: 50px; margin-bottom:30px;" />
+    <img src="logo-wioo.png" alt="Wioo Logo" class="logo-pantalla2" />
 
     <form id="form-codigo" onsubmit="validarCodigo(); return false;">
       <div class="campo-codigo">
-        <input type="text" id="codigoChofer" placeholder="Ingrese código del chofer" required />
+        <input type="text" id="codigoChofer" placeholder="Código del chofer" required />
         <button type="button" onclick="escanearQR()">📷</button>
       </div>
     </form>
@@ -179,7 +200,7 @@
   </section>
 
   <script>
-    // Transición entre pantalla 1 y 2
+    // Splash animación y transición
     setTimeout(() => {
       const logo = document.getElementById("logo");
       logo.classList.add("logo-subido");
@@ -194,22 +215,26 @@
     function validarCodigo() {
       const codigo = document.getElementById("codigoChofer").value;
       alert("Validando código: " + codigo);
-      // Conecta aquí con tu backend si quieres
+      // Aquí puedes hacer fetch al backend
     }
 
-    // Simular escaneo QR
     function escanearQR() {
-      alert("Función de escaneo QR aún no implementada");
+      alert("Función escaneo QR aún no implementada");
     }
 
     // Menú toggle
     const toggle = document.getElementById("menu-toggle");
     const menu = document.getElementById("menu-lateral");
+    const cerrarMenu = document.getElementById("cerrar-menu");
 
     toggle.addEventListener("click", () => {
-      menu.classList.toggle("menu-abierto");
+      menu.classList.add("menu-abierto");
+    });
+
+    cerrarMenu.addEventListener("click", () => {
+      menu.classList.remove("menu-abierto");
     });
   </script>
 
 </body>
-          </html>
+  </html>
