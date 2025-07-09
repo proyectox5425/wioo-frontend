@@ -159,6 +159,7 @@
       text-decoration: none;
       margin: 12px 0;
       font-size: 16px;
+      cursor: pointer;
     }
 
     #menu-lateral.menu-abierto {
@@ -174,19 +175,86 @@
       cursor: pointer;
       margin-bottom: 10px;
     }
+
+    /* Modal login */
+    #login-modal {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100vw; height: 100vh;
+      background-color: rgba(0, 0, 0, 0.75);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 99;
+    }
+
+    #login-box {
+      background-color: #24064a;
+      padding: 30px 20px;
+      border-radius: 12px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+      width: 300px;
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+
+    #login-box h3 {
+      text-align: center;
+      margin-bottom: 10px;
+    }
+
+    #login-box input {
+      padding: 12px;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+    }
+
+    #login-box button {
+      padding: 12px;
+      font-size: 16px;
+      background-color: #8000ff;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+
+    #close-modal {
+      position: absolute;
+      top: 20px;
+      right: 30px;
+      background: none;
+      border: none;
+      color: white;
+      font-size: 28px;
+      cursor: pointer;
+    }
   </style>
 </head>
 <body>
 
+  <!-- Modal de Login -->
+  <div id="login-modal">
+    <button id="close-modal">✖</button>
+    <div id="login-box">
+      <h3 id="login-title">Acceso</h3>
+      <input type="text" id="user" placeholder="Usuario" />
+      <input type="password" id="pass" placeholder="Contraseña" />
+      <button onclick="ingresar()">Ingresar</button>
+    </div>
+  </div>
+
   <!-- Menú lateral -->
   <nav id="menu-lateral">
     <button id="cerrar-menu">❌</button>
-    <a href="login-colaborador.html">👤 Colaborador</a>
-    <a href="login-admin.html">🛡️ Administrador</a>
+    <a onclick="abrirLogin('colaborador')">👤 Colaborador</a>
+    <a onclick="abrirLogin('admin')">🛡️ Administrador</a>
     <a href="#">❓ Ayuda</a>
   </nav>
 
-  <!-- Pantalla 1: Splash -->
+  <!-- Pantalla 1 -->
   <div class="pantalla" id="pantalla1">
     <img src="logo-wioo.png" id="logo" alt="Logo Wioo" />
   </div>
@@ -208,44 +276,4 @@
       <div class="separator">— o elige tu método de pago —</div>
 
       <div class="botones-metodo">
-        <button onclick="window.location.href='pantalla-3.1.html'">📲 Pago Móvil</button>
-        <button onclick="window.location.href='pantalla-3.2.html'">🏦 Transferencia</button>
-      </div>
-    </div>
-  </section>
-
-  <script>
-    const logo = document.getElementById("logo");
-    const pantalla1 = document.getElementById("pantalla1");
-    const pantalla2 = document.getElementById("pantalla2");
-
-    setTimeout(() => {
-      logo.classList.add("animar-logo");
-      pantalla2.style.display = "flex";
-      pantalla1.style.zIndex = "0";
-    }, 4000);
-
-    function validarCodigo() {
-      const codigo = document.getElementById("codigoChofer").value;
-      alert("Validando código: " + codigo);
-    }
-
-    function escanearQR() {
-      alert("Escaneo QR aún no implementado");
-    }
-
-    const toggle = document.getElementById("menu-toggle");
-    const menu = document.getElementById("menu-lateral");
-    const cerrarMenu = document.getElementById("cerrar-menu");
-
-    toggle.addEventListener("click", () => {
-      menu.classList.add("menu-abierto");
-    });
-
-    cerrarMenu.addEventListener("click", () => {
-      menu.classList.remove("menu-abierto");
-    });
-  </script>
-
-</body>
-  </html>
+        <button onclick="window.location.href='pantalla-3.1.html'">📲 Pago Móvil</button
