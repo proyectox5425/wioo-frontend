@@ -155,7 +155,7 @@
   </header>
 
   <div id="sidebar" class="hidden">
-    <img src="logo.png" alt="Logo Wioo" />
+    <img src="logo-wioo.png" alt="Logo Wioo" />
     <h2>Panel Wioo</h2>
     <button class="nav-link" onclick="showSection('resumen')">📊 Resumen</button>
     <button class="nav-link" onclick="showSection('usuarios')">🧾 Usuarios</button>
@@ -423,6 +423,37 @@
     </button>
   </form>
 </div>
+  <!-- 🔍 Detalle por chofer -->
+<div style="margin-top:40px; background: rgba(255,255,255,0.05); padding:20px; border-radius:10px; box-shadow: 0 0 10px #8000ff40;">
+  <h3 style="color:#d2a6ff;">Revisión individual de tickets por chofer</h3>
+
+  <label for="select-chofer" style="display:block; margin-bottom:15px;">
+    <span>Selecciona un código de chofer:</span><br/>
+    <select id="select-chofer" onchange="cargarTicketsChofer()" style="width:100%; padding:10px; border:none; border-radius:6px; margin-top:5px;">
+      <option value="">— Elige uno —</option>
+      <option value="CHF-1023">CHF-1023</option>
+      <option value="CHF-1050">CHF-1050</option>
+      <option value="CHF-9981">CHF-9981</option>
+    </select>
+  </label>
+
+  <div id="resumen-chofer" style="display:none;">
+    <p><strong>Total de tickets:</strong> <span id="total-tickets"></span></p>
+
+    <table style="width:100%; border-collapse:collapse; margin-top:15px;">
+      <thead>
+        <tr style="background-color:#2D0D42; color:#d9b3ff;">
+          <th style="padding:10px; text-align:left;">Fecha</th>
+          <th style="padding:10px; text-align:left;">Hora</th>
+          <th style="padding:10px; text-align:left;">Monto</th>
+        </tr>
+      </thead>
+      <tbody id="tabla-detalle-tickets">
+        <!-- Se llenará dinámicamente -->
+      </tbody>
+    </table>
+  </div>
+</div>
 </section>
 
     <section id="anuncios" class="section">
@@ -460,5 +491,49 @@
     alert("Formulario activado ✔️");
   }
 </script>
+  <script>
+  const datosMockTickets = {
+    "CHF-1023": [
+      { fecha: "2025-07-09", hora: "13:20", monto: "5,00 Bs" },
+      { fecha: "2025-07-09", hora: "14:10", monto: "6,00 Bs" },
+      { fecha: "2025-07-08", hora: "10:55", monto: "4,50 Bs" }
+    ],
+    "CHF-1050": [
+      { fecha: "2025-07-09", hora: "11:30", monto: "7,00 Bs" },
+      { fecha: "2025-07-07", hora: "12:20", monto: "5,50 Bs" }
+    ],
+    "CHF-9981": [
+      { fecha: "2025-07-06", hora: "09:15", monto: "3,00 Bs" }
+    ]
+  };
+
+  function cargarTicketsChofer() {
+    const codigo = document.getElementById("select-chofer").value;
+    const resumen = document.getElementById("resumen-chofer");
+    const tabla = document.getElementById("tabla-detalle-tickets");
+    const total = document.getElementById("total-tickets");
+
+    if (!codigo || !datosMockTickets[codigo]) {
+      resumen.style.display = "none";
+      tabla.innerHTML = "";
+      return;
+    }
+
+    const tickets = datosMockTickets[codigo];
+    total.innerText = tickets.length;
+    tabla.innerHTML = "";
+
+    tickets.forEach(t => {
+      const fila = `<tr style="border-bottom:1px solid #4f1e73;">
+        <td style="padding:10px;">${t.fecha}</td>
+        <td style="padding:10px;">${t.hora}</td>
+        <td style="padding:10px;">${t.monto}</td>
+      </tr>`;
+      tabla.innerHTML += fila;
+    });
+
+    resumen.style.display = "block";
+  }
+  </script>
 </body>
   </html>
