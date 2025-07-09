@@ -12,6 +12,11 @@
       width: 100%;
     }
 
+    body {
+      background: linear-gradient(160deg, #1f0438, #3b0b54);
+      color: #fff;
+    }
+
     .pantalla {
       position: absolute;
       top: 0; left: 0;
@@ -25,17 +30,12 @@
     }
 
     #pantalla1 {
-      background-image: url('fondo-autobus.jpg');
-      background-size: cover;
-      background-position: center;
       z-index: 2;
     }
 
     #pantalla2 {
-      background-color: #0f041a;
-      color: #fff;
       display: none;
-      padding: 20px;
+      padding: 30px 20px;
       text-align: center;
       justify-content: flex-start;
     }
@@ -43,11 +43,84 @@
     #logo {
       width: 320px;
       transition: transform 1s ease, width 1s ease;
+      z-index: 3;
+      position: absolute;
+      top: calc(50% - 160px);
     }
 
-    .logo-subido {
-      transform: translateY(-60px);
-      width: 160px !important;
+    .animar-logo {
+      transform: translateY(-180px);
+      width: 150px !important;
+    }
+
+    .contenedor-pantalla2 {
+      margin-top: 180px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    h2 {
+      font-size: 20px;
+      margin-bottom: 20px;
+    }
+
+    .campo-codigo {
+      display: flex;
+      max-width: 360px;
+      width: 100%;
+      margin-bottom: 25px;
+    }
+
+    .campo-codigo input {
+      flex: 1;
+      padding: 14px;
+      font-size: 18px;
+      border: none;
+      border-radius: 6px 0 0 6px;
+      outline: none;
+      background: #fff;
+      color: #000;
+      text-align: center;
+    }
+
+    .campo-codigo button {
+      background-color: #8000ff;
+      border: none;
+      color: white;
+      padding: 14px 16px;
+      font-size: 20px;
+      border-radius: 0 6px 6px 0;
+      cursor: pointer;
+    }
+
+    .separator {
+      margin: 20px 0 10px;
+      font-size: 14px;
+      color: #ccc;
+    }
+
+    .botones-metodo {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+      max-width: 360px;
+      width: 100%;
+    }
+
+    .botones-metodo button {
+      padding: 18px;
+      font-size: 18px;
+      border: none;
+      border-radius: 10px;
+      background-color: #591fc7;
+      color: white;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    .botones-metodo button:hover {
+      background-color: #8f4dff;
     }
 
     #menu-toggle {
@@ -97,70 +170,6 @@
       cursor: pointer;
       margin-bottom: 10px;
     }
-
-    .campo-codigo {
-      display: flex;
-      margin: 40px 0 20px;
-      max-width: 360px;
-      width: 100%;
-    }
-
-    .campo-codigo input {
-      flex: 1;
-      padding: 14px;
-      font-size: 18px;
-      border: none;
-      border-radius: 6px 0 0 6px;
-      outline: none;
-      text-align: center;
-      background-color: #fff;
-      color: #000;
-    }
-
-    .campo-codigo button {
-      background-color: #8000ff;
-      border: none;
-      color: white;
-      padding: 14px 16px;
-      font-size: 20px;
-      border-radius: 0 6px 6px 0;
-      cursor: pointer;
-    }
-
-    .separator {
-      margin: 25px 0 10px;
-      font-size: 14px;
-      color: #ccc;
-    }
-
-    .botones-metodo {
-      display: flex;
-      flex-direction: column;
-      gap: 15px;
-      max-width: 360px;
-      width: 100%;
-    }
-
-    .botones-metodo button {
-      padding: 18px;
-      font-size: 18px;
-      border: none;
-      border-radius: 10px;
-      background-color: #591fc7;
-      color: white;
-      cursor: pointer;
-      transition: background 0.3s;
-    }
-
-    .botones-metodo button:hover {
-      background-color: #8f4dff;
-    }
-
-    .logo-pantalla2 {
-      width: 140px;
-      margin-top: 60px;
-      margin-bottom: 30px;
-    }
   </style>
 </head>
 <body>
@@ -178,48 +187,49 @@
     <img src="logo-wioo.png" id="logo" alt="Logo Wioo" />
   </div>
 
-  <!-- Pantalla 2: Pasajero -->
+  <!-- Pantalla 2 -->
   <section class="pantalla" id="pantalla2">
     <button id="menu-toggle">☰</button>
 
-    <img src="logo-wioo.png" alt="Wioo Logo" class="logo-pantalla2" />
+    <div class="contenedor-pantalla2">
+      <h2>Ingresa tu ticket</h2>
 
-    <form id="form-codigo" onsubmit="validarCodigo(); return false;">
-      <div class="campo-codigo">
-        <input type="text" id="codigoChofer" placeholder="Código del chofer" required />
-        <button type="button" onclick="escanearQR()">📷</button>
+      <form id="form-codigo" onsubmit="validarCodigo(); return false;">
+        <div class="campo-codigo">
+          <input type="text" id="codigoChofer" placeholder="****" required />
+          <button type="button" onclick="escanearQR()">📷</button>
+        </div>
+      </form>
+
+      <div class="separator">— o elige tu método de pago —</div>
+
+      <div class="botones-metodo">
+        <button onclick="window.location.href='pantalla-3.1.html'">📲 Pago Móvil</button>
+        <button onclick="window.location.href='pantalla-3.2.html'">🏦 Transferencia</button>
       </div>
-    </form>
-
-    <div class="separator">— o elige tu método de pago —</div>
-
-    <div class="botones-metodo">
-      <button onclick="window.location.href='pantalla-3.1.html'">📲 Pago Móvil</button>
-      <button onclick="window.location.href='pantalla-3.2.html'">🏦 Transferencia</button>
     </div>
   </section>
 
   <script>
-    // Splash animación y transición
-    setTimeout(() => {
-      const logo = document.getElementById("logo");
-      logo.classList.add("logo-subido");
+    const logo = document.getElementById("logo");
+    const pantalla1 = document.getElementById("pantalla1");
+    const pantalla2 = document.getElementById("pantalla2");
 
-      setTimeout(() => {
-        document.getElementById("pantalla1").style.display = "none";
-        document.getElementById("pantalla2").style.display = "flex";
-      }, 1000);
-    }, 5000);
+    // Transición suave: logo sube y se reduce → aparece pantalla 2
+    setTimeout(() => {
+      logo.classList.add("animar-logo");
+      pantalla2.style.display = "flex";
+      pantalla1.style.zIndex = "0";
+    }, 4000);
 
     // Validar código del chofer
     function validarCodigo() {
       const codigo = document.getElementById("codigoChofer").value;
       alert("Validando código: " + codigo);
-      // Aquí puedes hacer fetch al backend
     }
 
     function escanearQR() {
-      alert("Función escaneo QR aún no implementada");
+      alert("Escaneo QR aún no implementado");
     }
 
     // Menú toggle
@@ -237,4 +247,4 @@
   </script>
 
 </body>
-  </html>
+      </html>
