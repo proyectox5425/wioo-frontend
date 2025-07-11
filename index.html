@@ -48,12 +48,12 @@
     }
 
 #encabezado-wioo {
-  display: none;
   opacity: 0;
   transition: opacity 0.8s ease;
   position: absolute;
   top: 0;
   left: 0;
+  right: 0;
   width: 100vw;
   background-color: #04A0C6;
   padding: 12px 30px;
@@ -319,14 +319,10 @@ setTimeout(() => {
   pantalla2.style.display = "flex";
   pantalla1.style.zIndex = "0";
 
-  // Mostrar encabezado con fade después de 600ms
+  // Mostrar encabezado con transición
   const encabezado = document.getElementById("encabezado-wioo");
-  encabezado.style.display = "block";
-  
-  setTimeout(() => {
-    encabezado.style.opacity = "1";
-  }, 50);
-  
+  encabezado.style.opacity = "1";
+
 }, 4000);
 
    function validarCodigo() {
