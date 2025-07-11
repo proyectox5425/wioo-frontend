@@ -319,14 +319,14 @@ setTimeout(() => {
   pantalla2.style.display = "flex";
   pantalla1.style.zIndex = "0";
 
-  // Mostrar encabezado después de 600ms
+  // Mostrar encabezado con fade después de 600ms
+  const encabezado = document.getElementById("encabezado-wioo");
+  encabezado.style.display = "block";
+  
   setTimeout(() => {
-    const encabezado = document.getElementById("encabezado-wioo");
-    encabezado.style.display = "block";
-    setTimeout(() => {
-      encabezado.style.opacity = "1";
-    }, 50);
-  }, 600);
+    encabezado.style.opacity = "1";
+  }, 50);
+  
 }, 4000);
 
    function validarCodigo() {
