@@ -171,12 +171,10 @@
   display: none;
   position: fixed;
   top: 0;
-  left: -220px; /* empieza oculto a la izquierda */
   height: 100%;
   width: 220px;
   background-color: #1a0035;
   padding: 20px;
-  opacity: 0;
   transition: left 0.6s ease, opacity 0.6s ease;
   flex-direction: column;
   z-index: 9;
@@ -325,8 +323,7 @@ setTimeout(() => {
   encabezado.style.opacity = "1";
 
   // Mostrar menú lateral
-  const menu = document.getElementById("menu-lateral");
-  menu.style.diplay = "blok";
+  const menu = document.getElementById("menu-lateral");style.diplay = "blok";
 }, 4000);
 
    function validarCodigo() {
