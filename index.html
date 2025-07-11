@@ -309,82 +309,87 @@
     </div>
   </section>
 
-  <script>
-    const logo = document.getElementById("logo");
-    const pantalla1 = document.getElementById("pantalla1");
-    const pantalla2 = document.getElementById("pantalla2");
-
-setTimeout(() => {
-  logo.classList.add("animar-logo");
-  pantalla1.style.display = "none";
-  pantalla2.style.display = "flex";
-
-  // Mostrar encabezado
+<script>
+window.addEventListener("DOMContentLoaded", () => {
+  const logo = document.getElementById("logo");
+  const pantalla1 = document.getElementById("pantalla1");
+  const pantalla2 = document.getElementById("pantalla2");
   const encabezado = document.getElementById("encabezado-wioo");
-  encabezado.style.opacity = "1";
-}, 4000);
+  const menuToggle = document.getElementById("menu-toggle");
+  const menuLateral = document.getElementById("menu-lateral");
+  const cerrarMenu = document.getElementById("cerrar-menu");
 
-   function validarCodigo() {
-  const codigoIngresado = document.getElementById("codigoChofer").value.trim();
+  // ⏱ Transición de pantalla
+  setTimeout(() => {
+    logo.classList.add("animar-logo");
+    pantalla1.style.display = "none";
+    pantalla2.style.display = "flex";
+    encabezado.style.opacity = "1";
+  }, 4000);
 
-  // Simulación de códigos generados por el chofer
-  const codigosValidos = [
-    { codigo: "1023", estado: "activo" },
-    { codigo: "1050", estado: "usado" },
-    { codigo: "9981", estado: "activo" }
-  ];
+  // 🛎️ Menú lateral
+  menuToggle.addEventListener("click", () => {
+    menuLateral.style.display = "flex";
+  });
 
-  const resultado = codigosValidos.find(c => c.codigo === codigoIngresado);
+  cerrarMenu.addEventListener("click", () => {
+    menuLateral.style.display = "none";
+  });
 
-  if (!resultado) {
-    alert("❌ Código inválido. Verifica con el chofer.");
-  } else if (resultado.estado === "usado") {
-    alert("⚠️ Este código ya fue utilizado.");
-  } else if (resultado.estado === "activo") {
-    alert("✅ Código aprobado. ¡Bienvenido a bordo!");
-    // Aquí puedes redirigir o avanzar de pantalla si quieres
-    // window.location.href = 'pantalla-3.html';
-  }
+  // 🔒 Login modal
+  document.getElementById("close-modal").addEventListener("click", () => {
+    document.getElementById("login-modal").style.display = "none";
+  });
+
+  // ✅ Validación de código
+  document.getElementById("form-codigo").addEventListener("submit", (e) => {
+    e.preventDefault();
+    const codigoIngresado = document.getElementById("codigoChofer").value.trim();
+    const codigosValidos = [
+      { codigo: "1023", estado: "activo" },
+      { codigo: "1050", estado: "usado" },
+      { codigo: "9981", estado: "activo" }
+    ];
+    const resultado = codigosValidos.find(c => c.codigo === codigoIngresado);
+    if (!resultado) {
+      alert("❌ Código inválido. Verifica con el chofer.");
+    } else if (resultado.estado === "usado") {
+      alert("⚠️ Este código ya fue utilizado.");
+    } else if (resultado.estado === "activo") {
+      alert("✅ Código aprobado. ¡Bienvenido a bordo!");
+      // window.location.href = 'pantalla-3.html';
     }
-    function escanearQR() {
-      alert("Escaneo QR aún no implementado");
+  });
+
+  // 🚫 Escaneo QR aún no implementado
+  window.escanearQR = function() {
+    alert("Escaneo QR aún no implementado");
+  };
+
+  // 🔐 Abrir login modal
+  window.abrirLogin = function(rol) {
+    document.getElementById("login-title").innerText =
+      rol === "admin" ? "Acceso Administrativo" : "Acceso Colaborador";
+    document.getElementById("login-modal").style.display = "flex";
+    document.getElementById("login-modal").dataset.rol = rol;
+  };
+
+  // 🔓 Ingreso
+  window.ingresar = function() {
+    const user = document.getElementById("user").value.toLowerCase();
+    const pass = document.getElementById("pass").value;
+    const rol = document.getElementById("login-modal").dataset.rol;
+    if (
+      (rol === "admin" && user === "admin" && pass === "clave123") ||
+      (rol === "colaborador" && user === "chofer" && pass === "clave123")
+    ) {
+      const destino = rol === "admin" ? "admin-panel.html" : "chofer-panel.html";
+      window.location.href = destino;
+    } else {
+      alert("Credenciales incorrectas");
     }
-
-    function abrirLogin(rol) {
-      document.getElementById("login-title").innerText =
-        rol === "admin" ? "Acceso Administrativo" : "Acceso Colaborador";
-      document.getElementById("login-modal").style.display = "flex";
-      document.getElementById("login-modal").dataset.rol = rol;
-    }
-
-    function ingresar() {
-      const user = document.getElementById("user").value.toLowerCase();
-      const pass = document.getElementById("pass").value;
-      const rol = document.getElementById("login-modal").dataset.rol;
-
-      if (
-        (rol === "admin" && user === "admin" && pass === "clave123") ||
-        (rol === "colaborador" && user === "chofer" && pass === "clave123")
-      ) {
-        const destino = rol === "admin" ? "admin-panel.html" : "chofer-panel.html";
-        window.location.href = destino;
-      } else {
-        alert("Credenciales incorrectas");
-      }
-    }
-
-    document.getElementById("close-modal").addEventListener("click", () => {
-      document.getElementById("login-modal").style.display = "none";
-    });
-
-    document.getElementById("menu-toggle").addEventListener("click", () => {
-      document.getElementById("menu-lateral").classList.add("menu-abierto");
-    });
-
-    document.getElementById("cerrar-menu").addEventListener("click", () => {
-      document.getElementById("menu-lateral").classList.remove("menu-abierto");
-    });
-  
-  </script>
+  };
+});
+</script>
 </body>
 </html>
