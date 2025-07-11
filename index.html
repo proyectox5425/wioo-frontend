@@ -168,6 +168,7 @@
     }
 
     #menu-lateral {
+      display: none;
       position: fixed;
       top: 0;
       left: -220px;
@@ -323,10 +324,9 @@ setTimeout(() => {
   const encabezado = document.getElementById("encabezado-wioo");
   encabezado.style.opacity = "1";
 
-  // Mostrar menú lateral después de 600ms
-  setTimeout(() => {
-    document.getElementById("menu-lateral").style.opacity = "1";
-  }, 600);
+  // Mostrar menú lateral
+  const menu = document.getElementById("menu-lateral");
+  menu.style.display = "block";
 }, 4000);
 
    function validarCodigo() {
