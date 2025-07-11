@@ -50,7 +50,9 @@
     #pantalla2 {
       flex-direction: column;
       padding: 20px;
-      background: radial-gradient(ellipse at center, #2a064c 0%, #1c0033 100%);
+      background-image: url('fondo-autobus.jpg');
+      background-size: cover;
+      background-position: center;
       z-index: 2;
     }
 
@@ -186,15 +188,34 @@
       border-radius: 6px;
       cursor: pointer;
     }
+
+    .botones-pago {
+      display: flex;
+      gap: 20px;
+    }
+
+    .botones-pago button {
+      flex: 1;
+      padding: 14px;
+      font-size: 16px;
+      border: none;
+      border-radius: 8px;
+      background-color: #591fc7;
+      color: white;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    .botones-pago button:hover {
+      background-color: #8f4dff;
+    }
   </style>
 </head>
 <body>
 
   <img src="logo-wioo.png" id="logo" alt="Logo Wioo" />
 
-  <div class="pantalla" id="pantalla1">
-    <!-- pantalla inicial -->
-  </div>
+  <div class="pantalla" id="pantalla1"></div>
 
   <section class="pantalla" id="pantalla2">
     <div id="encabezado-wioo">
@@ -211,6 +232,11 @@
         <button type="submit">Validar</button>
       </form>
       <button onclick="escanearQR()">📷 Escanear QR</button>
+
+      <div class="botones-pago">
+        <button onclick="window.location.href='pantalla-3.1.html'">📲 Pago Móvil</button>
+        <button onclick="window.location.href='pantalla-3.2.html'">🏦 Transferencia</button>
+      </div>
     </div>
   </section>
 
@@ -229,8 +255,8 @@
       <input type="password" id="pass" placeholder="Contraseña" />
       <button onclick="ingresar()">Ingresar</button>
     </div>
-  </div>
-  <script>
+      </div>
+      <script>
 window.addEventListener("DOMContentLoaded", () => {
   const logo = document.getElementById("logo");
   const pantalla1 = document.getElementById("pantalla1");
@@ -240,7 +266,7 @@ window.addEventListener("DOMContentLoaded", () => {
   const menuLateral = document.getElementById("menu-lateral");
   const cerrarMenu = document.getElementById("cerrar-menu");
 
-  // ⏱ Transición: logo sube y pasa a pantalla 2
+  // ⏱ Transición con animación del logo
   setTimeout(() => {
     logo.classList.add("animar-logo");
     pantalla1.style.display = "none";
@@ -263,7 +289,7 @@ window.addEventListener("DOMContentLoaded", () => {
     document.getElementById("login-modal").style.display = "none";
   });
 
-  // ✅ Validar código ingresado
+  // ✅ Validación de código
   document.getElementById("form-codigo").addEventListener("submit", (e) => {
     e.preventDefault();
     const codigo = document.getElementById("codigoChofer").value.trim();
@@ -287,15 +313,18 @@ window.addEventListener("DOMContentLoaded", () => {
     alert("Escaneo QR aún no implementado");
   };
 
-  // 🔐 Abrir modal según rol
+  // 🔐 Abrir login según rol y cerrar menú automáticamente
   window.abrirLogin = function (rol) {
     document.getElementById("login-title").innerText =
       rol === "admin" ? "Acceso Administrativo" : "Acceso Colaborador";
     document.getElementById("login-modal").style.display = "flex";
     document.getElementById("login-modal").dataset.rol = rol;
+
+    // ✅ Cerrar menú al abrir login
+    menuLateral.style.display = "none";
   };
 
-  // 🛂 Validar ingreso por rol y credenciales
+  // 🛂 Ingreso por credenciales
   window.ingresar = function () {
     const user = document.getElementById("user").value.toLowerCase();
     const pass = document.getElementById("pass").value;
@@ -312,5 +341,4 @@ window.addEventListener("DOMContentLoaded", () => {
     }
   };
 });
-  </script>
-  
+      </script>
