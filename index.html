@@ -178,6 +178,7 @@
   padding: 20px;
   flex-direction: column;
   z-index: 110;
+  transition: transform 0.4s ease, opacity 0.4s ease;
 }
 
     #menu-lateral a {
@@ -383,14 +384,19 @@ setTimeout(() => {
       document.getElementById("menu-lateral").classList.remove("menu-abierto");
     });
   window.addEventListener("DOMContentLoaded", () => {
-  document.getElementById("menu-toggle").addEventListener("click", () => {
-    document.getElementById("menu-lateral").style.display = "flex";
+  const menuToggle = document.getElementById("menu-toggle");
+  const menuLateral = document.getElementById("menu-lateral");
+  const cerrarMenu = document.getElementById("cerrar-menu");
+
+  menuToggle.addEventListener("click", () => {
+    menuLateral.style.display = "flex";
   });
 
-  document.getElementById("cerrar-menu").addEventListener("click", () => {
-    document.getElementById("menu-lateral").style.display = "none";
+  cerrarMenu.addEventListener("click", () => {
+    menuLateral.style.display = "none";
   });
 });
+  
   </script>
 </body>
 </html>
