@@ -5,154 +5,72 @@
   <title>Wioo | Bienvenido</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
-
-    html, body {
-      height: 100%;
-      width: 100%;
-      color: #fff;
-    }
-
-    .pantalla {
-      position: absolute;7
-      top: 0; left: 0;
-      width: 100%; height: 100%;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      transition: all 0.8s ease;
-    }
-
-    #pantalla1 {
-      background-image: url('fondo-autobus.jpg');
-      background-size: cover;
-      background-position: center;
-      z-index: 2;
-    }
-
-        #pantalla2 {
-      display: none;
-      flex-direction: column;
-      align-items: stretch;
-      padding: 0 20px 30px 20px;
-      position: absolute;
+    body, html {
       margin: 0;
-      justify-content: flex-start;
-      background: radial-gradient(ellipse at center, #2a064c 0%, #1c0033 100%);
-      background-image:
-        repeating-radial-gradient(circle at center, rgba(255,255,255,0.05) 0px, rgba(255,255,255,0.05) 2px, transparent 2px, transparent 20px),
-        linear-gradient(135deg, rgba(255,255,255,0.02) 25%, transparent 25%),
-        linear-gradient(45deg, rgba(255,255,255,0.02) 25%, transparent 25%);
-      background-size: 100% 100%, 100px 100px, 100px 100px;
+      padding: 0;
+      font-family: 'Segoe UI', sans-serif;
+      height: 100vh;
+      width: 100vw;
+      overflow: hidden;
+      background-color: #1c0033;
     }
 
-#encabezado-wioo {
-  opacity: 0;
-  transition: opacity 0.8s ease;
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  width: 100vw;
-  background-color: #04A0C6;
-  padding: 12px 30px;
-  text-align: center;
-  border-bottom: 1px solid #347CDC;
-  box-sizing: border-box;
-  z-index: 100;
-}
-
-.mensaje-bienvenida {
-  color: white;
-  font-size: 18px;
-  font-weight: 500;
-  font-family: 'Poppins', sans-serif;
-}
     #logo {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
       width: 460px;
       transition: transform 1s ease, width 1s ease;
-      position: absolute;
-      top: calc(50% - 160px);
+      z-index: 10;
     }
 
     .animar-logo {
-      transform: translateY(-160px);
-      width: 300px !important;
+      transform: translate(-50%, -200px);
+      width: 300px;
     }
 
-    .contenedor-pantalla2 {
-      margin-top: 180px;
-      display: flex;
-      flex-direction: column;
+    .pantalla {
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      display: none;
+      justify-content: center;
       align-items: center;
-      width: 100%;
-      gap: 20px;
     }
 
-    h2 {
-      font-size: 24px;
-      margin-bottom: 25px;
-    }
-
-    .campo-codigo {
+    #pantalla1 {
       display: flex;
-      max-width: 360px;
-      width: 100%;
-      margin-bottom: 25px;
+      background-image: url('fondo-autobus.jpg');
+      background-size: cover;
+      background-position: center;
+      z-index: 1;
     }
 
-    .campo-codigo input {
-      flex: 1;
-      padding: 16px;
-      font-size: 20px;
-      border: none;
-      border-radius: 8px 0 0 8px;
-      background: #fff;
-      color: #000;
+    #pantalla2 {
+      flex-direction: column;
+      padding: 20px;
+      background: radial-gradient(ellipse at center, #2a064c 0%, #1c0033 100%);
+      z-index: 2;
+    }
+
+    #encabezado-wioo {
+      position: absolute;
+      top: 0;
+      width: 100%;
+      background-color: #04A0C6;
+      padding: 12px 30px;
       text-align: center;
-      box-shadow: inset 0 0 5px rgba(0,0,0,0.2);
+      border-bottom: 1px solid #347CDC;
+      opacity: 0;
+      transition: opacity 1s ease;
+      z-index: 3;
     }
 
-    .campo-codigo button {
-      width: 60px;
-      background-color: #8000ff;
-      border: none;
-      color: white;
-      font-size: 22px;
-      border-radius: 0 8px 8px 0;
-      cursor: pointer;
-    }
-
-    .separator {
-      margin: 25px 0 10px;
-      font-size: 14px;
-      color: #ccc;
-    }
-
-    .botones-metodo {
-      display: flex;
-      flex-direction: row;
-      gap: 15px;
-      max-width: 360px;
-      width: 100%;
-    }
-
-    .botones-metodo button {
-      flex: 1;
-      height: 80px;
+    .mensaje-bienvenida {
       font-size: 18px;
-      border: none;
-      border-radius: 10px;
-      background-color: #591fc7;
+      font-weight: 500;
       color: white;
-      cursor: pointer;
-      transition: background 0.3s;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.3);
-    }
-
-    .botones-metodo button:hover {
-      background-color: #8f4dff;
     }
 
     #menu-toggle {
@@ -163,23 +81,22 @@
       border: none;
       font-size: 26px;
       color: white;
-      z-index: 101;
       cursor: pointer;
+      z-index: 4;
     }
 
-#menu-lateral {
-  display: none;
-  position: fixed;
-  top: 0;
-  left: 0;
-  height: 100%;
-  width: 220px;
-  background-color: #1a0035;
-  padding: 20px;
-  flex-direction: column;
-  z-index: 110;
-  transition: transform 0.4s ease, opacity 0.4s ease;
-}
+    #menu-lateral {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 220px;
+      height: 100%;
+      background-color: #1a0035;
+      padding: 20px;
+      z-index: 999;
+      flex-direction: column;
+    }
 
     #menu-lateral a {
       color: white;
@@ -189,48 +106,39 @@
       cursor: pointer;
     }
 
-    #menu-lateral.menu-abierto {
-      left: 0;
-    }
-
     #cerrar-menu {
-      align-self: flex-end;
       background: none;
       border: none;
       color: white;
       font-size: 20px;
+      align-self: flex-end;
       cursor: pointer;
-      margin-bottom: 10px;
     }
 
     #login-modal {
+      display: none;
       position: fixed;
       top: 0; left: 0;
       width: 100vw; height: 100vh;
       background-color: rgba(0, 0, 0, 0.75);
-      display: none;
-      align-items: center;
       justify-content: center;
-      z-index: 99;
+      align-items: center;
+      z-index: 900;
     }
 
     #login-box {
       background-color: #24064a;
-      padding: 30px 20px;
+      padding: 30px;
       border-radius: 12px;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.5);
       width: 300px;
       display: flex;
       flex-direction: column;
-      gap: 15px;
+      gap: 12px;
+      color: white;
     }
 
-    #login-box h3 {
-      text-align: center;
-      margin-bottom: 10px;
-    }
-
-    #login-box input {
+    #login-box input,
+    #login-box button {
       padding: 12px;
       border: none;
       border-radius: 8px;
@@ -238,12 +146,8 @@
     }
 
     #login-box button {
-      padding: 12px;
-      font-size: 16px;
       background-color: #8000ff;
       color: white;
-      border: none;
-      border-radius: 8px;
       cursor: pointer;
     }
 
@@ -253,15 +157,70 @@
       right: 30px;
       background: none;
       border: none;
-      color: white;
       font-size: 28px;
+      color: white;
+      cursor: pointer;
+    }
+
+    .contenedor-pantalla2 {
+      margin-top: 180px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 20px;
+    }
+
+    #form-codigo input {
+      padding: 10px;
+      font-size: 16px;
+      border-radius: 6px;
+      border: none;
+    }
+
+    #form-codigo button {
+      padding: 10px;
+      font-size: 16px;
+      background-color: #591fc7;
+      color: white;
+      border: none;
+      border-radius: 6px;
       cursor: pointer;
     }
   </style>
 </head>
 <body>
 
-  <!-- Modal de Login -->
+  <img src="logo-wioo.png" id="logo" alt="Logo Wioo" />
+
+  <div class="pantalla" id="pantalla1">
+    <!-- pantalla inicial -->
+  </div>
+
+  <section class="pantalla" id="pantalla2">
+    <div id="encabezado-wioo">
+      <span class="mensaje-bienvenida">Bienvenido a nuestra</span><br>
+      <span class="mensaje-bienvenida">red móvil</span>
+    </div>
+
+    <button id="menu-toggle">☰</button>
+
+    <div class="contenedor-pantalla2">
+      <h2 style="color: white;">Ingresa tu ticket</h2>
+      <form id="form-codigo">
+        <input type="text" id="codigoChofer" placeholder="****" required />
+        <button type="submit">Validar</button>
+      </form>
+      <button onclick="escanearQR()">📷 Escanear QR</button>
+    </div>
+  </section>
+
+  <nav id="menu-lateral">
+    <button id="cerrar-menu">❌</button>
+    <a onclick="abrirLogin('colaborador')">👤 Colaborador</a>
+    <a onclick="abrirLogin('admin')">🛡️ Administrador</a>
+    <a href="#">❓ Ayuda</a>
+  </nav>
+
   <div id="login-modal">
     <button id="close-modal">✖</button>
     <div id="login-box">
@@ -271,45 +230,7 @@
       <button onclick="ingresar()">Ingresar</button>
     </div>
   </div>
-
-  <!-- Menú lateral -->
-  <nav id="menu-lateral">
-    <button id="cerrar-menu">❌</button>
-    <a onclick="abrirLogin('colaborador')">👤 Colaborador</a>
-    <a onclick="abrirLogin('admin')">🛡️ Administrador</a>
-    <a href="#">❓ Ayuda</a>
-  </nav>
-
-  <!-- Pantalla 1 -->
-  <div class="pantalla" id="pantalla1">
-    <img src="logo-wioo.png" id="logo" alt="Logo Wioo" />
-  </div>
-
-  <!-- Pantalla 2 -->
-  <section class="pantalla" id="pantalla2">
-  <div id="encabezado-wioo">
-  <span class="mensaje-bienvenida">Bienvenido a nuestra</span><br>
-  <span class="mensaje-bienvenida">red móvil</span>
-  </div>
-    <button id="menu-toggle">☰</button>
-    <div class="contenedor-pantalla2">
-      <h2>Ingresa tu ticket</h2>
-      <form id="form-codigo" onsubmit="validarCodigo(); return false;">
-        <div class="campo-codigo">
-          <input type="text" id="codigoChofer" placeholder="****" required />
-          <button type="button" onclick="escanearQR()">📷</button>
-        </div>
-      </form>
-      <div class="separator">— o elige tu método de pago —</div>
-      <div class="botones-metodo">
-        <button onclick="window.location.href='pantalla-3.1.html'">📲 Pago Móvil</button>
-        <button onclick="
-          <button onclick="window.location.href='pantalla-3.2.html'">🏦 Transferencia</button>
-      </div>
-    </div>
-  </section>
-
-<script>
+  <script>
 window.addEventListener("DOMContentLoaded", () => {
   const logo = document.getElementById("logo");
   const pantalla1 = document.getElementById("pantalla1");
@@ -319,7 +240,7 @@ window.addEventListener("DOMContentLoaded", () => {
   const menuLateral = document.getElementById("menu-lateral");
   const cerrarMenu = document.getElementById("cerrar-menu");
 
-  // ⏱ Transición de pantalla
+  // ⏱ Transición: logo sube y pasa a pantalla 2
   setTimeout(() => {
     logo.classList.add("animar-logo");
     pantalla1.style.display = "none";
@@ -327,58 +248,59 @@ window.addEventListener("DOMContentLoaded", () => {
     encabezado.style.opacity = "1";
   }, 4000);
 
-  // 🛎️ Menú lateral
+  // ☰ Abrir menú lateral
   menuToggle.addEventListener("click", () => {
     menuLateral.style.display = "flex";
   });
 
+  // ❌ Cerrar menú lateral
   cerrarMenu.addEventListener("click", () => {
     menuLateral.style.display = "none";
   });
 
-  // 🔒 Login modal
+  // ❌ Cerrar login modal
   document.getElementById("close-modal").addEventListener("click", () => {
     document.getElementById("login-modal").style.display = "none";
   });
 
-  // ✅ Validación de código
+  // ✅ Validar código ingresado
   document.getElementById("form-codigo").addEventListener("submit", (e) => {
     e.preventDefault();
-    const codigoIngresado = document.getElementById("codigoChofer").value.trim();
+    const codigo = document.getElementById("codigoChofer").value.trim();
     const codigosValidos = [
       { codigo: "1023", estado: "activo" },
       { codigo: "1050", estado: "usado" },
       { codigo: "9981", estado: "activo" }
     ];
-    const resultado = codigosValidos.find(c => c.codigo === codigoIngresado);
+    const resultado = codigosValidos.find(c => c.codigo === codigo);
     if (!resultado) {
       alert("❌ Código inválido. Verifica con el chofer.");
     } else if (resultado.estado === "usado") {
       alert("⚠️ Este código ya fue utilizado.");
-    } else if (resultado.estado === "activo") {
+    } else {
       alert("✅ Código aprobado. ¡Bienvenido a bordo!");
-      // window.location.href = 'pantalla-3.html';
     }
   });
 
-  // 🚫 Escaneo QR aún no implementado
-  window.escanearQR = function() {
+  // 📷 QR simulado
+  window.escanearQR = function () {
     alert("Escaneo QR aún no implementado");
   };
 
-  // 🔐 Abrir login modal
-  window.abrirLogin = function(rol) {
+  // 🔐 Abrir modal según rol
+  window.abrirLogin = function (rol) {
     document.getElementById("login-title").innerText =
       rol === "admin" ? "Acceso Administrativo" : "Acceso Colaborador";
     document.getElementById("login-modal").style.display = "flex";
     document.getElementById("login-modal").dataset.rol = rol;
   };
 
-  // 🔓 Ingreso
-  window.ingresar = function() {
+  // 🛂 Validar ingreso por rol y credenciales
+  window.ingresar = function () {
     const user = document.getElementById("user").value.toLowerCase();
     const pass = document.getElementById("pass").value;
     const rol = document.getElementById("login-modal").dataset.rol;
+
     if (
       (rol === "admin" && user === "admin" && pass === "clave123") ||
       (rol === "colaborador" && user === "chofer" && pass === "clave123")
@@ -390,6 +312,5 @@ window.addEventListener("DOMContentLoaded", () => {
     }
   };
 });
-</script>
-</body>
-</html>
+  </script>
+  
