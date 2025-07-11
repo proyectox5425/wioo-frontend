@@ -14,7 +14,7 @@
     }
 
     .pantalla {
-      position: absolute;
+      position: absolute;7
       top: 0; left: 0;
       width: 100%; height: 100%;
       display: flex;
@@ -383,19 +383,6 @@ setTimeout(() => {
     document.getElementById("cerrar-menu").addEventListener("click", () => {
       document.getElementById("menu-lateral").classList.remove("menu-abierto");
     });
-  window.addEventListener("DOMContentLoaded", () => {
-  const menuToggle = document.getElementById("menu-toggle");
-  const menuLateral = document.getElementById("menu-lateral");
-  const cerrarMenu = document.getElementById("cerrar-menu");
-
-  menuToggle.addEventListener("click", () => {
-    menuLateral.style.display = "flex";
-  });
-
-  cerrarMenu.addEventListener("click", () => {
-    menuLateral.style.display = "none";
-  });
-});
   
   </script>
 </body>
