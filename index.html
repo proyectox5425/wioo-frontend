@@ -168,19 +168,18 @@
     }
 
     #menu-lateral {
-      display: none;
-      position: fixed;
-      top: 0;
-      left: -220px;
-      height: 100%;
-      width: 220px;
-      background-color: #1a0035;
-      padding: 20px;
-      opacity: 0;
-      transition: opacity 0.8s ease;
-      flex-direction: column;
-      z-index: 9;
-    }
+  position: fixed;
+  top: 0;
+  left: -220px; /* empieza oculto a la izquierda */
+  height: 100%;
+  width: 220px;
+  background-color: #1a0035;
+  padding: 20px;
+  opacity: 0;
+  transition: left 0.6s ease, opacity 0.6s ease;
+  flex-direction: column;
+  z-index: 110;
+      }
 
     #menu-lateral a {
       color: white;
@@ -326,7 +325,8 @@ setTimeout(() => {
 
   // Mostrar menú lateral
   const menu = document.getElementById("menu-lateral");
-  menu.style.display = "block";
+menu.style.left = "0px";
+menu.style.opacity = "1";
 }, 4000);
 
    function validarCodigo() {
