@@ -382,6 +382,15 @@ setTimeout(() => {
     document.getElementById("cerrar-menu").addEventListener("click", () => {
       document.getElementById("menu-lateral").classList.remove("menu-abierto");
     });
+  window.addEventListener("DOMContentLoaded", () => {
+  document.getElementById("menu-toggle").addEventListener("click", () => {
+    document.getElementById("menu-lateral").style.display = "flex";
+  });
+
+  document.getElementById("cerrar-menu").addEventListener("click", () => {
+    document.getElementById("menu-lateral").style.display = "none";
+  });
+});
   </script>
 </body>
 </html>
