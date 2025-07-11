@@ -76,6 +76,21 @@
       font-weight: 500;
       color: white;
     }
+    .logo-inicial {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 460px;
+  transition: top 1s ease, transform 1s ease, width 1s ease;
+  z-index: 10;
+}
+
+.logo-inicial.animar-logo {
+  top: 60px;
+  transform: translate(-50%, 0%);
+  width: 220px;
+}
 
     #menu-toggle {
       position: absolute;
@@ -215,7 +230,7 @@
 </head>
 <body>
 
-  <img src="logo-wioo.png" id="logo" alt="Logo Wioo" />
+  <img src="logo-wioo.png" id="logo" class="logo-inicial" alt="Logo Wioo" />
 
   <div class="pantalla" id="pantalla1"></div>
 
