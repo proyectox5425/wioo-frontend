@@ -175,7 +175,8 @@
       width: 220px;
       background-color: #1a0035;
       padding: 20px;
-      transition: left 0.8s ease;
+      opacity: 0;
+      transition: opacity 0.8s ease;
       flex-direction: column;
       z-index: 9;
     }
@@ -324,7 +325,7 @@ setTimeout(() => {
 
   // Mostrar menú lateral después de 600ms
   setTimeout(() => {
-    document.getElementById("menu-lateral").style.display = "block";
+    document.getElementById("menu-lateral").style.opacity = "1";
   }, 600);
 }, 4000);
 
