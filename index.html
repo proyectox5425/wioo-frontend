@@ -167,18 +167,18 @@
       cursor: pointer;
     }
 
-    #menu-lateral {
+#menu-lateral {
   display: none;
   position: fixed;
   top: 0;
+  left: 0;
   height: 100%;
   width: 220px;
   background-color: #1a0035;
   padding: 20px;
-  transition: left 0.6s ease, opacity 0.6s ease;
   flex-direction: column;
-  z-index: 9;
-      }
+  z-index: 110;
+}
 
     #menu-lateral a {
       color: white;
@@ -321,10 +321,6 @@ setTimeout(() => {
   // Mostrar encabezado
   const encabezado = document.getElementById("encabezado-wioo");
   encabezado.style.opacity = "1";
-
-  // Mostrar menú lateral
-  const menu = document.getElementById("menu-lateral");style.diplay = "blok";
-}, 4000);
 
    function validarCodigo() {
   const codigoIngresado = document.getElementById("codigoChofer").value.trim();
