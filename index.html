@@ -315,11 +315,20 @@
     const pantalla1 = document.getElementById("pantalla1");
     const pantalla2 = document.getElementById("pantalla2");
 
+setTimeout(() => {
+  logo.classList.add("animar-logo");
+  pantalla2.style.display = "flex";
+  pantalla1.style.zIndex = "0";
+
+  // Mostrar encabezado después de 600ms
+  setTimeout(() => {
+    const encabezado = document.getElementById("encabezado-wioo");
+    encabezado.style.display = "block";
     setTimeout(() => {
-      logo.classList.add("animar-logo");
-      pantalla2.style.display = "flex";
-      pantalla1.style.zIndex = "0";
-    }, 4000);
+      encabezado.style.opacity = "1";
+    }, 50);
+  }, 600);
+}, 4000);
 
    function validarCodigo() {
   const codigoIngresado = document.getElementById("codigoChofer").value.trim();
