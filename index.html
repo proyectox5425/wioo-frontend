@@ -168,6 +168,7 @@
     }
 
     #menu-lateral {
+  display: none;
   position: fixed;
   top: 0;
   left: -220px; /* empieza oculto a la izquierda */
@@ -178,7 +179,7 @@
   opacity: 0;
   transition: left 0.6s ease, opacity 0.6s ease;
   flex-direction: column;
-  z-index: 110;
+  z-index: 9;
       }
 
     #menu-lateral a {
@@ -325,8 +326,7 @@ setTimeout(() => {
 
   // Mostrar menú lateral
   const menu = document.getElementById("menu-lateral");
-menu.style.left = "0px";
-menu.style.opacity = "1";
+  menu.style.diplay = "blok";
 }, 4000);
 
    function validarCodigo() {
