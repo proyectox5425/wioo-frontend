@@ -338,6 +338,16 @@
 .boton-icono:hover {
   background-color: #5e35b1;
   }
+    .doble-titulo {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+}
+
+.doble-titulo span {
+  min-width: 120px;
+  text-align: center;
+    }
   </style>
 </head>
 <body>
@@ -368,15 +378,16 @@
     <button onclick="escanearQR()">📷 Escanear QR</button>
 
     <div class="zona-pago">
-  <div class="encabezado-pagos">
-    <div class="titulo-pago">📲 Pago Móvil</div>
-    <div class="titulo-pago">🏦 Transferencia</div>
+  <div class="mini-encabezado doble-titulo">
+    <span>📲 Pago Móvil</span>
+    <span>🏦 Transferencia</span>
   </div>
 
   <div class="botones-pago">
     <button class="boton-icono" onclick="window.location.href='pantalla-3.1.html'">💸</button>
     <button class="boton-icono" onclick="window.location.href='pantalla-3.2.html'">💰</button>
   </div>
+    </div>
     </div>
   </section>
 
