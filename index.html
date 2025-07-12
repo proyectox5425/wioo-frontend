@@ -255,6 +255,16 @@
   display: inline-block;
   margin-left: 40px;
       }
+    .contenedor-central {
+  max-width: 380px;
+  width: 100%;
+  margin: 0 auto;
+  padding-top: 40px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 25px;
+      }
   </style>
 </head>
 <body>
@@ -264,26 +274,30 @@
   <div class="pantalla" id="pantalla1"></div>
 
   <section class="pantalla" id="pantalla2">
+  <!-- Botón de menú queda arriba a la izquierda -->
+  <button id="menu-toggle">☰</button>
+
+  <!-- Todo el contenido centrado y organizado -->
+  <div class="contenedor-central">
     <div id="encabezado-wioo">
       <span class="mensaje-bienvenida">Bienvenido a Nuestra</span><br>
       <span class="mensaje-bienvenida">Red Móvil</span>
     </div>
 
-    <button id="menu-toggle">☰</button>
+    <div class="mini-encabezado">🔒 ACCESO</div>
 
-    <div class="contenedor-pantalla2">
-      <div class="mini-encabezado">🔒 ACCESO</div>
-      <form id="form-codigo">
-        <input type="text" id="codigoChofer" placeholder="****" required />
-        <button type="submit">Validar</button>
-      </form>
-      <button onclick="escanearQR()">📷 Escanear QR</button>
+    <form id="form-codigo">
+      <input type="text" id="codigoChofer" placeholder="****" required />
+      <button type="submit">Validar</button>
+    </form>
 
-      <div class="botones-pago">
-        <button onclick="window.location.href='pantalla-3.1.html'">📲 Pago Móvil</button>
-        <button onclick="window.location.href='pantalla-3.2.html'">🏦 Transferencia</button>
-      </div>
+    <button onclick="escanearQR()">📷 Escanear QR</button>
+
+    <div class="botones-pago">
+      <button onclick="window.location.href='pantalla-3.1.html'">📲 Pago Móvil</button>
+      <button onclick="window.location.href='pantalla-3.2.html'">🏦 Transferencia</button>
     </div>
+  </div>
   </section>
 
   <nav id="menu-lateral">
