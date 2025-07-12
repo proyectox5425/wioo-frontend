@@ -456,6 +456,11 @@
     <a href="#">❓ Ayuda</a>
   </nav>
 
+  <!-- 📷 Botón escáner y contenedor QR -->
+<button onclick="escanearQR()">📷 Escanear QR</button>
+<div id="qr-reader" style="width: 280px; margin-top: 20px;"></div>
+<button id="cerrar-qr" style="margin-top: 10px; display: none;">❌ Cerrar Escáner</button>
+
   <div id="login-modal">
     <button id="close-modal">✖</button>
     <div id="login-box">
@@ -550,9 +555,20 @@ window.addEventListener("DOMContentLoaded", () => {
     }
   };
 window.escanearQR = function () {
+  const logo = document.getElementById("logo");
+  const pantalla1 = document.getElementById("pantalla1");
+  const pantalla2 = document.getElementById("pantalla2");
+  const encabezado = document.getElementById("encabezado-wioo");
   const qrContenedor = document.getElementById("qr-reader");
   const botonCerrar = document.getElementById("cerrar-qr");
 
+  // 🟣 Transición de bienvenida (como hacía antes tu setTimeout)
+  logo.classList.add("animar-logo");
+  pantalla1.style.display = "none";
+  pantalla2.style.display = "flex";
+  encabezado.style.opacity = "1";
+
+  // ✅ Función que se ejecuta al escanear código QR
   const qrCodeSuccessCallback = (decodedText) => {
     alert("✅ Código escaneado: " + decodedText);
 
@@ -572,13 +588,15 @@ window.escanearQR = function () {
       alert("✅ Código QR aprobado. ¡Bienvenido a bordo!");
     }
 
+    // ⬅️ Detener la cámara y ocultar el escáner
     html5QrCode.stop().then(() => {
       qrContenedor.innerHTML = "";
       botonCerrar.style.display = "none";
     });
   };
 
-  const html5QrCode = new Html5QrCode("qr-reader");
+  // ✅ Activar escáner con html5-qrcode
+  const html5QrCode = new Html5Qrcode("qr-reader");
 
   html5QrCode.start(
     { facingMode: "environment" },
@@ -586,10 +604,10 @@ window.escanearQR = function () {
     qrCodeSuccessCallback
   );
 
-  // Mostrar botón de cerrar
+  // 🔘 Mostrar botón de cerrar
   botonCerrar.style.display = "inline-block";
 
-  // Función al hacer clic en "Cerrar Escáner"
+  // 🔒 Función para cerrar escáner manualmente
   botonCerrar.onclick = function () {
     html5QrCode.stop().then(() => {
       qrContenedor.innerHTML = "";
