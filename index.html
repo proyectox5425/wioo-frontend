@@ -356,9 +356,20 @@
     }
     
 .boton-icono img {
-  width: 64px;             /* ⬅️ Tamaño del ícono */
-  height: 64px;
-  object-fit: contain;     /* ⬅️ Evita que se deformen */
+  max-width: 64px;
+  max-height: 64px;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+      }
+
+    .boton-icono {
+  width: 120px;
+  height: 120px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;          /* ⬅️ Muy útil para evitar que la imagen se salga */
     }
 
     .encabezado-pago-unico {
