@@ -360,18 +360,13 @@
   font-size: 20px;
   font-weight: 600;
   padding: 16px 0;
-  width: 100%;                     /* ⬅️ ocupa todo el ancho del padre */
+  width: calc(100% + 40px);   /* ⬅️ rompe los 20px de padding de .interface-wrapper */
+  margin-left: -20px;         /* ⬅️ compensa el espacio lateral */
+  border-radius: 8px;
   display: flex;
   justify-content: space-around;
   align-items: center;
-  border-radius: 8px;
-  text-align: center;
   box-shadow: 0 2px 6px rgba(0,0,0,0.3);
-    }
-
-.encabezado-pago-unico .lado {
-  flex: 1;
-  text-align: center;
       }
 
   </style>
