@@ -354,6 +354,25 @@
   color: white;
   font-size: 16px;
   font-weight: 600;
+  padding: 12px 20px;
+  border-radius: 8px;
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  max-width: 260px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+  text-align: center;
+  gap: 12px;
+}
+
+.encabezado-pago-unico span {
+  flex: 1;
+  }
+    .encabezado-pago-unico {
+  background-color: #7344D0;
+  color: white;
+  font-size: 16px;
+  font-weight: 600;
   padding: 10px 20px;
   border-radius: 8px;
   display: flex;
@@ -399,14 +418,15 @@
 
     <div class="zona-pago">
   <div class="encabezado-pago-unico">
-    <div>📲 Pago Móvil</div>
-    <div>🏦 Transferencia</div>
+    <span>📲 Pago Móvil</span>
+    <span>🏦 Transferencia</span>
   </div>
 
   <div class="botones-pago">
     <button class="boton-icono" onclick="window.location.href='pantalla-3.1.html'">💸</button>
     <button class="boton-icono" onclick="window.location.href='pantalla-3.2.html'">💰</button>
   </div>
+    </div>
     </div>
     </div>
   </section>
