@@ -49,6 +49,17 @@
   z-index: 1;
 }
 
+    section#pantalla1::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: url('fondo-autobus.jpg');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  z-index: -1;
+    }
+
 #pantalla2 {
   display: none;
   flex-direction: column;
@@ -63,6 +74,17 @@
   background-repeat: no-repeat;
   z-index: 2;
 }
+
+    section#pantalla2::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: url('fondo-autobus.jpg');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  z-index: -1;
+    }
     
     #encabezado-wioo {
       position: absolute;
@@ -218,15 +240,20 @@
     }
 
     .botones-pago button {
-      flex: 1;
-      padding: 14px 14px;
-      font-size: 16px;
-      border: none;
-      border-radius: 8px;
-      background-color: #7344D0;
-      color: white;
-      cursor: pointer;
-      transition: background 0.3s;
+  flex: none;
+  width: 120px;
+  height: 120px;
+  padding: 0;
+  font-size: 16px;
+  border-radius: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #7344D0;
+  color: white;
+  border: none;
+  cursor: pointer;
+  transition: background 0.3s;
     }
 
     .botones-pago button:hover {
