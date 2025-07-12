@@ -246,9 +246,11 @@
   color: white;
   font-size: 24px;
   font-weight: 600;
-  padding: 16px 22px; /* ← ajustado para ser igual al de zona de pago */
+  padding: 16px 0;
   width: 100%;
-  max-width: 280px;   /* ← igual que encabezado-pago-unico */
+  max-width: 280px;
+  display: flex;
+  justify-content: center;
   border-radius: 8px;
   text-align: center;
   box-shadow: 0 2px 6px rgba(0,0,0,0.3);
@@ -356,39 +358,20 @@
   color: white;
   font-size: 16px;
   font-weight: 600;
-  padding: 15px 22px;
-  border-radius: 8px;
-  display: flex;
-  justify-content: space-between;
+  padding: 16px 0;
   width: 100%;
   max-width: 280px;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+  display: flex;
+  justify-content: space-between;
+  border-radius: 8px;
   text-align: center;
-  gap: 12px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.3);
 }
 
 .encabezado-pago-unico span {
   flex: 1;
   }
-    .encabezado-pago-unico {
-  background-color: #7344D0;
-  color: white;
-  font-size: 16px;
-  font-weight: 600;
-  padding: 16px 22px;
-  border-radius: 8px;
-  display: flex;
-  justify-content: center;
-  gap: 20px;
-  width: 100%;
-  max-width: 280px;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.3);
-  text-align: center;
-}
 
-.encabezado-pago-unico div {
-  flex: 1;
-      }
   </style>
 </head>
 <body>
