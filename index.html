@@ -348,6 +348,26 @@
   min-width: 120px;
   text-align: center;
     }
+
+    .encabezado-pago-unico {
+  background-color: #7344D0;
+  color: white;
+  font-size: 16px;
+  font-weight: 600;
+  padding: 10px 20px;
+  border-radius: 8px;
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  width: 100%;
+  max-width: 280px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+  text-align: center;
+}
+
+.encabezado-pago-unico div {
+  flex: 1;
+      }
   </style>
 </head>
 <body>
@@ -378,9 +398,9 @@
     <button onclick="escanearQR()">📷 Escanear QR</button>
 
     <div class="zona-pago">
-  <div class="mini-encabezado doble-titulo">
-    <span>📲 Pago Móvil</span>
-    <span>🏦 Transferencia</span>
+  <div class="encabezado-pago-unico">
+    <div>📲 Pago Móvil</div>
+    <div>🏦 Transferencia</div>
   </div>
 
   <div class="botones-pago">
