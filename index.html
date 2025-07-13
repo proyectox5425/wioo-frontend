@@ -456,11 +456,9 @@
   const resultado = codigosValidos.find(c => c.codigo === codigo);
 
   if (!resultado) {
-    alert("❌ Código inválido. Verifica con el chofer.");
   } else if (resultado.estado === "usado") {
     alert("⚠️ Este código ya fue utilizado.");
   } else {
-    alert("✅ Código aprobado. ¡Bienvenido a bordo!");
 
     if (resultado.codigo === "9981") {
       window.location.href = "pantalla-4.2.html";
