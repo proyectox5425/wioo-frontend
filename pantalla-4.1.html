@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>Conexión Exitosa</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600&display=swap" rel="stylesheet" />
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Poppins', sans-serif;
+      background-image: url('fondo-autobus.jpg');
+      background-size: cover;
+      background-position: center;
+      color: white;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      text-align: center;
+    }
+
+    .mensaje-ok {
+      background-color: rgba(0, 0, 0, 0.6);
+      padding: 40px 30px;
+      border-radius: 16px;
+      box-shadow: 0 0 12px rgba(0, 0, 0, 0.5);
+    }
+
+    .mensaje-ok img {
+      height: 60px;
+      margin-bottom: 20px;
+    }
+
+    .mensaje-ok h1 {
+      font-size: 24px;
+      color: #00ff99;
+      margin-bottom: 10px;
+    }
+
+    .mensaje-ok p {
+      font-size: 16px;
+      color: #d0baff;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="mensaje-ok">
+    <img src="img/logo-wioo.png" alt="Logo Wioo" />
+    <h1>💚 Comprobante verificado</h1>
+    <p>Ahora estás conectado. Esta ventana se cerrará automáticamente.</p>
+  </div>
+
+  <script>
+    setTimeout(() => {
+      window.close(); // o redirige si estás en modo navegador controlado
+    }, 5000);
+  </script>
+
+</body>
+  </html>
