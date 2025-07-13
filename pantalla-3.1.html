@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Punto Click - Verificación</title>
+  <title>Wioo - Verificación</title>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet" />
   <style>
     body {
@@ -58,7 +58,8 @@
       display: block;
     }
 
-    .formulario input, .formulario select {
+    .formulario input,
+    .formulario select {
       width: 100%;
       padding: 10px;
       border: none;
@@ -117,23 +118,43 @@
       display: block;
     }
 
-    .barra-progreso {
-      height: 6px;
-      background-color: #444;
-      border-radius: 4px;
-      overflow: hidden;
+    .logo-cargando {
+      animation: parpadeoLogo 1.2s infinite ease-in-out;
+      filter: drop-shadow(0 0 12px #c79eff);
     }
 
-    .progreso-animado {
-      width: 100%;
-      height: 100%;
-      background: linear-gradient(90deg, #7344D0, #c79eff);
-      animation: avanzar 1.2s infinite linear;
+    @keyframes parpadeoLogo {
+      0%   { opacity: 1; transform: scale(1);    filter: drop-shadow(0 0 5px #c79eff); }
+      50%  { opacity: 0.5; transform: scale(1.06); filter: drop-shadow(0 0 20px #da9cff); }
+      100% { opacity: 1; transform: scale(1);    filter: drop-shadow(0 0 5px #c79eff); }
     }
 
-    @keyframes avanzar {
-      0% {transform: translateX(-100%);}
-      100% {transform: translateX(100%);}
+    .fondo-validando {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100vw;
+      height: 100vh;
+      background-color: rgba(0,0,0,0.6);
+      backdrop-filter: blur(2px);
+      z-index: 30;
+      display: none;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+    }
+
+    #texto-validando {
+      font-size: 22px;
+      font-weight: 600;
+      color: #cfaaff;
+      margin-bottom: 20px;
+      animation: textoFade 1.2s infinite ease-in-out;
+      text-shadow: 0 0 8px #7344D0;
+    }
+
+    @keyframes textoFade {
+      0%, 100% { opacity: 1; transform: translateY(0); }
+      50% { opacity: 0.6; transform: translateY(2px); }
     }
   </style>
 </head>
@@ -151,6 +172,7 @@
       <p><strong>Teléfono:</strong> 0414-1234567</p>
       <p><strong>Cédula / RIF:</strong> V-12.345.678</p>
       <p><strong>Monto:</strong> 120 Bs</p>
+      <p><strong>Tiempo de Navegación:</strong> 12 horas ILIMITADAS</p>
     </div>
 
     <div class="formulario">
@@ -165,9 +187,8 @@
           <option value="0424">0424</option>
           <option value="0416">0416</option>
           <option value="0426">0426</option>
-          <option value="0422">0422</option>
         </select>
-        <input type="text" id="telefono" placeholder="0001122" maxlength="7" />
+        <input type="number" id="telefono" placeholder="0001122" min="1000000" max="9999999" />
       </div>
 
       <label for="banco">Banco desde el cual realizaste el pago</label>
@@ -189,11 +210,13 @@
     </div>
 
     <button class="boton-panel btn-enviar">Enviar Comprobante</button>
-
     <div id="mensaje-enviado" class="mensaje-enviado">✅ Comprobante enviado. Estamos verificando...</div>
-    <div class="barra-progreso"><div class="progreso-animado"></div></div>
   </div>
 
+  <div id="fondo-validando" class="fondo-validando">
+    <div id="texto-validando">📡 Verificando conexión...</div>
+    <img src="logo-wioo-white.png" alt="Logo Wioo" id="logo-validando" />
+  </div>
   <script>
     const btnEnviar = document.querySelector('.btn-enviar');
     const cedula = document.getElementById('cedula');
@@ -203,9 +226,12 @@
     const referencia = document.getElementById('referencia');
     const mensaje = document.getElementById('mensaje-enviado');
 
+    const referenciasValidas = ["1234", "9876", "2024", "4321"]; // 🔐 Simulación interna
+
     btnEnviar.addEventListener('click', () => {
       const numeroCompleto = codigo.value + telefono.value.trim();
 
+      // 🛡️ Validación básica de campos
       if (
         cedula.value.trim() &&
         codigo.value &&
@@ -214,41 +240,31 @@
         referencia.value.trim().length === 4
       ) {
         btnEnviar.disabled = true;
+        mensaje.textContent = "✅ Comprobante enviado. Estamos verificando...";
         mensaje.classList.add('visible');
 
-        fetch('https://4040ff69-afcc-45b1-912d-c6125452d1df-00-26jceljsjubtr.kirk.replit.dev/', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            cedula: cedula.value.trim(),
-            telefono: numeroCompleto,
-            banco: banco.value,
-            referencia: referencia.value.trim()
-          })
-        })
-        .then(res => res.json())
-        .then(data => {
-          if (data.verificado) {
-            window.location.href = 'pantalla4-ok.html';
+        // 🟣 Activar efecto institucional flotante
+        document.getElementById("fondo-validando").style.display = "flex";
+        document.getElementById("logo-validando").classList.add("logo-cargando");
+        document.getElementById("texto-validando").style.display = "block";
+
+        // ⏱️ Simular verificación por 5 segundos
+        setTimeout(() => {
+          document.getElementById("fondo-validando").style.display = "none";
+          document.getElementById("logo-validando").classList.remove("logo-cargando");
+          document.getElementById("texto-validando").style.display = "none";
+
+          // ✅ Verificación lógica
+          if (referenciasValidas.includes(referencia.value.trim())) {
+            window.location.href = "pantalla-4.1.html";
           } else {
-            window.location.href = 'pantalla4-error.html';
+            window.location.href = "pantalla4-4.2.html";
           }
-        })
-        .catch(err => {
-          console.error('Error al verificar:', err);
-          window.location.href = 'pantalla4-error.html';
-        });
-      }
-      })
-        .catch(err => {
-          console.error('Error al verificar:', err);
-          window.location.href = 'pantalla4-error.html';
-        });
+        }, 5000); // 5 segundos institucionales
       } else {
         alert("Por favor completa todos los campos correctamente.");
       }
     });
   </script>
-
 </body>
 </html>
