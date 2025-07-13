@@ -7,10 +7,14 @@
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
   <style>
     * { box-sizing: border-box; }
+
     body {
       margin: 0;
       font-family: 'Poppins', sans-serif;
-      background: linear-gradient(135deg, #000000, #2D0D42);
+      background-image: url('fondo-autobus.jpg');
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
       color: white;
     }
 
@@ -44,13 +48,13 @@
       background-color: #1a002a;
       padding: 20px 10px;
       box-shadow: 4px 0 8px rgba(0,0,0,0.3);
-      transform: translateX(0);
+      transform: translateX(-220px);
       transition: transform 0.3s ease-in-out;
       z-index: 12;
     }
 
-    #sidebar.hidden {
-      transform: translateX(-220px);
+    #sidebar.show {
+      transform: translateX(0);
     }
 
     #overlay {
@@ -97,23 +101,36 @@
     }
 
     main {
-      margin-left: 220px;
+      margin-left: 0;
       padding: 20px;
       transition: margin-left 0.3s ease-in-out;
     }
 
-    #sidebar.hidden + #overlay + main {
-      margin-left: 0;
-    }
-
-    h1 {
-      font-size: 22px;
-      color: #c79eff;
-      margin-bottom: 20px;
-    }
-
     .section { display: none; }
     .section.active { display: block; }
+
+    .interface-wrapper {
+      max-width: 900px;
+      margin: 0 auto;
+      background-color: rgba(0,0,0,0.6);
+      border-radius: 16px;
+      padding: 30px 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 25px;
+      box-shadow: 0 0 12px rgba(0,0,0,0.4);
+    }
+
+    .mini-encabezado {
+      background-color: #7344D0;
+      color: white;
+      font-size: 22px;
+      font-weight: 600;
+      padding: 16px;
+      border-radius: 8px;
+      text-align: center;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+    }
 
     .card-container {
       display: grid;
@@ -144,7 +161,6 @@
       .hamburger { display: block; }
       #sidebar { transform: translateX(-220px); }
       #sidebar.show { transform: translateX(0); }
-      main { margin-left: 0 !important; }
     }
   </style>
 </head>
@@ -154,26 +170,22 @@
     <h1>Panel de administración – Wioo</h1>
   </header>
 
-  <div id="sidebar" class="hidden">
+  <div id="sidebar">
     <img src="logo-wioo.png" alt="Logo Wioo" />
     <h2>Panel Wioo</h2>
     <button class="nav-link" onclick="showSection('resumen')">📊 Resumen</button>
     <button class="nav-link" onclick="showSection('usuarios')">🧾 Usuarios</button>
     <button class="nav-link" onclick="showSection('estadisticas')">📈 Estadísticas</button>
-<button class="nav-link" onclick="showSection('rutas')">🗺️ Rutas</button>
-<button type="submit" style="margin-top:15px; background-color:#9e5dff; color:white; border:none; padding:10px 20px; border-radius:6px; cursor:pointer;">
-  Registrar
-</button>
-  .
-</button>
+    <button class="nav-link" onclick="showSection('rutas')">🗺️ Rutas</button>
     <button class="nav-link" onclick="showSection('anuncios')">📺 Anuncios</button>
   </div>
 
   <div id="overlay" onclick="closeSidebar()"></div>
-
   <main>
-    <section id="resumen" class="section active">
-      <h1>Resumen Diario</h1>
+  <!-- Resumen Diario -->
+  <section id="resumen" class="section active">
+    <div class="interface-wrapper">
+      <div class="mini-encabezado">📊 Resumen Diario</div>
       <div class="card-container">
         <div class="card">
           <h3>Tickets activos hoy</h3>
@@ -188,310 +200,215 @@
           <p>Ruta 14 · Ruta 9 · Ruta 3</p>
         </div>
       </div>
-    </section>
+    </div>
+  </section>
 
- <section id="usuarios" class="section">
-  <h1>Usuarios conectados</h1>
-  <div style="overflow-x:auto;">
-    <table style="width:100%; border-collapse:collapse; min-width:600px;">
-      <thead>
-        <tr style="background-color:#2D0D42; color:#d9b3ff;">
-          <th style="text-align:left; padding:10px; border-bottom:1px solid #8000ff;">IP</th>
-          <th style="text-align:left; padding:10px; border-bottom:1px solid #8000ff;">Ruta asignada</th>
-          <th style="text-align:left; padding:10px; border-bottom:1px solid #8000ff;">Ticket activo</th>
-          <th style="text-align:left; padding:10px; border-bottom:1px solid #8000ff;">Último acceso</th>
-          <th style="text-align:left; padding:10px; border-bottom:1px solid #8000ff;">Tipo de pago</th>
-          <th style="text-align:left; padding:10px; border-bottom:1px solid #8000ff;">Código del chofer</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr style="border-bottom:1px solid #4f1e73;">
-          <td style="padding:10px;">192.168.1.23</td>
-          <td style="padding:10px;">Ruta 14</td>
-          <td style="padding:10px; color:#00ff99;">✅ Sí</td>
-          <td style="padding:10px;">13:50</td>
-          <td style="padding:10px;">Pago móvil</td>
-          <td style="padding:10px;">CHF-1023</td>
-        </tr>
-        <tr style="border-bottom:1px solid #4f1e73;">
-          <td style="padding:10px;">192.168.1.77</td>
-          <td style="padding:10px;">Ruta 7</td>
-          <td style="padding:10px; color:#ff6666;">❌ No</td>
-          <td style="padding:10px;">14:01</td>
-          <td style="padding:10px;">Efectivo</td>
-          <td style="padding:10px;">CHF-9981</td>
-        </tr>
-        <tr style="border-bottom:1px solid #4f1e73;">
-          <td style="padding:10px;">192.168.1.99</td>
-          <td style="padding:10px;">Ruta 5</td>
-          <td style="padding:10px; color:#00ff99;">✅ Sí</td>
-          <td style="padding:10px;">12:40</td>
-          <td style="padding:10px;">Transferencia</td>
-          <td style="padding:10px;">CHF-1050</td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
-</section>
+  <!-- Usuarios -->
+  <section id="usuarios" class="section">
+    <div class="interface-wrapper">
+      <div class="mini-encabezado">🧾 Usuarios conectados</div>
+      <div style="overflow-x:auto;">
+        <table class="tabla-usuarios">
+          <thead>
+            <tr>
+              <th>IP</th>
+              <th>Ruta asignada</th>
+              <th>Ticket activo</th>
+              <th>Último acceso</th>
+              <th>Tipo de pago</th>
+              <th>Código del chofer</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>192.168.1.23</td>
+              <td>Ruta 14</td>
+              <td class="activo">✅ Sí</td>
+              <td>13:50</td>
+              <td>Pago móvil</td>
+              <td>CHF-1023</td>
+            </tr>
+            <tr>
+              <td>192.168.1.77</td>
+              <td>Ruta 7</td>
+              <td class="inactivo">❌ No</td>
+              <td>14:01</td>
+              <td>Efectivo</td>
+              <td>CHF-9981</td>
+            </tr>
+            <tr>
+              <td>192.168.1.99</td>
+              <td>Ruta 5</td>
+              <td class="activo">✅ Sí</td>
+              <td>12:40</td>
+              <td>Transferencia</td>
+              <td>CHF-1050</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
 
+  <!-- Estadísticas -->
   <section id="estadisticas" class="section">
-  <h1>Estadísticas semanales</h1>
-  <div style="background: rgba(255,255,255,0.05); padding:20px; border-radius:10px; box-shadow: 0 0 10px #8000ff40; max-width:600px; margin:auto;">
-    <h3 style="text-align:center; color:#d2a6ff;">Tickets activos por día</h3>
-    <div style="display:flex; align-items:flex-end; justify-content:space-around; height:200px; margin-top:20px; gap:10px;">
-      <!-- Lunes -->
-      <div style="display:flex; flex-direction:column; align-items:center;">
-        <div style="width:20px; height:80px; background:#9e5dff; border-radius:4px;"></div>
-        <small style="margin-top:5px;">Lun</small>
-      </div>
-      <!-- Martes -->
-      <div style="display:flex; flex-direction:column; align-items:center;">
-        <div style="width:20px; height:110px; background:#b87fff; border-radius:4px;"></div>
-        <small style="margin-top:5px;">Mar</small>
-      </div>
-      <!-- Miércoles -->
-      <div style="display:flex; flex-direction:column; align-items:center;">
-        <div style="width:20px; height:150px; background:#d2a6ff; border-radius:4px;"></div>
-        <small style="margin-top:5px;">Mié</small>
-      </div>
-      <!-- Jueves -->
-      <div style="display:flex; flex-direction:column; align-items:center;">
-        <div style="width:20px; height:120px; background:#b87fff; border-radius:4px;"></div>
-        <small style="margin-top:5px;">Jue</small>
-      </div>
-      <!-- Viernes -->
-      <div style="display:flex; flex-direction:column; align-items:center;">
-        <div style="width:20px; height:170px; background:#c79eff; border-radius:4px;"></div>
-        <small style="margin-top:5px;">Vie</small>
-      </div>
-      <!-- Sábado -->
-      <div style="display:flex; flex-direction:column; align-items:center;">
-        <div style="width:20px; height:90px; background:#9e5dff; border-radius:4px;"></div>
-        <small style="margin-top:5px;">Sáb</small>
-      </div>
-      <!-- Domingo -->
-      <div style="display:flex; flex-direction:column; align-items:center;">
-        <div style="width:20px; height:50px; background:#6f2bcc; border-radius:4px;"></div>
-        <small style="margin-top:5px;">Dom</small>
+    <div class="interface-wrapper">
+      <div class="mini-encabezado">📈 Estadísticas semanales</div>
+      <div style="background: rgba(255,255,255,0.05); padding:20px; border-radius:10px; box-shadow: 0 0 10px #8000ff40;">
+        <h3 style="text-align:center; color:#d2a6ff;">Tickets activos por día</h3>
+        <div style="display:flex; align-items:flex-end; justify-content:space-around; height:200px; margin-top:20px; gap:10px;">
+          <div><div style="width:20px; height:80px; background:#9e5dff; border-radius:4px;"></div><small>Lun</small></div>
+          <div><div style="width:20px; height:110px; background:#b87fff; border-radius:4px;"></div><small>Mar</small></div>
+          <div><div style="width:20px; height:150px; background:#d2a6ff; border-radius:4px;"></div><small>Mié</small></div>
+          <div><div style="width:20px; height:120px; background:#b87fff; border-radius:4px;"></div><small>Jue</small></div>
+          <div><div style="width:20px; height:170px; background:#c79eff; border-radius:4px;"></div><small>Vie</small></div>
+          <div><div style="width:20px; height:90px; background:#9e5dff; border-radius:4px;"></div><small>Sáb</small></div>
+          <div><div style="width:20px; height:50px; background:#6f2bcc; border-radius:4px;"></div><small>Dom</small></div>
+        </div>
       </div>
     </div>
-  </div>
-</section>
+  </section>
+  <!-- Rutas -->
+  <section id="rutas" class="section">
+    <div class="interface-wrapper">
+      <div class="mini-encabezado">🗺️ Panel de Rutas Activas</div>
 
-<section id="rutas" class="section">
-  <h1>Panel de rutas activas</h1>
+      <h3 style="color:#d2a6ff;">Resumen de rutas y choferes</h3>
+      <div style="overflow-x:auto;">
+        <table class="tabla-usuarios">
+          <thead>
+            <tr>
+              <th>Ruta</th>
+              <th>Código de chofer</th>
+              <th>Estado</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>Ruta 14</td><td>CHF-1023</td><td class="activo">✅ Activo</td></tr>
+            <tr><td>Ruta 7</td><td>CHF-1050</td><td class="activo">✅ Activo</td></tr>
+            <tr><td>Ruta 5</td><td>CHF-9981</td><td class="inactivo">⛔ Inactivo</td></tr>
+          </tbody>
+        </table>
+      </div>
 
-  <!-- Tabla de rutas y choferes -->
-  <div style="background: rgba(255,255,255,0.05); padding:20px; border-radius:10px; box-shadow: 0 0 10px #8000ff40; margin-bottom:40px;">
-    <h3 style="color:#d2a6ff;">Resumen de rutas y choferes</h3>
-    <div style="overflow-x:auto;">
-      <table style="width:100%; border-collapse:collapse; min-width:500px;">
-        <thead>
-          <tr style="background-color:#2D0D42; color:#d9b3ff;">
-            <th style="text-align:left; padding:10px; border-bottom:1px solid #8000ff;">Ruta</th>
-            <th style="text-align:left; padding:10px; border-bottom:1px solid #8000ff;">Código de chofer</th>
-            <th style="text-align:left; padding:10px; border-bottom:1px solid #8000ff;">Estado</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr style="border-bottom:1px solid #4f1e73;">
-            <td style="padding:10px;">Ruta 14</td>
-            <td style="padding:10px;">CHF-1023</td>
-            <td style="padding:10px; color:#00ff99;">✅ Activo</td>
-          </tr>
-          <tr style="border-bottom:1px solid #4f1e73;">
-            <td style="padding:10px;">Ruta 7</td>
-            <td style="padding:10px;">CHF-1050</td>
-            <td style="padding:10px; color:#00ff99;">✅ Activo</td>
-          </tr>
-          <tr style="border-bottom:1px solid #4f1e73;">
-            <td style="padding:10px;">Ruta 5</td>
-            <td style="padding:10px;">CHF-9981</td>
-            <td style="padding:10px; color:#ff6666;">⛔ Inactivo</td>
-          </tr>
-        </tbody>
-      </table>
+      <h3 style="color:#d2a6ff; margin-top:30px;">Accesos por chofer (efectivo)</h3>
+      <div style="overflow-x:auto;">
+        <table class="tabla-usuarios">
+          <thead>
+            <tr>
+              <th>Código de chofer</th><th>Ruta</th><th>IP</th><th>Hora</th><th>Ticket</th><th>Monto</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>CHF-1023</td><td>Ruta 14</td><td>192.168.1.15</td><td>14:22</td><td class="activo">✅ Sí</td><td>5,00 Bs</td></tr>
+            <tr><td>CHF-1050</td><td>Ruta 7</td><td>192.168.1.40</td><td>13:50</td><td class="activo">✅ Sí</td><td>7,00 Bs</td></tr>
+            <tr><td>CHF-9981</td><td>Ruta 5</td><td>192.168.1.90</td><td>12:45</td><td class="inactivo">❌ No</td><td>—</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3 style="color:#d2a6ff; margin-top:30px;">Gestión de choferes</h3>
+      <div style="overflow-x:auto;">
+        <table class="tabla-usuarios">
+          <thead>
+            <tr>
+              <th>Nombre</th><th>Código</th><th>Ruta</th><th>Estado</th><th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>José Rivas</td><td>CHF-1023</td><td>Ruta 14</td><td class="activo">✅ Activo</td>
+              <td>
+                <button class="nav-link">✏️ Editar</button>
+                <button class="nav-link">🔒 Inhabilitar</button>
+                <button class="nav-link">🗑️ Eliminar</button>
+              </td>
+            </tr>
+            <tr>
+              <td>Karla Pérez</td><td>CHF-1050</td><td>Ruta 7</td><td class="inactivo">⛔ Inactivo</td>
+              <td>
+                <button class="nav-link">✏️ Editar</button>
+                <button class="nav-link">✅ Activar</button>
+                <button class="nav-link">🗑️ Eliminar</button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3 style="color:#d2a6ff; margin-top:30px;">Registrar nuevo chofer</h3>
+      <form onsubmit="return false;">
+        <label>
+          <span>Nombre:</span><br/>
+          <input type="text" placeholder="Ej: Luis Martínez" style="width:100%; padding:8px; border-radius:6px; margin:5px 0; border:none;" />
+        </label>
+
+        <label>
+          <span>Ruta asignada:</span><br/>
+          <input type="text" placeholder="Ej: Ruta 12" style="width:100%; padding:8px; border-radius:6px; margin:5px 0; border:none;" />
+        </label>
+
+        <label>
+          <span>Código del chofer:</span><br/>
+          <input type="text" placeholder="Ej: CHF-1075" style="width:100%; padding:8px; border-radius:6px; margin:5px 0; border:none;" />
+        </label>
+
+        <button disabled style="margin-top:10px; background-color:#7344D0; color:white; padding:10px 20px; border-radius:6px; border:none; cursor:not-allowed; opacity:0.5;">
+          Registrar (deshabilitado)
+        </button>
+      </form>
+
+      <h3 style="color:#d2a6ff; margin-top:40px;">Revisión individual de tickets</h3>
+      <label>
+        <span>Selecciona un chofer:</span><br/>
+        <select id="select-chofer" onchange="cargarTicketsChofer()" style="width:100%; padding:10px; border-radius:6px; margin-top:5px;">
+          <option value="">— Elige —</option>
+          <option value="CHF-1023">CHF-1023</option>
+          <option value="CHF-1050">CHF-1050</option>
+          <option value="CHF-9981">CHF-9981</option>
+        </select>
+      </label>
+
+      <div id="resumen-chofer" style="display:none; margin-top:15px;">
+        <p><strong>Total de tickets:</strong> <span id="total-tickets"></span></p>
+        <table class="tabla-usuarios" style="margin-top:10px;">
+          <thead><tr><th>Fecha</th><th>Hora</th><th>Monto</th></tr></thead>
+          <tbody id="tabla-detalle-tickets"></tbody>
+        </table>
+      </div>
     </div>
-  </div>
+  </section>
 
-  <!-- Subsección: Accesos por códigos de chofer (efectivo) -->
-  <div style="background: rgba(255,255,255,0.05); padding:20px; border-radius:10px; box-shadow: 0 0 10px #8000ff40;">
-    <h3 style="color:#d2a6ff;">Accesos por código de chofer (pago en efectivo)</h3>
-    <div style="overflow-x:auto;">
-      <table style="width:100%; border-collapse:collapse; min-width:650px;">
-        <thead>
-          <tr style="background-color:#2D0D42; color:#d9b3ff;">
-            <th style="padding:10px; text-align:left; border-bottom:1px solid #8000ff;">Código de chofer</th>
-            <th style="padding:10px; text-align:left; border-bottom:1px solid #8000ff;">Ruta</th>
-            <th style="padding:10px; text-align:left; border-bottom:1px solid #8000ff;">IP del pasajero</th>
-            <th style="padding:10px; text-align:left; border-bottom:1px solid #8000ff;">Hora</th>
-            <th style="padding:10px; text-align:left; border-bottom:1px solid #8000ff;">Ticket activo</th>
-            <th style="padding:10px; text-align:left; border-bottom:1px solid #8000ff;">Monto declarado</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr style="border-bottom:1px solid #4f1e73;">
-            <td style="padding:10px;">CHF-1023</td>
-            <td style="padding:10px;">Ruta 14</td>
-            <td style="padding:10px;">192.168.1.15</td>
-            <td style="padding:10px;">14:22</td>
-            <td style="padding:10px; color:#00ff99;">✅ Sí</td>
-            <td style="padding:10px;">5,00 Bs</td>
-          </tr>
-          <tr style="border-bottom:1px solid #4f1e73;">
-            <td style="padding:10px;">CHF-1050</td>
-            <td style="padding:10px;">Ruta 7</td>
-            <td style="padding:10px;">192.168.1.40</td>
-            <td style="padding:10px;">13:50</td>
-            <td style="padding:10px; color:#00ff99;">✅ Sí</td>
-            <td style="padding:10px;">7,00 Bs</td>
-          </tr>
-          <tr style="border-bottom:1px solid #4f1e73;">
-            <td style="padding:10px;">CHF-9981</td>
-            <td style="padding:10px;">Ruta 5</td>
-            <td style="padding:10px;">192.168.1.90</td>
-            <td style="padding:10px;">12:45</td>
-            <td style="padding:10px; color:#ff6666;">❌ No</td>
-            <td style="padding:10px;">—</td>
-          </tr>
-        </tbody>
-      </table>
+  <!-- Anuncios -->
+  <section id="anuncios" class="section">
+    <div class="interface-wrapper">
+      <div class="mini-encabezado">📺 Gestión de anuncios</div>
+      <p>📡 Agrega o modifica los banners visuales del sistema</p>
     </div>
-  </div>
-<!-- Gestión de choferes -->
-<div style="background: rgba(255,255,255,0.05); padding:20px; border-radius:10px; box-shadow: 0 0 10px #8000ff40; margin-top:40px;">
-  <h3 style="color:#d2a6ff;">Gestión de choferes</h3>
-  <div style="overflow-x:auto;">
-    <table style="width:100%; border-collapse:collapse; min-width:600px;">
-      <thead>
-        <tr style="background-color:#2D0D42; color:#d9b3ff;">
-          <th style="padding:10px; text-align:left; border-bottom:1px solid #8000ff;">Nombre</th>
-          <th style="padding:10px; text-align:left; border-bottom:1px solid #8000ff;">Código</th>
-          <th style="padding:10px; text-align:left; border-bottom:1px solid #8000ff;">Ruta</th>
-          <th style="padding:10px; text-align:left; border-bottom:1px solid #8000ff;">Estado</th>
-          <th style="padding:10px; text-align:left; border-bottom:1px solid #8000ff;">Acciones</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr style="border-bottom:1px solid #4f1e73;">
-          <td style="padding:10px;">José Rivas</td>
-          <td style="padding:10px;">CHF-1023</td>
-          <td style="padding:10px;">Ruta 14</td>
-          <td style="padding:10px; color:#00ff99;">✅ Activo</td>
-          <td style="padding:10px;">
-            <button style="background:none; border:none; color:#cfaaff; cursor:pointer;">✏️ Editar</button>
-            <button style="background:none; border:none; color:#ffcc66; cursor:pointer;">🔒 Inhabilitar</button>
-            <button style="background:none; border:none; color:#ff6666; cursor:pointer;">🗑️ Eliminar</button>
-          </td>
-        </tr>
-        <tr style="border-bottom:1px solid #4f1e73;">
-          <td style="padding:10px;">Karla Pérez</td>
-          <td style="padding:10px;">CHF-1050</td>
-          <td style="padding:10px;">Ruta 7</td>
-          <td style="padding:10px; color:#ff6666;">⛔ Inactivo</td>
-          <td style="padding:10px;">
-            <button style="background:none; border:none; color:#cfaaff; cursor:pointer;">✏️ Editar</button>
-            <button style="background:none; border:none; color:#00ff99; cursor:pointer;">✅ Activar</button>
-            <button style="background:none; border:none; color:#ff6666; cursor:pointer;">🗑️ Eliminar</button>
-          </td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
-</div>
-<!-- Formulario visible: registro de nuevo chofer -->
-<div id="form-crear-chofer" style="background: rgba(255,255,255,0.05); padding:20px; border-radius:10px; margin-top:40px; box-shadow: 0 0 10px #8000ff40;">
-  <h3 style="color:#d2a6ff;">Registrar nuevo chofer</h3>
-  <form onsubmit="return false;">
-    <label style="display:block; margin-bottom:10px;">
-      <span>Nombre:</span><br/>
-      <input type="text" style="width:100%; padding:8px; border:none; border-radius:6px; margin-top:5px;" placeholder="Ej: Luis Martínez"/>
-    </label>
-
-    <label style="display:block; margin-bottom:10px;">
-      <span>Ruta asignada:</span><br/>
-      <input type="text" style="width:100%; padding:8px; border:none; border-radius:6px; margin-top:5px;" placeholder="Ej: Ruta 12"/>
-    </label>
-
-    <label style="display:block; margin-bottom:10px;">
-      <span>Código del chofer:</span><br/>
-      <input type="text" style="width:100%; padding:8px; border:none; border-radius:6px; margin-top:5px;" placeholder="Ej: CHF-1075"/>
-    </label>
-
-    <button type="submit" style="margin-top:15px; background-color:#9e5dff; color:white; border:none; padding:10px 20px; border-radius:6px; cursor:not-allowed;" disabled>
-      Registrar (deshabilitado por ahora)
-    </button>
-  </form>
-</div>
-  <!-- 🔍 Detalle por chofer -->
-<div style="margin-top:40px; background: rgba(255,255,255,0.05); padding:20px; border-radius:10px; box-shadow: 0 0 10px #8000ff40;">
-  <h3 style="color:#d2a6ff;">Revisión individual de tickets por chofer</h3>
-
-  <label for="select-chofer" style="display:block; margin-bottom:15px;">
-    <span>Selecciona un código de chofer:</span><br/>
-    <select id="select-chofer" onchange="cargarTicketsChofer()" style="width:100%; padding:10px; border:none; border-radius:6px; margin-top:5px;">
-      <option value="">— Elige uno —</option>
-      <option value="CHF-1023">CHF-1023</option>
-      <option value="CHF-1050">CHF-1050</option>
-      <option value="CHF-9981">CHF-9981</option>
-    </select>
-  </label>
-
-  <div id="resumen-chofer" style="display:none;">
-    <p><strong>Total de tickets:</strong> <span id="total-tickets"></span></p>
-
-    <table style="width:100%; border-collapse:collapse; margin-top:15px;">
-      <thead>
-        <tr style="background-color:#2D0D42; color:#d9b3ff;">
-          <th style="padding:10px; text-align:left;">Fecha</th>
-          <th style="padding:10px; text-align:left;">Hora</th>
-          <th style="padding:10px; text-align:left;">Monto</th>
-        </tr>
-      </thead>
-      <tbody id="tabla-detalle-tickets">
-        <!-- Se llenará dinámicamente -->
-      </tbody>
-    </table>
-  </div>
-</div>
-</section>
-
-    <section id="anuncios" class="section">
-      <h1>Gestión de anuncios</h1>
-      <p>📺 Agrega o modifica los banners visuales del sistema</p>
-    </section>
-  </main>
-
+  </section>
+                                </main>
   <script>
-    const sidebar = document.getElementById('sidebar');
-    const overlay = document.getElementById('overlay');
+  const sidebar = document.getElementById('sidebar');
+  const overlay = document.getElementById('overlay');
 
-    function toggleSidebar() {
-      sidebar.classList.toggle('show');
-      sidebar.classList.toggle('hidden');
-      overlay.classList.toggle('active');
-    }
+  function toggleSidebar() {
+    sidebar.classList.toggle('show');
+    overlay.classList.toggle('active');
+  }
 
-    function closeSidebar() {
-      sidebar.classList.remove('show');
-      sidebar.classList.add('hidden');
-      overlay.classList.remove('active');
-    }
+  function closeSidebar() {
+    sidebar.classList.remove('show');
+    overlay.classList.remove('active');
+  }
 
-    function showSection(id) {
-      document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
-      document.getElementById(id).classList.add('active');
-      closeSidebar();
-    }
-  </script>
-<script>
-  function mostrarFormularioChofer() {
-    const form = document.getElementById('form-crear-chofer');
-    form.style.display = 'block';
-    alert("Formulario activado ✔️");
+  function showSection(id) {
+    document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+    closeSidebar();
   }
 </script>
-  <script>
+
+<script>
   const datosMockTickets = {
     "CHF-1023": [
       { fecha: "2025-07-09", hora: "13:20", monto: "5,00 Bs" },
@@ -524,16 +441,16 @@
     tabla.innerHTML = "";
 
     tickets.forEach(t => {
-      const fila = `<tr style="border-bottom:1px solid #4f1e73;">
-        <td style="padding:10px;">${t.fecha}</td>
-        <td style="padding:10px;">${t.hora}</td>
-        <td style="padding:10px;">${t.monto}</td>
+      const fila = `<tr>
+        <td>${t.fecha}</td>
+        <td>${t.hora}</td>
+        <td>${t.monto}</td>
       </tr>`;
       tabla.innerHTML += fila;
     });
 
     resumen.style.display = "block";
   }
-  </script>
+</script>
 </body>
-  </html>
+</html>
