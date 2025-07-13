@@ -576,18 +576,21 @@ window.addEventListener("DOMContentLoaded", () => {
   window.escanearQR = function () {
     const qrContenedor = document.getElementById("qr-reader");
     qrContenedor.style.display = "block";
+    qrContenedor.innerHTML = "";
 
-    // Espera breve para asegurar que Html5Qrcode esté disponible
-    setTimeout(() => {
-      if (typeof Html5Qrcode !== "undefined") {
-        const codigosValidos = [
-          { codigo: "1023", estado: "activo" },
-          { codigo: "1050", estado: "usado" },
-          { codigo: "9981", estado: "activo" }
-        ];
+    const html5QrCode = new Html5Qrcode("qr-reader");
 
-        const qrCodeSuccessCallback = (decodedText) => {
-          alert("✅ Código escaneado: " + decodedText);
+    html5QrCode
+      .start(
+        { facingMode: "environment" },
+        { fps: 10, qrbox: 220 },
+        (decodedText) => {
+          const codigosValidos = [
+            { codigo: "1023", estado: "activo" },
+            { codigo: "1050", estado: "usado" },
+            { codigo: "9981", estado: "activo" }
+          ];
+
           const resultado = codigosValidos.find(c => c.codigo === decodedText.trim());
 
           if (!resultado) {
@@ -602,20 +605,13 @@ window.addEventListener("DOMContentLoaded", () => {
             qrContenedor.innerHTML = "";
             qrContenedor.style.display = "none";
           });
-        };
-
-        const html5QrCode = new Html5Qrcode("qr-reader");
-
-        html5QrCode.start(
-          { facingMode: "environment" },
-          { fps: 10, qrbox: 220 },
-          qrCodeSuccessCallback
-        );
-      } else {
-        alert("🚫 Librería QR no está lista. Reintenta en unos segundos.");
-      }
-    }, 100); // espera 100ms
-  };
+        }
+      )
+      .catch(err => {
+        alert("🚫 No se pudo activar la cámara: " + err);
+        qrContenedor.style.display = "none";
+      });
+};
 </script>
 </body>
 </html>
