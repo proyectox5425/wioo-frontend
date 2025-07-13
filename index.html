@@ -295,7 +295,7 @@
   max-width: 360px;
   width: 100%;
   padding: 30px 20px;
-  margin-top: 20px;
+  margin-top: 40px;
   box-sizing: border-box;
   background-color: rgba(0, 0, 0, 0.6);
   border-radius: 16px;
@@ -544,7 +544,7 @@ window.addEventListener("DOMContentLoaded", () => {
 </script>
   
     <script>
-    window.escanearQR = function () {
+window.escanearQR = function () {
   const qrContenedor = document.getElementById("qr-reader");
 
   const codigosValidos = [
@@ -570,6 +570,7 @@ window.addEventListener("DOMContentLoaded", () => {
     });
   };
 
+  // 🟪 🛠️ Corrección aquí: usa Html5Qrcode (con "code")
   const html5QrCode = new Html5Qrcode("qr-reader");
 
   html5QrCode.start(
@@ -578,4 +579,4 @@ window.addEventListener("DOMContentLoaded", () => {
     qrCodeSuccessCallback
   );
 };
-</script>
+    </script>
