@@ -568,43 +568,45 @@ window.addEventListener("DOMContentLoaded", () => {
 });
 </script>
 
-<script>
-window.escanearQR = function () {
-  const qrContenedor = document.getElementById("qr-reader");
-  qrContenedor.style.display = "block"; // ⬅️ mostrar el lector
-
-  const codigosValidos = [
-    { codigo: "1023", estado: "activo" },
-    { codigo: "1050", estado: "usado" },
-    { codigo: "9981", estado: "activo" }
-  ];
-
-  const qrCodeSuccessCallback = (decodedText) => {
-    alert("✅ Código escaneado: " + decodedText);
-    const resultado = codigosValidos.find(c => c.codigo === decodedText.trim());
-    if (!resultado) {
-      alert("❌ Código QR inválido.");
-    } else if (resultado.estado === "usado") {
-      alert("⚠️ Este código ya fue utilizado.");
-    } else {
-      alert("✅ Código QR aprobado. ¡Bienvenido a bordo!");
-    }
-
-    html5QrCode.stop().then(() => {
-  qrContenedor.innerHTML = "";
-  qrContenedor.style.display = "none";
-});
-  };
-
-  const html5QrCode = new Html5Qrcode("qr-reader");
-
-  html5QrCode.start(
-    { facingMode: "environment" },
-    { fps: 10, qrbox: 220 },
-    qrCodeSuccessCallback
-  );
-};
-</script>
 <script src="https://unpkg.com/html5-qrcode"></script>
+
+<script>
+  window.escanearQR = function () {
+    const qrContenedor = document.getElementById("qr-reader");
+    qrContenedor.style.display = "block";
+
+    const codigosValidos = [
+      { codigo: "1023", estado: "activo" },
+      { codigo: "1050", estado: "usado" },
+      { codigo: "9981", estado: "activo" }
+    ];
+
+    const qrCodeSuccessCallback = (decodedText) => {
+      alert("✅ Código escaneado: " + decodedText);
+      const resultado = codigosValidos.find(c => c.codigo === decodedText.trim());
+
+      if (!resultado) {
+        alert("❌ Código QR inválido.");
+      } else if (resultado.estado === "usado") {
+        alert("⚠️ Este código ya fue utilizado.");
+      } else {
+        alert("✅ Código QR aprobado. ¡Bienvenido a bordo!");
+      }
+
+      html5QrCode.stop().then(() => {
+        qrContenedor.innerHTML = "";
+        qrContenedor.style.display = "none";
+      });
+    };
+
+    const html5QrCode = new Html5Qrcode("qr-reader");
+
+    html5QrCode.start(
+      { facingMode: "environment" },
+      { fps: 10, qrbox: 220 },
+      qrCodeSuccessCallback
+    );
+  };
+</script>
 </body>
 </html>
