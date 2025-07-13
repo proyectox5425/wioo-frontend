@@ -2,9 +2,9 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Pago Móvil – Wioo</title>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Punto Click - Verificación</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet" />
   <style>
     body {
       margin: 0;
@@ -19,34 +19,36 @@
     .interface-wrapper {
       max-width: 360px;
       margin: 40px auto;
-      background-color: rgba(0, 0, 0, 0.6);
+      background-color: rgba(0,0,0,0.6);
       border-radius: 16px;
       padding: 30px 20px;
+      box-shadow: 0 0 12px rgba(0,0,0,0.4);
       display: flex;
       flex-direction: column;
-      gap: 25px;
-      box-shadow: 0 0 12px rgba(0,0,0,0.4);
+      gap: 20px;
     }
 
-    .mini-encabezado {
-      background-color: #7344D0;
-      color: white;
-      font-size: 20px;
-      font-weight: 600;
-      padding: 16px;
-      border-radius: 8px;
+    h2 {
       text-align: center;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+      font-size: 22px;
+      font-weight: 600;
+      margin-bottom: 12px;
+      color: #c79eff;
+    }
+
+    .datos-banco-info p {
+      margin: 6px 0;
+      font-size: 0.95rem;
     }
 
     .formulario label {
-      font-size: 0.9rem;
       font-weight: 500;
+      font-size: 0.9rem;
       margin-bottom: 6px;
       display: block;
     }
 
-    .formulario input {
+    .formulario input, .formulario select {
       width: 100%;
       padding: 10px;
       border: none;
@@ -77,57 +79,118 @@
     .boton-panel:hover {
       background-color: #5e35b1;
     }
+
+    .mensaje-enviado {
+      text-align: center;
+      font-size: 0.9rem;
+      padding: 10px;
+      background-color: #00ff99;
+      color: #000;
+      border-radius: 8px;
+      display: none;
+    }
+
+    .mensaje-enviado.visible {
+      display: block;
+    }
+
+    .barra-progreso {
+      height: 6px;
+      background-color: #444;
+      border-radius: 4px;
+      overflow: hidden;
+    }
+
+    .progreso-animado {
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, #7344D0, #c79eff);
+      animation: avanzar 1.2s infinite linear;
+    }
+
+    @keyframes avanzar {
+      0% {transform: translateX(-100%);}
+      100% {transform: translateX(100%);}
+    }
   </style>
 </head>
 <body>
 
   <div class="interface-wrapper">
-    <div class="mini-encabezado">📲 Pago Móvil</div>
+    <h2>Verificando tu conexión</h2>
+
+    <div class="datos-banco-info">
+      <p><strong>Banco Receptor:</strong> Banco del Pueblo</p>
+      <p><strong>Teléfono:</strong> 0414-1234567</p>
+      <p><strong>Cédula / RIF:</strong> V-12.345.678</p>
+      <p><strong>Monto:</strong> 120 Bs</p>
+    </div>
 
     <div class="formulario">
-      <label for="referencia">N° de Referencia</label>
-      <input type="text" id="referencia" placeholder="Ej: 123456789" />
-
       <label for="telefono">Teléfono desde el que pagaste</label>
       <input type="tel" id="telefono" placeholder="Ej: 0414-0001122" />
 
-      <label for="cuenta">Últimos 4 dígitos de tu cuenta</label>
-      <input type="text" id="cuenta" maxlength="4" placeholder="Ej: 1234" />
+      <label for="banco">Banco desde el cual realizaste el pago</label>
+      <select id="banco">
+        <option value="">Selecciona tu banco</option>
+        <option value="banesco">Banesco</option>
+        <option value="provincial">Provincial</option>
+        <option value="mercantil">Mercantil</option>
+        <option value="venezuela">Banco de Venezuela</option>
+        <option value="tesoro">Banco del Tesoro</option>
+        <option value="bicentenario">Bicentenario</option>
+        <option value="banplus">Banplus</option>
+        <option value="exterior">Exterior</option>
+        <option value="otro">Otro</option>
+      </select>
+
+      <label for="referencia">Últimos 4 dígitos de la referencia</label>
+      <input type="text" id="referencia" maxlength="4" placeholder="Ej: 1234" />
     </div>
 
-    <button class="boton-panel">Enviar Comprobante</button>
+    <button class="boton-panel btn-enviar">Enviar Comprobante</button>
+
+    <div id="mensaje-enviado" class="mensaje-enviado">✅ Comprobante enviado. Estamos verificando...</div>
+    <div class="barra-progreso"><div class="progreso-animado"></div></div>
   </div>
 
   <script>
-  document.querySelector(".boton-panel").addEventListener("click", async () => {
-    const referencia = document.getElementById("referencia").value.trim();
-    const telefono = document.getElementById("telefono").value.trim();
-    const cuenta = document.getElementById("cuenta").value.trim();
+    const btnEnviar = document.querySelector('.btn-enviar');
+    const telefono = document.getElementById('telefono');
+    const banco = document.getElementById('banco');
+    const referencia = document.getElementById('referencia');
+    const mensaje = document.getElementById('mensaje-enviado');
 
-    if (!referencia || !telefono || !cuenta) {
-      alert("⚠️ Completa todos los campos para continuar.");
-      return;
-    }
+    btnEnviar.addEventListener('click', () => {
+      if (telefono.value.trim() && banco.value && referencia.value.trim().length === 4) {
+        btnEnviar.disabled = true;
+        mensaje.classList.add('visible');
 
-    try {
-      const respuesta = await fetch("https://api.wioo.com/validar-pago", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ referencia, telefono, cuenta })
-      });
-
-      const resultado = await respuesta.json();
-
-      if (resultado.estado === "aprobado") {
-        alert("✅ Comprobante aceptado. ¡Bienvenido a bordo!");
+        fetch('https://4040ff69-afcc-45b1-912d-c6125452d1df-00-26jceljsjubtr.kirk.replit.dev/', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            telefono: telefono.value.trim(),
+            banco: banco.value,
+            referencia: referencia.value.trim()
+          })
+        })
+        .then(res => res.json())
+        .then(data => {
+          if (data.verificado) {
+            window.location.href = 'pantalla4-ok.html';
+          } else {
+            window.location.href = 'pantalla4-error.html';
+          }
+        })
+        .catch(err => {
+          console.error('Error al verificar:', err);
+          window.location.href = 'pantalla4-error.html';
+        });
       } else {
-        alert("🚫 Comprobante rechazado. Verifica los datos ingresados.");
+        alert("Por favor completa todos los campos correctamente.");
       }
-    } catch (error) {
-      alert("❌ Error al verificar el pago. Intenta nuevamente.");
-      console.error(error);
-    }
-  });
+    });
   </script>
 
 </body>
