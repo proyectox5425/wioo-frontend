@@ -577,37 +577,44 @@ window.addEventListener("DOMContentLoaded", () => {
     const qrContenedor = document.getElementById("qr-reader");
     qrContenedor.style.display = "block";
 
-    const codigosValidos = [
-      { codigo: "1023", estado: "activo" },
-      { codigo: "1050", estado: "usado" },
-      { codigo: "9981", estado: "activo" }
-    ];
+    // Espera breve para asegurar que Html5Qrcode esté disponible
+    setTimeout(() => {
+      if (typeof Html5Qrcode !== "undefined") {
+        const codigosValidos = [
+          { codigo: "1023", estado: "activo" },
+          { codigo: "1050", estado: "usado" },
+          { codigo: "9981", estado: "activo" }
+        ];
 
-    const qrCodeSuccessCallback = (decodedText) => {
-      alert("✅ Código escaneado: " + decodedText);
-      const resultado = codigosValidos.find(c => c.codigo === decodedText.trim());
+        const qrCodeSuccessCallback = (decodedText) => {
+          alert("✅ Código escaneado: " + decodedText);
+          const resultado = codigosValidos.find(c => c.codigo === decodedText.trim());
 
-      if (!resultado) {
-        alert("❌ Código QR inválido.");
-      } else if (resultado.estado === "usado") {
-        alert("⚠️ Este código ya fue utilizado.");
+          if (!resultado) {
+            alert("❌ Código QR inválido.");
+          } else if (resultado.estado === "usado") {
+            alert("⚠️ Este código ya fue utilizado.");
+          } else {
+            alert("✅ Código QR aprobado. ¡Bienvenido a bordo!");
+          }
+
+          html5QrCode.stop().then(() => {
+            qrContenedor.innerHTML = "";
+            qrContenedor.style.display = "none";
+          });
+        };
+
+        const html5QrCode = new Html5Qrcode("qr-reader");
+
+        html5QrCode.start(
+          { facingMode: "environment" },
+          { fps: 10, qrbox: 220 },
+          qrCodeSuccessCallback
+        );
       } else {
-        alert("✅ Código QR aprobado. ¡Bienvenido a bordo!");
+        alert("🚫 Librería QR no está lista. Reintenta en unos segundos.");
       }
-
-      html5QrCode.stop().then(() => {
-        qrContenedor.innerHTML = "";
-        qrContenedor.style.display = "none";
-      });
-    };
-
-    const html5QrCode = new Html5Qrcode("qr-reader");
-
-    html5QrCode.start(
-      { facingMode: "environment" },
-      { fps: 10, qrbox: 220 },
-      qrCodeSuccessCallback
-    );
+    }, 100); // espera 100ms
   };
 </script>
 </body>
