@@ -456,7 +456,7 @@
   </div>
 </form>
     
-    <div id="qr-reader" style="width: 280px; margin: 20px auto;"></div>
+   <div id="qr-reader" style="width: 280px; margin: 20px auto; display: none;"></div>
 
     <div class="zona-pago">
   <div class="encabezado-pago-unico">
@@ -572,6 +572,7 @@ window.addEventListener("DOMContentLoaded", () => {
 <script>
 window.escanearQR = function () {
   const qrContenedor = document.getElementById("qr-reader");
+  qrContenedor.style.display = "block"; // ⬅️ mostrar el lector
 
   const codigosValidos = [
     { codigo: "1023", estado: "activo" },
@@ -591,8 +592,9 @@ window.escanearQR = function () {
     }
 
     html5QrCode.stop().then(() => {
-      qrContenedor.innerHTML = "";
-    });
+  qrContenedor.innerHTML = "";
+  qrContenedor.style.display = "none";
+});
   };
 
   const html5QrCode = new Html5Qrcode("qr-reader");
