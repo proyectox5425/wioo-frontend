@@ -447,20 +447,28 @@
       });
 
       function validarCodigo(codigo) {
-        const codigosValidos = [
-          { codigo: "1023", estado: "activo" },
-          { codigo: "1050", estado: "usado" },
-          { codigo: "9981", estado: "activo" }
-        ];
-        const resultado = codigosValidos.find(c => c.codigo === codigo);
-        if (!resultado) {
-          alert("❌ Código inválido. Verifica con el chofer.");
-        } else if (resultado.estado === "usado") {
-          alert("⚠️ Este código ya fue utilizado.");
-        } else {
-          alert("✅ Código aprobado. ¡Bienvenido a bordo!");
-        }
-      }
+  const codigosValidos = [
+    { codigo: "1023", estado: "activo" },
+    { codigo: "1050", estado: "usado" },
+    { codigo: "9981", estado: "activo" }
+  ];
+
+  const resultado = codigosValidos.find(c => c.codigo === codigo);
+
+  if (!resultado) {
+    alert("❌ Código inválido. Verifica con el chofer.");
+  } else if (resultado.estado === "usado") {
+    alert("⚠️ Este código ya fue utilizado.");
+  } else {
+    alert("✅ Código aprobado. ¡Bienvenido a bordo!");
+
+    if (resultado.codigo === "9981") {
+      window.location.href = "pantalla-4.2.html";
+    } else {
+      window.location.href = "pantalla-4.1.html";
+    }
+  }
+    }
 
       document.getElementById("close-modal").addEventListener("click", () => {
         document.getElementById("login-modal").style.display = "none";
