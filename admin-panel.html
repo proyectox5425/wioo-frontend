@@ -156,6 +156,42 @@
       font-size: 22px;
       font-weight: bold;
     }
+    
+    .encabezado-principal {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  text-align: center;
+  padding: 20px 0;
+  background: rgba(0,0,0,0.6);
+  backdrop-filter: blur(4px);
+  position: sticky;
+  top: 0;
+  z-index: 11;
+}
+
+.hamburger {
+  position: absolute;
+  left: 20px;
+  top: 20px;
+  background: none;
+  border: none;
+  font-size: 26px;
+  color: #cfaaff;
+  cursor: pointer;
+  z-index: 12;
+}
+
+.bloque-titulo h1 {
+  font-size: 2rem;
+  margin-bottom: 10px;
+  color: white;
+}
+
+.bloque-titulo img {
+  height: 72px;
+      }
 
     @media (max-width: 768px) {
       .hamburger { display: block; }
@@ -165,12 +201,13 @@
   </style>
 </head>
 <body>
-  <header style="position: relative; text-align: center; padding: 20px 0; background: rgba(0,0,0,0.6); backdrop-filter: blur(4px); z-index: 11;">
-  <button class="hamburger" onclick="toggleSidebar()" style="position: absolute; left: 20px; top: 20px; background: none; border: none; font-size: 26px; color: #cfaaff; cursor: pointer;">☰</button>
+  <header class="encabezado-principal">
+  <button class="hamburger" onclick="toggleSidebar()">☰</button>
 
-  <h1 style="font-size: 2rem; margin-bottom: 12px;">Panel de Administración</h1>
-
-  <img src="emoji-wioo-white.png" alt="Emoji Wioo" style="height: 72px;" />
+  <div class="bloque-titulo">
+    <h1>Panel de Administración</h1>
+    <img src="emoji-wioo-white.png" alt="Emoji Wioo" />
+  </div>
   </header>
 
   <div id="sidebar">
