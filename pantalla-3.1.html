@@ -28,6 +28,16 @@
       gap: 20px;
     }
 
+    .logo {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 20px;
+    }
+
+    .logo img {
+      height: 60px;
+    }
+
     h2 {
       text-align: center;
       font-size: 22px;
@@ -62,6 +72,19 @@
 
     .formulario input::placeholder {
       color: #999;
+    }
+
+    .grupo-telefono {
+      display: flex;
+      gap: 10px;
+    }
+
+    .grupo-telefono select {
+      flex: 0 0 90px;
+    }
+
+    .grupo-telefono input {
+      flex: 1;
     }
 
     .boton-panel {
@@ -117,6 +140,10 @@
 <body>
 
   <div class="interface-wrapper">
+    <div class="logo">
+      <img src="img/logo-wioo.png" alt="Logo Wioo" />
+    </div>
+
     <h2>Verificando tu conexión</h2>
 
     <div class="datos-banco-info">
@@ -127,8 +154,21 @@
     </div>
 
     <div class="formulario">
+      <label for="cedula">Cédula o RIF del pagador</label>
+      <input type="text" id="cedula" placeholder="Ej: V-12345678" />
+
       <label for="telefono">Teléfono desde el que pagaste</label>
-      <input type="tel" id="telefono" placeholder="Ej: 0414-0001122" />
+      <div class="grupo-telefono">
+        <select id="codigo">
+          <option value="0414">0414</option>
+          <option value="0412">0412</option>
+          <option value="0424">0424</option>
+          <option value="0416">0416</option>
+          <option value="0426">0426</option>
+          <option value="0422">0422</option>
+        </select>
+        <input type="text" id="telefono" placeholder="0001122" maxlength="7" />
+      </div>
 
       <label for="banco">Banco desde el cual realizaste el pago</label>
       <select id="banco">
@@ -156,13 +196,23 @@
 
   <script>
     const btnEnviar = document.querySelector('.btn-enviar');
+    const cedula = document.getElementById('cedula');
+    const codigo = document.getElementById('codigo');
     const telefono = document.getElementById('telefono');
     const banco = document.getElementById('banco');
     const referencia = document.getElementById('referencia');
     const mensaje = document.getElementById('mensaje-enviado');
 
     btnEnviar.addEventListener('click', () => {
-      if (telefono.value.trim() && banco.value && referencia.value.trim().length === 4) {
+      const numeroCompleto = codigo.value + telefono.value.trim();
+
+      if (
+        cedula.value.trim() &&
+        codigo.value &&
+        telefono.value.trim().length === 7 &&
+        banco.value &&
+        referencia.value.trim().length === 4
+      ) {
         btnEnviar.disabled = true;
         mensaje.classList.add('visible');
 
@@ -170,7 +220,8 @@
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
-            telefono: telefono.value.trim(),
+            cedula: cedula.value.trim(),
+            telefono: numeroCompleto,
             banco: banco.value,
             referencia: referencia.value.trim()
           })
@@ -187,6 +238,12 @@
           console.error('Error al verificar:', err);
           window.location.href = 'pantalla4-error.html';
         });
+      }
+      })
+        .catch(err => {
+          console.error('Error al verificar:', err);
+          window.location.href = 'pantalla4-error.html';
+        });
       } else {
         alert("Por favor completa todos los campos correctamente.");
       }
@@ -194,4 +251,4 @@
   </script>
 
 </body>
-  </html>
+</html>
