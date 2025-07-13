@@ -398,27 +398,30 @@
   box-shadow: 0 2px 6px rgba(0,0,0,0.3);
       }
 
-    .boton-qr {
-  margin-bottom: 12px; 
-  margin-top: 0px; 
-  background-color: #7344D0;
-  color: white;
-  border: none;
-  border-radius: 8px;
-  padding: 10px 14px;
+    .grupo-botones {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  margin-top: 8px;
+}
+
+.grupo-botones button {
+  flex: 1;
+  padding: 10px;
   font-size: 16px;
   font-weight: 500;
+  border: none;
+  border-radius: 6px;
+  background-color: #7344D0;
+  color: white;
   cursor: pointer;
   box-shadow: 0 2px 6px rgba(0,0,0,0.3);
   transition: background 0.3s ease;
-  width: auto;
-  min-width: 180px;
-  max-width: 220px;
-  text-align: center;
 }
-.boton-qr:hover {
+
+.grupo-botones button:hover {
   background-color: #5e35b1;
-  }
+}
   </style>
 </head>
 <body>
@@ -442,12 +445,12 @@
     <div class="mini-encabezado">🔒 ACCESO</div>
 
     <form id="form-codigo">
-      <input type="text" id="codigoChofer" placeholder="****" required />
-      <button type="submit">Validar</button>
+  <input type="text" id="codigoChofer" placeholder="****" required />
+  <div class="grupo-botones">
+    <button type="submit">Validar</button>
+    <button type="button" class="boton-qr" onclick="escanearQR()">📷 QR</button>
+  </div>
     </form>
-
-    <button class="boton-qr" onclick="escanearQR()">📷 Escanear QR</button>
-    <div id="qr-reader" style="width: 280px; margin-top: 20px;"></div>
 
     <div class="zona-pago">
   <div class="encabezado-pago-unico">
