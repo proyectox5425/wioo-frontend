@@ -7,10 +7,14 @@
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet" />
   <style>
     * { box-sizing: border-box; }
+
     body {
       margin: 0;
       font-family: 'Poppins', sans-serif;
-      background: linear-gradient(135deg, #14002d, #1a003a);
+      background-image: url('fondo-autobus.jpg');
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
       color: white;
       padding: 20px;
     }
@@ -21,46 +25,50 @@
       margin-bottom: 30px;
     }
 
-    .contenedor {
-      max-width: 600px;
+    .interface-wrapper {
+      max-width: 360px;
       margin: auto;
-      background: rgba(255,255,255,0.05);
-      padding: 30px;
-      border-radius: 12px;
-      box-shadow: 0 0 15px #8000ff40;
+      background-color: rgba(0, 0, 0, 0.6);
+      padding: 30px 20px;
+      border-radius: 16px;
+      box-shadow: 0 0 12px rgba(0,0,0,0.4);
+      display: flex;
+      flex-direction: column;
+      gap: 25px;
     }
 
     .codigo {
       font-size: 48px;
       font-weight: bold;
       text-align: center;
-      margin-bottom: 15px;
-      color: #ffffff;
+      margin-bottom: 10px;
+      color: white;
       background-color: #36006a;
       padding: 15px 0;
       border-radius: 8px;
+      box-shadow: 0 0 6px rgba(0,0,0,0.3);
     }
 
     .botones {
       display: flex;
       justify-content: center;
-      gap: 15px;
-      margin: 20px 0;
+      gap: 12px;
     }
 
     .botones button {
-      padding: 12px 20px;
+      padding: 10px 18px;
       border: none;
       border-radius: 6px;
       cursor: pointer;
-      background-color: #8000ff;
+      background-color: #7344D0;
       color: white;
       font-size: 16px;
-      transition: background 0.3s;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+      transition: background 0.3s ease;
     }
 
     .botones button:hover {
-      background-color: #a04bff;
+      background-color: #5e35b1;
     }
 
     #qr {
@@ -69,14 +77,21 @@
       margin-top: 15px;
     }
 
+    h2 {
+      font-size: 18px;
+      font-weight: 600;
+      color: #d2a6ff;
+      margin-top: 30px;
+      margin-bottom: 10px;
+      text-align: center;
+    }
+
     table {
       width: 100%;
       border-collapse: collapse;
-      margin-top: 30px;
-    }
-
-    thead {
-      background-color: #2d0d42;
+      background-color: rgba(255,255,255,0.05);
+      border-radius: 8px;
+      overflow: hidden;
     }
 
     th, td {
@@ -84,9 +99,13 @@
       text-align: left;
     }
 
+    thead {
+      background-color: #2d0d42;
+    }
+
     th {
       color: #d9b3ff;
-      border-bottom: 1px solid #8000ff;
+      border-bottom: 1px solid #7344D0;
     }
 
     td {
@@ -95,13 +114,19 @@
 
     .estado-activo { color: #00ff99; }
     .estado-pendiente { color: #ffcc66; }
+
+    h3 {
+      margin-top: 20px;
+      color: #a477ff;
+      font-size: 16px;
+      text-align: center;
+    }
   </style>
 </head>
 <body>
-
   <h1>Panel del Chofer – Wioo</h1>
 
-  <div class="contenedor">
+  <div class="interface-wrapper">
     <div id="codigo-display" class="codigo">— —</div>
 
     <div class="botones">
@@ -109,8 +134,8 @@
     </div>
 
     <div id="qr"></div>
-    <!-- Historial del Día -->
-    <h2 style="margin-top:40px; color:#d2a6ff;">📅 Historial del Día</h2>
+
+    <h2>📅 Historial del Día</h2>
     <table id="tabla-dia">
       <thead>
         <tr>
@@ -122,21 +147,16 @@
       <tbody></tbody>
     </table>
 
-    <!-- Historial de la Semana -->
-    <h2 style="margin-top:40px; color:#d2a6ff;">📆 Historial Semanal</h2>
+    <h2>📆 Historial Semanal</h2>
     <div id="tabla-semana-contenedor">
       <!-- Se llenará dinámicamente -->
     </div>
   </div>
 
-  <!-- Librería QR embed sin conexión -->
-  <script>
-    /*! QRCode.js v1.0.0 (https://github.com/davidshimjs/qrcodejs) */
-    /*! (versión reducida para espacio: incluye funciones esenciales) */
-    /* ... inserta aquí la versión minificada si quieres sin CDN ... */
-  </script>
+  <!-- Librería QR (CDN estable) -->
   <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
 
+  <!-- Script funcional -->
   <script>
     function generarCodigo() {
       const codigo = Math.floor(1000 + Math.random() * 9000).toString();
@@ -148,7 +168,7 @@
         codigo,
         hora,
         fecha,
-        estado: Math.random() > 0.3 ? "✅ Activado" : "⏳ Pendiente" // simulado
+        estado: Math.random() > 0.3 ? "✅ Activado" : "⏳ Pendiente"
       };
 
       guardarCodigo(nuevo);
@@ -180,7 +200,6 @@
       const hoy = new Date().toISOString().split('T')[0];
       const data = JSON.parse(localStorage.getItem("tickets_chofer") || "[]");
 
-      // Historial del día
       const diaFilas = data.filter(t => t.fecha === hoy);
       const tablaDia = document.querySelector("#tabla-dia tbody");
       tablaDia.innerHTML = "";
@@ -193,7 +212,6 @@
           </tr>`;
       });
 
-      // Historial de la semana
       const dias = {};
       data.forEach(t => {
         if (!dias[t.fecha]) dias[t.fecha] = [];
@@ -204,11 +222,9 @@
       semanaContenedor.innerHTML = "";
       Object.keys(dias).sort((a,b)=>b.localeCompare(a)).forEach(fecha => {
         semanaContenedor.innerHTML += `
-          <h3 style="color:#a477ff;">🗓️ ${fecha}</h3>
+          <h3>🗓️ ${fecha}</h3>
           <table>
-            <thead>
-              <tr><th>Código</th><th>Hora</th><th>Estado</th></tr>
-            </thead>
+            <thead><tr><th>Código</th><th>Hora</th><th>Estado</th></tr></thead>
             <tbody>
               ${dias[fecha].map(t => `
                 <tr>
@@ -222,10 +238,9 @@
       });
     }
 
-    // Al iniciar
     window.onload = () => {
       renderizarHistorial();
     };
   </script>
 </body>
-    </html>
+</html>
