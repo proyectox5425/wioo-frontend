@@ -28,11 +28,21 @@
       gap: 20px;
     }
 
+    .logo {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 10px;
+    }
+
+    .logo img {
+      height: 60px;
+    }
+
     h2 {
       text-align: center;
       font-size: 22px;
       font-weight: 600;
-      margin-bottom: 12px;
+      margin-bottom: 10px;
       color: #c79eff;
     }
 
@@ -118,6 +128,10 @@
 <body>
 
   <div class="interface-wrapper">
+    <div class="logo">
+      <img src="img/logo-wioo.png" alt="Logo Wioo" />
+    </div>
+
     <h2>Verificando tu conexión</h2>
 
     <div class="datos-banco-info">
@@ -131,6 +145,9 @@
     <div class="formulario">
       <label for="titular">Titular que hizo la transferencia</label>
       <input type="text" id="titular" placeholder="Ej: María Gómez" />
+
+      <label for="cedula">Cédula o RIF del pagador</label>
+      <input type="text" id="cedula" placeholder="Ej: V-12345678" />
 
       <label for="banco">Banco desde donde transferiste</label>
       <select id="banco">
@@ -159,12 +176,18 @@
   <script>
     const btnEnviar = document.querySelector('.btn-enviar');
     const titular = document.getElementById('titular');
+    const cedula = document.getElementById('cedula');
     const banco = document.getElementById('banco');
     const referencia = document.getElementById('referencia');
     const mensaje = document.getElementById('mensaje-enviado');
 
     btnEnviar.addEventListener('click', () => {
-      if (titular.value.trim() && banco.value && referencia.value.trim().length === 6) {
+      if (
+        titular.value.trim() &&
+        cedula.value.trim() &&
+        banco.value &&
+        referencia.value.trim().length === 6
+      ) {
         btnEnviar.disabled = true;
         mensaje.classList.add('visible');
 
@@ -173,6 +196,7 @@
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             titular: titular.value.trim(),
+            cedula: cedula.value.trim(),
             banco: banco.value,
             referencia: referencia.value.trim()
           })
@@ -196,4 +220,4 @@
   </script>
 
 </body>
-  </html>
+      </html>
