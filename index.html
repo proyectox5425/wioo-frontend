@@ -6,66 +6,69 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <style>
     html, body {
-  height: 100%;
-  width: 100%;
-  margin: 0;
-  padding: 0;
-    }
-    body, html {
       margin: 0;
       padding: 0;
+      height: 100%;
+      width: 100%;
       font-family: 'Segoe UI', sans-serif;
-      height: 100vh;
-      width: 100vw;
       overflow: hidden;
       background-color: #1c0033;
     }
 
+    .logo-inicial {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 460px;
+      transition: top 1s ease, transform 1s ease, width 1s ease;
+      z-index: 10;
+    }
 
-.logo-inicial.animar-logo {
-  top: 100px;
-  transform: translate(-50%, 0%);
-  width: 280px;
-}
+    .logo-inicial.animar-logo {
+      top: 60px;
+      transform: translate(-50%, 0%);
+      width: 280px;
+    }
 
-  .pantalla {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  overflow: hidden;
-  }
+    .pantalla {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      overflow: hidden;
+    }
 
     #pantalla1 {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  background-image: url('fondo-autobus.jpg');
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
-  z-index: 1;
-}
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background-image: url('fondo-autobus.jpg');
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      z-index: 1;
+    }
 
-#pantalla2 {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  display: none;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  padding-top: 40px;
-  background-image: url('fondo-autobus.jpg');
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
-  z-index: 2;
-}
-    
+    #pantalla2 {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      display: none;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding-top: 40px;
+      background-image: url('fondo-autobus.jpg');
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      z-index: 2;
+    }
+
     #encabezado-wioo {
       position: absolute;
       top: 0;
@@ -84,21 +87,6 @@
       font-weight: 500;
       color: white;
     }
-    .logo-inicial {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: 460px;
-  transition: top 1s ease, transform 1s ease, width 1s ease;
-  z-index: 10;
-}
-
-.logo-inicial.animar-logo {
-  top: 60px;
-  transform: translate(-50%, 0%);
-  width: 280px;
-}
 
     #menu-toggle {
       position: absolute;
@@ -189,301 +177,154 @@
       cursor: pointer;
     }
 
-    .contenedor-pantalla2 {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  width: 100%;
-  gap: 20px;
+    .interface-wrapper {
+      max-width: 360px;
+      width: 100%;
+      padding: 30px 20px;
+      margin-top: 40px;
+      box-sizing: border-box;
+      background-color: rgba(0, 0, 0, 0.6);
+      border-radius: 16px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 25px;
     }
 
-.formulario-codigo {
-  width: 100%;
-  max-width: 300px;
-  margin: 0 auto;
-  display: flex;
-  justify-content: center;
-}
-
-.formulario-codigo input {
-  font-size: 18px;
-  padding: 12px 16px;
-  border-radius: 6px;
-  border: none;
-  text-align: center;
-  background-color: white;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.3);
-  width: 160px;
+    .grupo-campo {
+      display: flex;
+      gap: 12px;
+      align-items: center;
     }
-    
+
+    .grupo-campo input {
+      flex: 1;
+      font-size: 18px;
+      padding: 12px 16px;
+      border: none;
+      border-radius: 6px;
+      text-align: center;
+      background-color: white;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+      max-width: 160px;
+    }
+
+    .boton-qr {
+      font-size: 16px;
+      padding: 10px 14px;
+      background-color: #7344D0;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+      transition: background 0.3s ease;
+    }
+
+    .boton-qr:hover {
+      background-color: #5e35b1;
+    }
+
     .botones-pago {
       display: flex;
       gap: 20px;
+      justify-content: center;
     }
-
-    .botones-pago button {
-  flex: none;
-  width: 120px;
-  height: 120px;
-  padding: 0 10px;
-  font-size: 16px;
-  border-radius: 0;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  background-color: #7344D0;
-  color: white;
-  border: none;
-  cursor: pointer;
-  transition: background 0.3s;
-    }
-
-    .botones-pago button:hover {
-      background-color: #7344D0;
-    }
-
-    .mini-encabezado {
-  background-color: #7344D0;
-  color: white;
-  font-size: 20px;
-  font-weight: 600;
-  padding: 16px 0;
-  width: 100%;
-  max-width: 300px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  border-radius: 8px;
-  text-align: center;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.3);
-    }
-    .contenedor-central {
-  max-width: 380px;
-  width: 100%;
-  margin: 0 auto;
-  padding: 60px 20px 40px;
-  box-sizing: border-box;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: flex-start;
-  gap: 25px;
-    }
-    #encabezado-wioo {
-  position: absolute;
-  top: 0;
-  width: 100%;
-  background-color: #7344D0;
-  padding: 12px 15px;
-  text-align: center;
-  border-bottom: 1px solid #7344D0;
-  opacity: 1;
-  transition: opacity 1s ease;
-  z-index: 3;
-    }
-    
-    .interface-wrapper {
-  max-width: 360px;
-  width: 100%;
-  padding: 30px 20px;
-  margin-top: 40px;
-  box-sizing: border-box;
-  background-color: rgba(0, 0, 0, 0.6);
-  border-radius: 16px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 25px;
-    }
-
-    .zona-pago {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 10px;
-}
-
-.encabezado-pagos {
-  display: flex;
-  justify-content: center;
-  gap: 20px;
-}
-
-.titulo-pago {
-  background-color: #7344D0;
-  color: white;
-  font-size: 16px;
-  font-weight: 600;
-  padding: 8px 14px;
-  border-radius: 8px;
-  text-align: center;
-  min-width: 120px;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.3);
-}
-
-.botones-pago {
-  display: flex;
-  justify-content: center;
-  gap: 20px;
-}
-
-.boton-icono {
-  width: 120px;
-  height: 120px;
-  font-size: 36px;
-  border: none;
-  background-color: #7344D0;
-  color: white;
-  border-radius: 12px;
-  cursor: pointer;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  transition: background 0.3s;
-  overflow: hidden; /* ⬅️ mantén esto dentro del mismo bloque */
-                             }
-
-.boton-icono:hover {
-  background-color: #5e35b1;
-  }
-    .doble-titulo {
-  display: flex;
-  justify-content: center;
-  gap: 20px;
-}
-
-.doble-titulo span {
-  min-width: 120px;
-  text-align: center;
-    }
-    
-.boton-icono img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  border-radius: 8px;
-}
 
     .boton-icono {
-  width: 120px;
-  height: 120px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  overflow: hidden;          /* ⬅️ Muy útil para evitar que la imagen se salga */
+      width: 120px;
+      height: 120px;
+      font-size: 36px;
+      border: none;
+      background-color: #7344D0;
+      color: white;
+      border-radius: 12px;
+      cursor: pointer;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      transition: background 0.3s;
+      overflow: hidden;
+    }
+
+    .boton-icono:hover {
+      background-color: #5e35b1;
+    }
+
+    .boton-icono img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: 8px;
     }
 
     .encabezado-pago-unico {
-  background-color: #7344D0;
-  color: white;
-  font-size: 20px;
-  font-weight: 600;
-  padding: 16px 0;
-  width: calc(100% + 40px);   /* ⬅️ rompe los 20px de padding de .interface-wrapper */
-  margin-left: 0px;         /* ⬅️ compensa el espacio lateral */
-  border-radius: 8px;
-  display: flex;
-  justify-content: space-around;
-  align-items: center;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.3);
-      }
+      background-color: #7344D0;
+      color: white;
+      font-size: 20px;
+      font-weight: 600;
+      padding: 16px 0;
+      width: 100%;
+      border-radius: 8px;
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+    }
 
-.formulario-codigo {
-  display: flex;
-  justify-content: center;
-  width: 100%;
-  max-width: 300px;
-  margin: 0 auto;
-}
-
-.grupo-campo {
-  display: flex;
-  gap: 12px;
-  align-items: center;
-}
-
-.grupo-campo input {
-  flex: 1;
-  font-size: 18px;
-  padding: 12px 16px;
-  border: none;
-  border-radius: 6px;
-  text-align: center;
-  background-color: white;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.3);
-  max-width: 160px;
-}
-
-.boton-qr {
-  font-size: 16px;
-  padding: 10px 14px;
-  background-color: #7344D0;
-  color: white;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.3);
-  transition: background 0.3s ease;
-}
-.boton-qr:hover {
-  background-color: #5e35b1;
-  }
-
+    /* Modal flotante de ayuda */
     .modal-ayuda {
-  display: none;
-  position: fixed;
-  top: 0; left: 0;
-  width: 100%; height: 100%;
-  background: rgba(0,0,0,0.8);
-  backdrop-filter: blur(4px);
-  z-index: 20;
-  justify-content: center;
-  align-items: center;
-}
+      display: none;
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(0,0,0,0.8);
+      backdrop-filter: blur(4px);
+      z-index: 50;
+      justify-content: center;
+      align-items: center;
+    }
 
-.modal-ayuda.active {
-  display: flex;
-  animation: fadeIn 0.3s ease-in-out;
-}
+    .modal-ayuda.active {
+      display: flex;
+      animation: fadeIn 0.3s ease-in-out;
+    }
 
-.modal-contenido {
-  background-color: #1a002a;
-  color: white;
-  max-width: 720px;
-  width: 90%;
-  padding: 30px;
-  border-radius: 14px;
-  box-shadow: 0 0 20px #8000ff90;
-  position: relative;
-  overflow-y: auto;
-  max-height: 90vh;
-}
+    .modal-contenido {
+      background-color: #1a002a;
+      color: white;
+      max-width: 720px;
+      width: 90%;
+      padding: 30px;
+      border-radius: 14px;
+      box-shadow: 0 0 20px #8000ff90;
+      position: relative;
+      overflow-y: auto;
+      max-height: 90vh;
+    }
 
-.cerrar-modal {
-  position: absolute;
-  top: 16px; right: 16px;
-  font-size: 20px;
-  background: none;
-  border: none;
-  color: #cfaaff;
-  cursor: pointer;
-}
+    .cerrar-modal {
+      position: absolute;
+      top: 16px; right: 16px;
+      font-size: 20px;
+      background: none;
+      border: none;
+      color: #cfaaff;
+      cursor: pointer;
+    }
 
-    .modal-ayuda.active ~ #logo {
-  display: none;
-  }
+    .paso-modal {
+      background: rgba(255,255,255,0.05);
+      padding: 16px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px #8000ff40;
+      font-size: 28px;
+    }
 
-.paso-modal {
-  background: rgba(255,255,255,0.05);
-  padding: 16px;
-  border-radius: 10px;
-  box-shadow: 0 0 10px #8000ff40;
-  font-size: 28px;
-}
-@keyframes fadeIn {
-  from { opacity: 0; transform: scale(0.95); }
-  to { opacity: 1; transform: scale(1); }
-                             }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: scale(0.95); }
+      to { opacity: 1; transform: scale(1); }
+    }
   </style>
 </head>
 <body>
@@ -492,77 +333,48 @@
   <div class="pantalla" id="pantalla1"></div>
 
   <section class="pantalla" id="pantalla2">
-  <!-- Encabezado institucional fijo arriba -->
-  <div id="encabezado-wioo">
-    <span class="mensaje-bienvenida">Bienvenido a Nuestra</span><br>
-    <span class="mensaje-bienvenida">Red Móvil</span>
-  </div>
-
-  <!-- Botón menú arriba a la izquierda -->
-  <button id="menu-toggle">☰</button>
-
-  <!-- Contenedor visual principal centrado -->
-  <div class="interface-wrapper">
-    <div class="mini-encabezado">🔒 ACCESO</div>
-<form class="formulario-codigo">
-  <div class="grupo-campo">
-    <input type="text" id="codigoChofer" placeholder="****" maxlength="4" />
-    <button type="button" class="boton-qr" onclick="escanearQR()">📷 QR</button>
-  </div>
-</form>
-    
-   <div id="qr-reader" style="width: 280px; margin: 20px auto; display: none;"></div>
-
-    <div class="zona-pago">
-  <div class="encabezado-pago-unico">
-    <span> Pago Móvil</span>
-    <span> Transferencia</span>
-  </div>
-
-  <div class="botones-pago">
-    <button class="boton-icono" onclick="window.location.href='pantalla-3.1.html'">
-    <img src="img-pago-movil.jpeg" alt="Pago Móvil" />
-    </button>
-    <button class="boton-icono" onclick="window.location.href='pantalla-3.2.html'">
-    <img src="img-transferencia.jpeg" alt="Transferencia" />
-    </button>
-  </div>
-  <div class="modal-contenido">
-    <button class="cerrar-modal" onclick="cerrarAyuda()">✖</button>
-    <div class="mini-encabezado">📡 INFORMARÍA URBANA – Conexión Wioo</div>
-
-    <div style="text-align:center; margin:20px 0;">
-      <img src="emoji-wioo-white.png" alt="Logo Wioo" style="height:60px;" />
+    <div id="encabezado-wioo">
+      <span class="mensaje-bienvenida">Bienvenido a Nuestra</span><br>
+      <span class="mensaje-bienvenida">Red Móvil</span>
     </div>
 
-    <h3 style="color:#d2a6ff; text-align:center;">🧭 Guía paso a paso para conectarte</h3>
+    <button id="menu-toggle">☰</button>
 
-    <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap:16px; margin-top:20px; text-align:center;">
-      <div class="paso-modal">📶<p><strong>Activa tu WiFi</strong></p></div>
-      <div class="paso-modal">🔎<p><strong>Conéctate a “Wioo Conexión”</strong></p></div>
-      <div class="paso-modal">📲<p><strong>Elige método de validación</strong></p></div>
-      <div class="paso-modal">✅<p><strong>Valida tu pago o QR</strong></p></div>
-      <div class="paso-modal">🟢<p><strong>¡Conectado libremente!</strong></p></div>
-    </div>
+    <div class="interface-wrapper">
+      <div class="mini-encabezado">🔒 ACCESO</div>
 
-    <h3 style="color:#d2a6ff; margin-top:30px;">💡 Preguntas frecuentes</h3>
-    <details style="margin-top:10px;"><summary>¿Qué métodos hay?</summary><p>📱 Pago móvil<br/>🏦 Transferencia<br/>💵 Efectivo<br/>🧑‍💼 Administrativo</p></details>
-    <details><summary>¿Qué pasa si el pago fue rechazado?</summary><p>Verifica tu referencia o consulta al chofer. Puedes intentarlo de nuevo.</p></details>
-    <details><summary>¿Cómo sé si estoy conectado?</summary><p>Verás el mensaje <strong>“💚 Comprobante verificado”</strong> y la pantalla se cerrará.</p></details>
-  </div>
+      <form class="formulario-codigo">
+        <div class="grupo-campo">
+          <input type="text" id="codigoChofer" placeholder="****" maxlength="4" />
+          <button type="button" class="boton-qr" onclick="escanearQR()">📷 QR</button>
+        </div>
+      </form>
+
+      <div id="qr-reader" style="width: 280px; margin: 20px auto; display: none;"></div>
+
+      <div class="zona-pago">
+        <div class="encabezado-pago-unico">
+          <span> Pago Móvil</span>
+          <span> Transferencia</span>
+        </div>
+
+        <div class="botones-pago">
+          <button class="boton-icono" onclick="window.location.href='pantalla-3.1.html'">
+            <img src="img-pago-movil.jpeg" alt="Pago Móvil" />
+          </button>
+          <button class="boton-icono" onclick="window.location.href='pantalla-3.2.html'">
+            <img src="img-transferencia.jpeg" alt="Transferencia" />
+          </button>
+        </div>
       </div>
     </div>
-    </div>
-    </div>
   </section>
-
-  <nav id="menu-lateral">
-  <img src="emoji-wioo-white.png" alt="Emoji Wioo" style="height: 60px;" />
-
-  <button id="cerrar-menu">❌</button>
-  <a onclick="abrirLogin('colaborador')">👤 Colaborador</a>
-  <a onclick="abrirLogin('admin')">🛡️ Administrador</a>
-  <a href="#ayuda">❓ Ayuda</a>
+<nav id="menu-lateral">
+    <img src="emoji-wioo-white.png" alt="Emoji Wioo" style="height: 60px;" />
+    <button id="cerrar-menu">❌</button>
+    <a onclick="abrirLogin('colaborador')">👤 Colaborador</a>
+    <a onclick="abrirLogin('admin')">🛡️ Administrador</a>
+    <a href="#ayuda">❓ Ayuda</a>
   </nav>
 
   <div id="login-modal">
@@ -573,136 +385,159 @@
       <input type="password" id="pass" placeholder="Contraseña" />
       <button onclick="ingresar()">Ingresar</button>
     </div>
-      </div>
-<script>
-window.addEventListener("DOMContentLoaded", () => {
-  const logo = document.getElementById("logo");
-  const pantalla1 = document.getElementById("pantalla1");
-  const pantalla2 = document.getElementById("pantalla2");
-  const encabezado = document.getElementById("encabezado-wioo");
-  const menuToggle = document.getElementById("menu-toggle");
-  const menuLateral = document.getElementById("menu-lateral");
-  const cerrarMenu = document.getElementById("cerrar-menu");
+  </div>
 
-  setTimeout(() => {
-    logo.classList.add("animar-logo");
-    pantalla1.style.display = "none";
-    pantalla2.style.display = "flex";
-    encabezado.style.opacity = "1";
-  }, 4000);
-
-  menuToggle.addEventListener("click", () => {
-    menuLateral.style.display = "flex";
-  });
-
-  cerrarMenu.addEventListener("click", () => {
-    menuLateral.style.display = "none";
-  });
-
-  document.getElementById("codigoChofer").addEventListener("input", (e) => {
-  const valor = e.target.value.trim();
-  if (valor.length === 4) {
-    validarCodigo(valor);
-  }
-});
-  function validarCodigo(codigo) {
-  const codigosValidos = [
-    { codigo: "1023", estado: "activo" },
-    { codigo: "1050", estado: "usado" },
-    { codigo: "9981", estado: "activo" }
-  ];
-  const resultado = codigosValidos.find(c => c.codigo === codigo);
-  if (!resultado) {
-    alert("❌ Código inválido. Verifica con el chofer.");
-  } else if (resultado.estado === "usado") {
-    alert("⚠️ Este código ya fue utilizado.");
-  } else {
-    alert("✅ Código aprobado. ¡Bienvenido a bordo!");
-  }
-  }
-
-  document.querySelector("a[href='#ayuda']").addEventListener("click", () => {
-  document.getElementById("modal-ayuda").classList.add("active");
-});
-
-function cerrarAyuda() {
-  document.getElementById("modal-ayuda").classList.remove("active");
-}
-
-  document.getElementById("close-modal").addEventListener("click", () => {
-    document.getElementById("login-modal").style.display = "none";
-  });
-
-  window.abrirLogin = function (rol) {
-    document.getElementById("login-title").innerText =
-      rol === "admin" ? "Acceso Administrativo" : "Acceso Colaborador";
-    document.getElementById("login-modal").style.display = "flex";
-    document.getElementById("login-modal").dataset.rol = rol;
-    menuLateral.style.display = "none";
-  };
-
-  window.ingresar = function () {
-    const user = document.getElementById("user").value.toLowerCase();
-    const pass = document.getElementById("pass").value;
-    const rol = document.getElementById("login-modal").dataset.rol;
-    if (
-      (rol === "admin" && user === "admin" && pass === "clave123") ||
-      (rol === "colaborador" && user === "chofer" && pass === "clave123")
-    ) {
-      const destino = rol === "admin" ? "admin-panel.html" : "chofer-panel.html";
-      window.location.href = destino;
-    } else {
-      alert("Credenciales incorrectas");
-    }
-  };
-});
-</script>
-
-<!-- Librería primero -->
-<script src="https://unpkg.com/html5-qrcode"></script>
-
-<!-- Función después -->
-<script>
-  window.escanearQR = function () {
-    const qrContenedor = document.getElementById("qr-reader");
-    qrContenedor.style.display = "block";
-    qrContenedor.innerHTML = "";
-
-    const html5QrCode = new Html5Qrcode("qr-reader");
-
-    html5QrCode
-      .start(
-        { facingMode: "environment" },
-        { fps: 10, qrbox: 220 },
-        (decodedText) => {
-          const codigosValidos = [
-            { codigo: "1023", estado: "activo" },
-            { codigo: "1050", estado: "usado" },
-            { codigo: "9981", estado: "activo" }
-          ];
-
-          const resultado = codigosValidos.find(c => c.codigo === decodedText.trim());
-
-          if (!resultado) {
-            alert("❌ Código QR inválido.");
-          } else if (resultado.estado === "usado") {
-            alert("⚠️ Este código ya fue utilizado.");
-          } else {
-            alert("✅ Código QR aprobado. ¡Bienvenido a bordo!");
-          }
-
-          html5QrCode.stop().then(() => {
-            qrContenedor.innerHTML = "";
-            qrContenedor.style.display = "none";
-          });
-        }
-      )
-      .catch(err => {
-        alert("🚫 No se pudo activar la cámara: " + err);
-        qrContenedor.style.display = "none";
-      });
-};
-</script>
   <div id="modal-ayuda" class="modal-ayuda">
+    <div class="modal-contenido">
+      <button class="cerrar-modal" onclick="cerrarAyuda()">✖</button>
+      <div class="mini-encabezado">📡 INFORMARÍA URBANA – Conexión Wioo</div>
+
+      <div style="text-align:center; margin:20px 0;">
+        <img src="emoji-wioo-white.png" alt="Logo Wioo" style="height:60px;" />
+      </div>
+
+      <h3 style="color:#d2a6ff; text-align:center;">🧭 Guía paso a paso para conectarte</h3>
+
+      <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap:16px; margin-top:20px; text-align:center;">
+        <div class="paso-modal">📶<p><strong>Activa tu WiFi</strong></p></div>
+        <div class="paso-modal">🔎<p><strong>Conéctate a “Wioo Conexión”</strong></p></div>
+        <div class="paso-modal">📲<p><strong>Elige método de validación</strong></p></div>
+        <div class="paso-modal">✅<p><strong>Valida tu pago o QR</strong></p></div>
+        <div class="paso-modal">🟢<p><strong>¡Conectado libremente!</strong></p></div>
+      </div>
+
+      <h3 style="color:#d2a6ff; margin-top:30px;">💡 Preguntas frecuentes</h3>
+      <details style="margin-top:10px;"><summary>¿Qué métodos hay?</summary><p>📱 Pago móvil<br/>🏦 Transferencia<br/>💵 Efectivo<br/>🧑‍💼 Administrativo</p></details>
+      <details><summary>¿Qué pasa si el pago fue rechazado?</summary><p>Verifica tu referencia o consulta al chofer. Puedes intentarlo de nuevo.</p></details>
+      <details><summary>¿Cómo sé si estoy conectado?</summary><p>Verás el mensaje <strong>“💚 Comprobante verificado”</strong> y la pantalla se cerrará.</p></details>
+    </div>
+  </div>
+
+  <script>
+    window.addEventListener("DOMContentLoaded", () => {
+      const logo = document.getElementById("logo");
+      const pantalla1 = document.getElementById("pantalla1");
+      const pantalla2 = document.getElementById("pantalla2");
+      const encabezado = document.getElementById("encabezado-wioo");
+      const menuToggle = document.getElementById("menu-toggle");
+      const menuLateral = document.getElementById("menu-lateral");
+      const cerrarMenu = document.getElementById("cerrar-menu");
+
+      setTimeout(() => {
+        logo.classList.add("animar-logo");
+        pantalla1.style.display = "none";
+        pantalla2.style.display = "flex";
+        encabezado.style.opacity = "1";
+      }, 4000);
+
+      menuToggle.addEventListener("click", () => {
+        menuLateral.style.display = "flex";
+      });
+
+      cerrarMenu.addEventListener("click", () => {
+        menuLateral.style.display = "none";
+      });
+
+      document.getElementById("codigoChofer").addEventListener("input", (e) => {
+        const valor = e.target.value.trim();
+        if (valor.length === 4) {
+          validarCodigo(valor);
+        }
+      });
+
+      function validarCodigo(codigo) {
+        const codigosValidos = [
+          { codigo: "1023", estado: "activo" },
+          { codigo: "1050", estado: "usado" },
+          { codigo: "9981", estado: "activo" }
+        ];
+        const resultado = codigosValidos.find(c => c.codigo === codigo);
+        if (!resultado) {
+          alert("❌ Código inválido. Verifica con el chofer.");
+        } else if (resultado.estado === "usado") {
+          alert("⚠️ Este código ya fue utilizado.");
+        } else {
+          alert("✅ Código aprobado. ¡Bienvenido a bordo!");
+        }
+      }
+
+      document.getElementById("close-modal").addEventListener("click", () => {
+        document.getElementById("login-modal").style.display = "none";
+      });
+
+      window.abrirLogin = function (rol) {
+        document.getElementById("login-title").innerText =
+          rol === "admin" ? "Acceso Administrativo" : "Acceso Colaborador";
+        document.getElementById("login-modal").style.display = "flex";
+        document.getElementById("login-modal").dataset.rol = rol;
+        menuLateral.style.display = "none";
+      };
+
+      window.ingresar = function () {
+        const user = document.getElementById("user").value.toLowerCase();
+        const pass = document.getElementById("pass").value;
+        const rol = document.getElementById("login-modal").dataset.rol;
+        if (
+          (rol === "admin" && user === "admin" && pass === "clave123") ||
+          (rol === "colaborador" && user === "chofer" && pass === "clave123")
+        ) {
+          const destino = rol === "admin" ? "admin-panel.html" : "chofer-panel.html";
+          window.location.href = destino;
+        } else {
+          alert("Credenciales incorrectas");
+        }
+      };
+
+      // Modal flotante de ayuda
+      document.querySelector("a[href='#ayuda']").addEventListener("click", () => {
+        document.getElementById("modal-ayuda").classList.add("active");
+        logo.style.display = "none";
+      });
+
+      window.cerrarAyuda = function () {
+        document.getElementById("modal-ayuda").classList.remove("active");
+        logo.style.display = "block";
+      };
+    });
+
+    // Librería QR
+    window.escanearQR = function () {
+      const qrContenedor = document.getElementById("qr-reader");
+      qrContenedor.style.display = "block";
+      qrContenedor.innerHTML = "";
+
+      const html5QrCode = new Html5Qrcode("qr-reader");
+
+      html5QrCode
+        .start(
+          { facingMode: "environment" },
+          { fps: 10, qrbox: 220 },
+          (decodedText) => {
+            const codigosValidos = [
+              { codigo: "1023", estado: "activo" },
+              { codigo: "1050", estado: "usado" },
+              { codigo: "9981", estado: "activo" }
+            ];
+            const resultado = codigosValidos.find(c => c.codigo === decodedText.trim());
+            if (!resultado) {
+              alert("❌ Código QR inválido.");
+            } else if (resultado.estado === "usado") {
+              alert("⚠️ Este código ya fue utilizado.");
+            } else {
+              alert("✅ Código QR aprobado. ¡Bienvenido a bordo!");
+            }
+            html5QrCode.stop().then(() => {
+              qrContenedor.innerHTML = "";
+              qrContenedor.style.display = "none";
+            });
+          }
+        )
+        .catch(err => {
+          alert("🚫 No se pudo activar la cámara: " + err);
+          qrContenedor.style.display = "none";
+        });
+    };
+  </script>
+  <script src="https://unpkg.com/html5-qrcode"></script>
 </body>
 </html>
