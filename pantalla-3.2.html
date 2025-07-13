@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Punto Click - Verificación Transferencia</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet" />
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Poppins', sans-serif;
+      background-image: url('fondo-autobus.jpg');
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      color: white;
+    }
+
+    .interface-wrapper {
+      max-width: 360px;
+      margin: 40px auto;
+      background-color: rgba(0,0,0,0.6);
+      border-radius: 16px;
+      padding: 30px 20px;
+      box-shadow: 0 0 12px rgba(0,0,0,0.4);
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    h2 {
+      text-align: center;
+      font-size: 22px;
+      font-weight: 600;
+      margin-bottom: 12px;
+      color: #c79eff;
+    }
+
+    .datos-banco-info p {
+      margin: 6px 0;
+      font-size: 0.95rem;
+    }
+
+    .formulario label {
+      font-weight: 500;
+      font-size: 0.9rem;
+      margin-bottom: 6px;
+      display: block;
+    }
+
+    .formulario input,
+    .formulario select {
+      width: 100%;
+      padding: 10px;
+      border: none;
+      border-radius: 10px;
+      margin-bottom: 16px;
+      font-size: 1rem;
+      background-color: #ffffff;
+      color: #333;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+    }
+
+    .formulario input::placeholder {
+      color: #999;
+    }
+
+    .boton-panel {
+      background-color: #7344D0;
+      color: white;
+      padding: 12px 16px;
+      border-radius: 8px;
+      font-size: 18px;
+      border: none;
+      cursor: pointer;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+      transition: background 0.3s ease;
+    }
+
+    .boton-panel:hover {
+      background-color: #5e35b1;
+    }
+
+    .mensaje-enviado {
+      text-align: center;
+      font-size: 0.9rem;
+      padding: 10px;
+      background-color: #00ff99;
+      color: #000;
+      border-radius: 8px;
+      display: none;
+    }
+
+    .mensaje-enviado.visible {
+      display: block;
+    }
+
+    .barra-progreso {
+      height: 6px;
+      background-color: #444;
+      border-radius: 4px;
+      overflow: hidden;
+    }
+
+    .progreso-animado {
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, #7344D0, #c79eff);
+      animation: avanzar 1.2s infinite linear;
+    }
+
+    @keyframes avanzar {
+      0% {transform: translateX(-100%);}
+      100% {transform: translateX(100%);}
+    }
+  </style>
+</head>
+<body>
+
+  <div class="interface-wrapper">
+    <h2>Verificando tu conexión</h2>
+
+    <div class="datos-banco-info">
+      <p><strong>Banco Receptor:</strong> Banco Nacional</p>
+      <p><strong>Nombre:</strong> Punto Click, C.A.</p>
+      <p><strong>Número de Cuenta:</strong> 0102 0123 4500 6789 1234</p>
+      <p><strong>RIF:</strong> J-298765432</p>
+      <p><strong>Monto:</strong> 120 Bs</p>
+    </div>
+
+    <div class="formulario">
+      <label for="titular">Titular que hizo la transferencia</label>
+      <input type="text" id="titular" placeholder="Ej: María Gómez" />
+
+      <label for="banco">Banco desde donde transferiste</label>
+      <select id="banco">
+        <option value="">Selecciona tu banco</option>
+        <option value="banesco">Banesco</option>
+        <option value="provincial">Provincial</option>
+        <option value="mercantil">Mercantil</option>
+        <option value="venezuela">Banco de Venezuela</option>
+        <option value="tesoro">Banco del Tesoro</option>
+        <option value="bicentenario">Bicentenario</option>
+        <option value="banplus">Banplus</option>
+        <option value="exterior">Exterior</option>
+        <option value="otro">Otro</option>
+      </select>
+
+      <label for="referencia">Últimos 6 dígitos del comprobante</label>
+      <input type="text" id="referencia" maxlength="6" placeholder="Ej: 456789" />
+    </div>
+
+    <button class="boton-panel btn-enviar">Enviar Comprobante</button>
+
+    <div id="mensaje-enviado" class="mensaje-enviado">✅ Comprobante enviado. Estamos verificando...</div>
+    <div class="barra-progreso"><div class="progreso-animado"></div></div>
+  </div>
+
+  <script>
+    const btnEnviar = document.querySelector('.btn-enviar');
+    const titular = document.getElementById('titular');
+    const banco = document.getElementById('banco');
+    const referencia = document.getElementById('referencia');
+    const mensaje = document.getElementById('mensaje-enviado');
+
+    btnEnviar.addEventListener('click', () => {
+      if (titular.value.trim() && banco.value && referencia.value.trim().length === 6) {
+        btnEnviar.disabled = true;
+        mensaje.classList.add('visible');
+
+        fetch('https://4040ff69-afcc-45b1-912d-c6125452d1df-00-26jceljsjubtr.kirk.replit.dev/', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            titular: titular.value.trim(),
+            banco: banco.value,
+            referencia: referencia.value.trim()
+          })
+        })
+        .then(res => res.json())
+        .then(data => {
+          if (data.verificado) {
+            window.location.href = 'pantalla4-ok.html';
+          } else {
+            window.location.href = 'pantalla4-error.html';
+          }
+        })
+        .catch(err => {
+          console.error('Error en la verificación:', err);
+          window.location.href = 'pantalla4-error.html';
+        });
+      } else {
+        alert("Por favor completa todos los campos correctamente.");
+      }
+    });
+  </script>
+
+</body>
+  </html>
