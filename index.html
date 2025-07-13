@@ -402,31 +402,31 @@
   display: flex;
   justify-content: center;
   width: 100%;
-  max-width: 280px;
+  max-width: 300px;
   margin: 0 auto;
 }
 
 .grupo-campo {
   display: flex;
-  gap: 10px;
+  gap: 12px;
   align-items: center;
 }
 
 .grupo-campo input {
   flex: 1;
-  padding: 10px;
-  font-size: 16px;
-  border-radius: 6px;
+  font-size: 18px;
+  padding: 12px 16px;
   border: none;
+  border-radius: 6px;
   text-align: center;
-  max-width: 140px;
+  background-color: white;
   box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+  max-width: 160px;
 }
 
 .boton-qr {
-  padding: 10px 14px;
   font-size: 16px;
-  font-weight: 500;
+  padding: 10px 14px;
   background-color: #7344D0;
   color: white;
   border: none;
@@ -435,10 +435,9 @@
   box-shadow: 0 2px 6px rgba(0,0,0,0.3);
   transition: background 0.3s ease;
 }
-
 .boton-qr:hover {
   background-color: #5e35b1;
-    }
+  }
   </style>
 </head>
 <body>
@@ -460,7 +459,7 @@
   <!-- Contenedor visual principal centrado -->
   <div class="interface-wrapper">
     <div class="mini-encabezado">🔒 ACCESO</div>
-<form id="form-codigo" class="formulario-codigo">
+<form class="formulario-codigo">
   <div class="grupo-campo">
     <input type="text" id="codigoChofer" placeholder="****" maxlength="4" />
     <button type="button" class="boton-qr" onclick="escanearQR()">📷 QR</button>
