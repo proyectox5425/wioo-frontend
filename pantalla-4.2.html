@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>Pago Rechazado</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600&display=swap" rel="stylesheet" />
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Poppins', sans-serif;
+      background-image: url('fondo-autobus.jpg');
+      background-size: cover;
+      background-position: center;
+      color: white;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      text-align: center;
+    }
+
+    .mensaje-error {
+      background-color: rgba(0, 0, 0, 0.6);
+      padding: 40px 30px;
+      border-radius: 16px;
+      box-shadow: 0 0 12px rgba(0, 0, 0, 0.5);
+    }
+
+    .mensaje-error img {
+      height: 60px;
+      margin-bottom: 20px;
+    }
+
+    .mensaje-error h1 {
+      font-size: 24px;
+      color: #ff6b6b;
+      margin-bottom: 10px;
+    }
+
+    .mensaje-error p {
+      font-size: 16px;
+      color: #d0baff;
+      margin-bottom: 20px;
+    }
+
+    .boton-volver {
+      background-color: #7344D0;
+      color: white;
+      padding: 12px 20px;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+
+    .boton-volver:hover {
+      background-color: #5e35b1;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="mensaje-error">
+    <img src="img/logo-wioo.png" alt="Logo Wioo" />
+    <h1>🔴 Pago no verificado</h1>
+    <p>Tu comprobante fue rechazado. Puedes verificar tus datos e intentarlo de nuevo.</p>
+    <button class="boton-volver" onclick="volver()">Volver a intentar</button>
+  </div>
+
+  <script>
+    function volver() {
+      window.history.back(); // o window.location.href = 'pantalla3.html';
+    }
+  </script>
+
+</body>
+  </html>
