@@ -398,30 +398,44 @@
   box-shadow: 0 2px 6px rgba(0,0,0,0.3);
       }
 
-    .grupo-botones {
+.formulario-codigo {
   display: flex;
-  gap: 12px;
   justify-content: center;
-  margin-top: 8px;
+  width: 100%;
 }
 
-.grupo-botones button {
+.grupo-campo {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.grupo-campo input {
   flex: 1;
   padding: 10px;
   font-size: 16px;
-  font-weight: 500;
-  border: none;
   border-radius: 6px;
+  border: none;
+  text-align: center;
+  max-width: 140px;
+}
+
+.boton-qr {
+  padding: 10px 14px;
+  font-size: 16px;
+  font-weight: 500;
   background-color: #7344D0;
   color: white;
+  border: none;
+  border-radius: 6px;
   cursor: pointer;
   box-shadow: 0 2px 6px rgba(0,0,0,0.3);
   transition: background 0.3s ease;
 }
 
-.grupo-botones button:hover {
+.boton-qr:hover {
   background-color: #5e35b1;
-}
+    }
   </style>
 </head>
 <body>
@@ -443,14 +457,12 @@
   <!-- Contenedor visual principal centrado -->
   <div class="interface-wrapper">
     <div class="mini-encabezado">🔒 ACCESO</div>
-
-    <form id="form-codigo">
-  <input type="text" id="codigoChofer" placeholder="****" required />
-  <div class="grupo-botones">
-    <button type="submit">Validar</button>
+<form id="form-codigo" class="formulario-codigo">
+  <div class="grupo-campo">
+    <input type="text" id="codigoChofer" placeholder="****" maxlength="4" />
     <button type="button" class="boton-qr" onclick="escanearQR()">📷 QR</button>
   </div>
-    </form>
+</form>
 
     <div class="zona-pago">
   <div class="encabezado-pago-unico">
@@ -512,26 +524,30 @@ window.addEventListener("DOMContentLoaded", () => {
     menuLateral.style.display = "none";
   });
 
+  document.getElementById("codigoChofer").addEventListener("input", (e) => {
+  const valor = e.target.value.trim();
+  if (valor.length === 4) {
+    validarCodigo(valor);
+  }
+});
+  function validarCodigo(codigo) {
+  const codigosValidos = [
+    { codigo: "1023", estado: "activo" },
+    { codigo: "1050", estado: "usado" },
+    { codigo: "9981", estado: "activo" }
+  ];
+  const resultado = codigosValidos.find(c => c.codigo === codigo);
+  if (!resultado) {
+    alert("❌ Código inválido. Verifica con el chofer.");
+  } else if (resultado.estado === "usado") {
+    alert("⚠️ Este código ya fue utilizado.");
+  } else {
+    alert("✅ Código aprobado. ¡Bienvenido a bordo!");
+  }
+  }
+
   document.getElementById("close-modal").addEventListener("click", () => {
     document.getElementById("login-modal").style.display = "none";
-  });
-
-  document.getElementById("form-codigo").addEventListener("submit", (e) => {
-    e.preventDefault();
-    const codigo = document.getElementById("codigoChofer").value.trim();
-    const codigosValidos = [
-      { codigo: "1023", estado: "activo" },
-      { codigo: "1050", estado: "usado" },
-      { codigo: "9981", estado: "activo" }
-    ];
-    const resultado = codigosValidos.find(c => c.codigo === codigo);
-    if (!resultado) {
-      alert("❌ Código inválido. Verifica con el chofer.");
-    } else if (resultado.estado === "usado") {
-      alert("⚠️ Este código ya fue utilizado.");
-    } else {
-      alert("✅ Código aprobado. ¡Bienvenido a bordo!");
-    }
   });
 
   window.abrirLogin = function (rol) {
