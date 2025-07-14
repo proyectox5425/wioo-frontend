@@ -326,6 +326,11 @@
       from { opacity: 0; transform: scale(0.95); }
       to { opacity: 1; transform: scale(1); }
     }
+
+    @keyframes fadeModal {
+  from { opacity: 0; transform: scale(0.95); }
+  to   { opacity: 1; transform: scale(1); }
+    }
   </style>
 </head>
 <body>
@@ -416,7 +421,6 @@
 
   <script>
   window.addEventListener("DOMContentLoaded", () => {
-    document.getElementById("modal-terminos").style.display = "flex";
     document.getElementById("aceptar-terminos").addEventListener("click", () => {
       document.getElementById("modal-terminos").style.display = "none";
     });
@@ -434,7 +438,8 @@
       pantalla1.style.display = "none";
       pantalla2.style.display = "flex";
       encabezado.style.opacity = "1";
-    }, 4000);
+      document.getElementById("modal-terminos").style.display = "flex";
+    }, 5000);
 
     menuToggle.addEventListener("click", () => {
       menuLateral.style.display = "flex";
@@ -553,6 +558,7 @@
   justify-content: center;
   align-items: center;
   z-index: 9999;
+  animation: fadeModal 0.6s ease-out;
 ">
   <div style="
     background-color: #1a002a;
