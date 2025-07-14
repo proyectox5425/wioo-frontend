@@ -11,6 +11,7 @@
       background-image: url('fondo-autobus.jpg');
       background-size: cover;
       background-position: center;
+      background-repeat: no-repeat;
       color: white;
       display: flex;
       justify-content: center;
@@ -20,42 +21,54 @@
     }
 
     .mensaje-error {
-      background-color: rgba(0, 0, 0, 0.6);
-      padding: 40px 30px;
-      border-radius: 16px;
-      box-shadow: 0 0 12px rgba(0, 0, 0, 0.5);
+      max-width: 660px;
+      width: 90%;
+      background-color: rgba(0, 0, 0, 0.65);
+      padding: 50px 40px;
+      border-radius: 22px;
+      box-shadow: 0 0 18px rgba(0, 0, 0, 0.5);
+      animation: fadeIn 0.6s ease-in-out;
     }
 
     .mensaje-error img {
-      height: 60px;
-      margin-bottom: 20px;
+      height: 140px;
+      margin-bottom: 28px;
+      filter: drop-shadow(0 0 10px #ff6b6b);
     }
 
     .mensaje-error h1 {
-      font-size: 24px;
+      font-size: 34px;
       color: #ff6b6b;
-      margin-bottom: 10px;
+      margin-bottom: 18px;
+      text-shadow: 0 0 6px #ff6b6b;
     }
 
     .mensaje-error p {
-      font-size: 16px;
+      font-size: 22px;
       color: #d0baff;
-      margin-bottom: 20px;
+      margin-bottom: 26px;
+      line-height: 1.6;
     }
 
     .boton-volver {
       background-color: #7344D0;
       color: white;
-      padding: 12px 20px;
+      padding: 14px 24px;
       border: none;
-      border-radius: 8px;
-      font-size: 16px;
+      border-radius: 10px;
+      font-size: 18px;
       cursor: pointer;
       transition: background 0.3s ease;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.3);
     }
 
     .boton-volver:hover {
       background-color: #5e35b1;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
     }
   </style>
 </head>
@@ -64,15 +77,16 @@
   <div class="mensaje-error">
     <img src="logo-wioo2.png" alt="Logo Wioo" />
     <h1>🔴 Pago no verificado</h1>
-    <p>Tu comprobante fue rechazado. Puedes verificar tus datos e intentarlo de nuevo.</p>
+    <p>Tu comprobante fue rechazado.<br>Por favor revisa tus datos e inténtalo nuevamente.</p>
     <button class="boton-volver" onclick="volver()">Volver a intentar</button>
   </div>
 
   <script>
     function volver() {
-      window.history.back(); // o window.location.href = 'pantalla3.html';
+      window.history.back(); // Puedes cambiar por redirección directa si prefieres
+      // window.location.href = "pantalla-3.1.html";
     }
   </script>
 
 </body>
-  </html>
+</html>
