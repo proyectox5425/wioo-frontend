@@ -415,130 +415,183 @@
   </div>
 
   <script>
-    window.addEventListener("DOMContentLoaded", () => {
-      const logo = document.getElementById("logo");
-      const pantalla1 = document.getElementById("pantalla1");
-      const pantalla2 = document.getElementById("pantalla2");
-      const encabezado = document.getElementById("encabezado-wioo");
-      const menuToggle = document.getElementById("menu-toggle");
-      const menuLateral = document.getElementById("menu-lateral");
-      const cerrarMenu = document.getElementById("cerrar-menu");
-
-      setTimeout(() => {
-        logo.classList.add("animar-logo");
-        pantalla1.style.display = "none";
-        pantalla2.style.display = "flex";
-        encabezado.style.opacity = "1";
-      }, 4000);
-
-      menuToggle.addEventListener("click", () => {
-        menuLateral.style.display = "flex";
-      });
-
-      cerrarMenu.addEventListener("click", () => {
-        menuLateral.style.display = "none";
-      });
-
-      document.getElementById("codigoChofer").addEventListener("input", (e) => {
-        const valor = e.target.value.trim();
-        if (valor.length === 4) {
-          validarCodigo(valor);
-        }
-      });
-
-      function validarCodigo(codigo) {
-        const codigosValidos = [
-          { codigo: "1023", estado: "activo" },
-          { codigo: "1050", estado: "usado" },
-          { codigo: "9981", estado: "activo" }
-        ];
-        const resultado = codigosValidos.find(c => c.codigo === codigo);
-        if (!resultado) {
-          alert("❌ Código inválido. Verifica con el chofer.");
-        } else if (resultado.estado === "usado") {
-          alert("⚠️ Este código ya fue utilizado.");
-        } else {
-          alert("✅ Código aprobado. ¡Bienvenido a bordo!");
-        }
-      }
-
-      document.getElementById("close-modal").addEventListener("click", () => {
-        document.getElementById("login-modal").style.display = "none";
-      });
-
-      window.abrirLogin = function (rol) {
-        document.getElementById("login-title").innerText =
-          rol === "admin" ? "Acceso Administrativo" : "Acceso Colaborador";
-        document.getElementById("login-modal").style.display = "flex";
-        document.getElementById("login-modal").dataset.rol = rol;
-        menuLateral.style.display = "none";
-      };
-
-      window.ingresar = function () {
-        const user = document.getElementById("user").value.toLowerCase();
-        const pass = document.getElementById("pass").value;
-        const rol = document.getElementById("login-modal").dataset.rol;
-        if (
-          (rol === "admin" && user === "admin" && pass === "clave123") ||
-          (rol === "colaborador" && user === "chofer" && pass === "clave123")
-        ) {
-          const destino = rol === "admin" ? "admin-panel.html" : "chofer-panel.html";
-          window.location.href = destino;
-        } else {
-          alert("Credenciales incorrectas");
-        }
-      };
-
-      // Modal flotante de ayuda
-      document.querySelector("a[href='#ayuda']").addEventListener("click", () => {
-        document.getElementById("modal-ayuda").classList.add("active");
-        logo.style.display = "none";
-      });
-
-      window.cerrarAyuda = function () {
-        document.getElementById("modal-ayuda").classList.remove("active");
-        logo.style.display = "block";
-      };
+  window.addEventListener("DOMContentLoaded", () => {
+    document.getElementById("modal-terminos").style.display = "flex";
+    document.getElementById("aceptar-terminos").addEventListener("click", () => {
+      document.getElementById("modal-terminos").style.display = "none";
     });
 
-    // Librería QR
-    window.escanearQR = function () {
-      const qrContenedor = document.getElementById("qr-reader");
-      qrContenedor.style.display = "block";
-      qrContenedor.innerHTML = "";
+    const logo = document.getElementById("logo");
+    const pantalla1 = document.getElementById("pantalla1");
+    const pantalla2 = document.getElementById("pantalla2");
+    const encabezado = document.getElementById("encabezado-wioo");
+    const menuToggle = document.getElementById("menu-toggle");
+    const menuLateral = document.getElementById("menu-lateral");
+    const cerrarMenu = document.getElementById("cerrar-menu");
 
-      const html5QrCode = new Html5Qrcode("qr-reader");
+    setTimeout(() => {
+      logo.classList.add("animar-logo");
+      pantalla1.style.display = "none";
+      pantalla2.style.display = "flex";
+      encabezado.style.opacity = "1";
+    }, 4000);
 
-      html5QrCode
-        .start(
-          { facingMode: "environment" },
-          { fps: 10, qrbox: 220 },
-          (decodedText) => {
-            const codigosValidos = [
-              { codigo: "1023", estado: "activo" },
-              { codigo: "1050", estado: "usado" },
-              { codigo: "9981", estado: "activo" }
-            ];
-            const resultado = codigosValidos.find(c => c.codigo === decodedText.trim());
-            if (!resultado) {
-              alert("❌ Código QR inválido.");
-            } else if (resultado.estado === "usado") {
-              alert("⚠️ Este código ya fue utilizado.");
-            } else {
-              alert("✅ Código QR aprobado. ¡Bienvenido a bordo!");
-            }
-            html5QrCode.stop().then(() => {
-              qrContenedor.innerHTML = "";
-              qrContenedor.style.display = "none";
-            });
-          }
-        )
-        .catch(err => {
-          alert("🚫 No se pudo activar la cámara: " + err);
-          qrContenedor.style.display = "none";
-        });
+    menuToggle.addEventListener("click", () => {
+      menuLateral.style.display = "flex";
+    });
+
+    cerrarMenu.addEventListener("click", () => {
+      menuLateral.style.display = "none";
+    });
+
+    document.getElementById("codigoChofer").addEventListener("input", (e) => {
+      const valor = e.target.value.trim();
+      if (valor.length === 4) {
+        validarCodigo(valor);
+      }
+    });
+
+    function validarCodigo(codigo) {
+      const codigosValidos = [
+        { codigo: "1023", estado: "activo" },
+        { codigo: "1050", estado: "usado" },
+        { codigo: "9981", estado: "activo" }
+      ];
+      const resultado = codigosValidos.find(c => c.codigo === codigo);
+      if (!resultado) {
+        alert("❌ Código inválido. Verifica con el chofer.");
+      } else if (resultado.estado === "usado") {
+        alert("⚠️ Este código ya fue utilizado.");
+      } else {
+        alert("✅ Código aprobado. ¡Bienvenido a bordo!");
+      }
+    }
+
+    document.getElementById("close-modal").addEventListener("click", () => {
+      document.getElementById("login-modal").style.display = "none";
+    });
+
+    window.abrirLogin = function (rol) {
+      document.getElementById("login-title").innerText =
+        rol === "admin" ? "Acceso Administrativo" : "Acceso Colaborador";
+      document.getElementById("login-modal").style.display = "flex";
+      document.getElementById("login-modal").dataset.rol = rol;
+      menuLateral.style.display = "none";
     };
-  </script>
-  <script src="https://unpkg.com/html5-qrcode"></script>
+
+    window.ingresar = function () {
+      const user = document.getElementById("user").value.toLowerCase();
+      const pass = document.getElementById("pass").value;
+      const rol = document.getElementById("login-modal").dataset.rol;
+      if (
+        (rol === "admin" && user === "admin" && pass === "clave123") ||
+        (rol === "colaborador" && user === "chofer" && pass === "clave123")
+      ) {
+        const destino = rol === "admin" ? "admin-panel.html" : "chofer-panel.html";
+        window.location.href = destino;
+      } else {
+        alert("Credenciales incorrectas");
+      }
+    };
+
+    document.querySelector("a[href='#ayuda']").addEventListener("click", () => {
+      document.getElementById("modal-ayuda").classList.add("active");
+      logo.style.display = "none";
+    });
+
+    window.cerrarAyuda = function () {
+      document.getElementById("modal-ayuda").classList.remove("active");
+      logo.style.display = "block";
+    };
+  });
+
+  window.escanearQR = function () {
+    const qrContenedor = document.getElementById("qr-reader");
+    qrContenedor.style.display = "block";
+    qrContenedor.innerHTML = "";
+
+    const html5QrCode = new Html5Qrcode("qr-reader");
+
+    html5QrCode
+      .start(
+        { facingMode: "environment" },
+        { fps: 10, qrbox: 220 },
+        (decodedText) => {
+          const codigosValidos = [
+            { codigo: "1023", estado: "activo" },
+            { codigo: "1050", estado: "usado" },
+            { codigo: "9981", estado: "activo" }
+          ];
+          const resultado = codigosValidos.find(c => c.codigo === decodedText.trim());
+          if (!resultado) {
+            alert("❌ Código QR inválido.");
+          } else if (resultado.estado === "usado") {
+            alert("⚠️ Este código ya fue utilizado.");
+          } else {
+            alert("✅ Código QR aprobado. ¡Bienvenido a bordo!");
+          }
+          html5QrCode.stop().then(() => {
+            qrContenedor.innerHTML = "";
+            qrContenedor.style.display = "none";
+          });
+        }
+      )
+      .catch(err => {
+        alert("🚫 No se pudo activar la cámara: " + err);
+        qrContenedor.style.display = "none";
+      });
+  };
+</script>
+
+<div id="modal-terminos" style="
+  position: fixed;
+  top: 0; left: 0;
+  width: 100vw; height: 100vh;
+  background-color: rgba(0,0,0,0.75);
+  backdrop-filter: blur(5px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+">
+  <div style="
+    background-color: #1a002a;
+    padding: 30px;
+    color: white;
+    max-width: 480px;
+    width: 90%;
+    border-radius: 16px;
+    box-shadow: 0 0 20px #cfaaff80;
+    text-align: left;
+    font-family: 'Poppins', sans-serif;
+  ">
+    <h2 style="color:#cfaaff;">📜 Términos y Condiciones</h2>
+    <p style="font-size:14px; line-height:1.5; margin-top:10px;">
+      Al utilizar esta plataforma, aceptas los métodos de validación autorizados y las condiciones institucionales de acceso y conectividad urbana regulada por Wioo.
+    </p>
+    <div style="margin-top: 24px; display:flex; gap:10px; flex-wrap:wrap;">
+      <a href="terminos.html" target="_blank" style="
+        background-color: #ffffff;
+        color: #7344D0;
+        font-weight: 600;
+        padding: 10px 16px;
+        border-radius: 8px;
+        text-decoration: none;
+      ">📘 Ver versión completa</a>
+      <button id="aceptar-terminos" style="
+        background-color: #7344D0;
+        border: none;
+        padding: 10px 16px;
+        color: white;
+        font-size: 15px;
+        font-weight: 600;
+        border-radius: 8px;
+        cursor: pointer;
+      ">✅ Aceptar y continuar</button>
+    </div>
+  </div>
+</div>
+
+<script src="https://unpkg.com/html5-qrcode"></script>
 </body>
-                                                                     </html>
+ </html>
