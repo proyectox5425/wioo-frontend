@@ -439,14 +439,16 @@
         menuLateral.style.display = "none";
       });
 
-      document.getElementById("codigoChofer").addEventListener("input", (e) => {
-        const valor = e.target.value.trim();
-        if (valor.length === 4) {
-          validarCodigo(valor);
-        }
-      });
+      // 💡 Evento al escribir el cuarto dígito
+document.getElementById("codigoChofer").addEventListener("input", (e) => {
+  const valor = e.target.value.trim();
+  if (valor.length === 4) {
+    validarCodigo(valor);
+  }
+});
 
-      function validarCodigo(codigo) {
+// 🧠 Función completa con mensaje y redirección
+function validarCodigo(codigo) {
   const codigosValidos = [
     { codigo: "1023", estado: "activo" },
     { codigo: "1050", estado: "usado" },
@@ -456,9 +458,11 @@
   const resultado = codigosValidos.find(c => c.codigo === codigo);
 
   if (!resultado) {
+    alert("❌ Código inválido. Verifica con el chofer.");
   } else if (resultado.estado === "usado") {
     alert("⚠️ Este código ya fue utilizado.");
   } else {
+    alert("✅ Código aprobado. ¡Bienvenido a bordo!");
 
     if (resultado.codigo === "9981") {
       window.location.href = "pantalla-4.2.html";
@@ -466,6 +470,7 @@
       window.location.href = "pantalla-4.1.html";
     }
   }
+    }
     }
 
       document.getElementById("close-modal").addEventListener("click", () => {
