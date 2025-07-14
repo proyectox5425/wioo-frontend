@@ -20,26 +20,37 @@
     }
 
     .mensaje-ok {
-      background-color: rgba(0, 0, 0, 0.6);
-      padding: 40px 30px;
-      border-radius: 16px;
-      box-shadow: 0 0 12px rgba(0, 0, 0, 0.5);
+      max-width: 480px;
+      width: 90%;
+      background-color: rgba(0, 0, 0, 0.65);
+      padding: 50px 30px;
+      border-radius: 20px;
+      box-shadow: 0 0 20px rgba(0, 0, 0, 0.6);
+      animation: fadeIn 0.8s ease-in-out;
     }
 
     .mensaje-ok img {
-      height: 60px;
-      margin-bottom: 20px;
+      height: 70px;
+      margin-bottom: 24px;
+      filter: drop-shadow(0 0 10px #00ff99);
     }
 
     .mensaje-ok h1 {
-      font-size: 24px;
+      font-size: 28px;
       color: #00ff99;
-      margin-bottom: 10px;
+      margin-bottom: 16px;
+      text-shadow: 0 0 6px #00ff99;
     }
 
     .mensaje-ok p {
-      font-size: 16px;
+      font-size: 18px;
       color: #d0baff;
+      line-height: 1.5;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
     }
   </style>
 </head>
@@ -48,14 +59,15 @@
   <div class="mensaje-ok">
     <img src="logo-wioo2.png" alt="Logo Wioo" />
     <h1>💚 Comprobante verificado</h1>
-    <p>Ahora estás conectado. Esta ventana se cerrará automáticamente.</p>
+    <p>Ahora estás conectado.<br>Esta ventana se cerrará automáticamente.</p>
   </div>
 
   <script>
     setTimeout(() => {
-      window.close(); // o redirige si estás en modo navegador controlado
-    }, 5000);
+      window.close(); // O usa redirección si el navegador no permite cerrar
+      // window.location.href = "gracias.html";
+    }, 10000); // ⏱️ 10 segundos
   </script>
 
 </body>
-  </html>
+</html>
