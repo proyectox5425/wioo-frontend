@@ -415,140 +415,150 @@
   </div>
 
   <script>
-    window.addEventListener("DOMContentLoaded", () => {
-      const logo = document.getElementById("logo");
-      const pantalla1 = document.getElementById("pantalla1");
-      const pantalla2 = document.getElementById("pantalla2");
-      const encabezado = document.getElementById("encabezado-wioo");
-      const menuToggle = document.getElementById("menu-toggle");
-      const menuLateral = document.getElementById("menu-lateral");
-      const cerrarMenu = document.getElementById("cerrar-menu");
+  window.addEventListener("DOMContentLoaded", () => {
+    const logo = document.getElementById("logo");
+    const pantalla1 = document.getElementById("pantalla1");
+    const pantalla2 = document.getElementById("pantalla2");
+    const encabezado = document.getElementById("encabezado-wioo");
+    const menuToggle = document.getElementById("menu-toggle");
+    const menuLateral = document.getElementById("menu-lateral");
+    const cerrarMenu = document.getElementById("cerrar-menu");
 
+    // 🧠 Transición corregida
+    if (logo.complete) {
+      iniciarTransicion();
+    } else {
+      logo.onload = iniciarTransicion;
+    }
+
+    function iniciarTransicion() {
       setTimeout(() => {
         logo.classList.add("animar-logo");
         pantalla1.style.display = "none";
         pantalla2.style.display = "flex";
         encabezado.style.opacity = "1";
       }, 4000);
-
-      menuToggle.addEventListener("click", () => {
-        menuLateral.style.display = "flex";
-      });
-
-      cerrarMenu.addEventListener("click", () => {
-        menuLateral.style.display = "none";
-      });
-
-      // 💡 Evento al escribir el cuarto dígito
-document.getElementById("codigoChofer").addEventListener("input", (e) => {
-  const valor = e.target.value.trim();
-  if (valor.length === 4) {
-    validarCodigo(valor);
-  }
-});
-
-// 🧠 Función completa con mensaje y redirección
-function validarCodigo(codigo) {
-  const codigosValidos = [
-    { codigo: "1023", estado: "activo" },
-    { codigo: "1050", estado: "usado" },
-    { codigo: "9981", estado: "activo" }
-  ];
-
-  const resultado = codigosValidos.find(c => c.codigo === codigo);
-
-  if (!resultado) {
-    alert("❌ Código inválido. Verifica con el chofer.");
-  } else if (resultado.estado === "usado") {
-    alert("⚠️ Este código ya fue utilizado.");
-  } else {
-    alert("✅ Código aprobado. ¡Bienvenido a bordo!");
-
-    if (resultado.codigo === "9981") {
-      window.location.href = "pantalla-4.2.html";
-    } else {
-      window.location.href = "pantalla-4.1.html";
-    }
-  }
-    }
     }
 
-      document.getElementById("close-modal").addEventListener("click", () => {
-        document.getElementById("login-modal").style.display = "none";
-      });
-
-      window.abrirLogin = function (rol) {
-        document.getElementById("login-title").innerText =
-          rol === "admin" ? "Acceso Administrativo" : "Acceso Colaborador";
-        document.getElementById("login-modal").style.display = "flex";
-        document.getElementById("login-modal").dataset.rol = rol;
-        menuLateral.style.display = "none";
-      };
-
-      window.ingresar = function () {
-        const user = document.getElementById("user").value.toLowerCase();
-        const pass = document.getElementById("pass").value;
-        const rol = document.getElementById("login-modal").dataset.rol;
-        if (
-          (rol === "admin" && user === "admin" && pass === "clave123") ||
-          (rol === "colaborador" && user === "chofer" && pass === "clave123")
-        ) {
-          const destino = rol === "admin" ? "admin-panel.html" : "chofer-panel.html";
-          window.location.href = destino;
-        } else {
-          alert("Credenciales incorrectas");
-        }
-      };
-
-      // Modal flotante de ayuda
-      document.querySelector("a[href='#ayuda']").addEventListener("click", () => {
-        document.getElementById("modal-ayuda").classList.add("active");
-        logo.style.display = "none";
-      });
-
-      window.cerrarAyuda = function () {
-        document.getElementById("modal-ayuda").classList.remove("active");
-        logo.style.display = "block";
-      };
+    menuToggle.addEventListener("click", () => {
+      menuLateral.style.display = "flex";
     });
 
-    // Librería QR
-    window.escanearQR = function () {
-      const qrContenedor = document.getElementById("qr-reader");
-      qrContenedor.style.display = "block";
-      qrContenedor.innerHTML = "";
+    cerrarMenu.addEventListener("click", () => {
+      menuLateral.style.display = "none";
+    });
 
-      const html5QrCode = new Html5Qrcode("qr-reader");
+    // 💡 Validación de código
+    document.getElementById("codigoChofer").addEventListener("input", (e) => {
+      const valor = e.target.value.trim();
+      if (valor.length === 4) {
+        validarCodigo(valor);
+      }
+    });
 
-      html5QrCode
-        .start(
-          { facingMode: "environment" },
-          { fps: 10, qrbox: 220 },
-          (decodedText) => {
-            const codigosValidos = [
-              { codigo: "1023", estado: "activo" },
-              { codigo: "1050", estado: "usado" },
-              { codigo: "9981", estado: "activo" }
-            ];
-            const resultado = codigosValidos.find(c => c.codigo === decodedText.trim());
-            if (!resultado) {
-              alert("❌ Código QR inválido.");
-            } else if (resultado.estado === "usado") {
-              alert("⚠️ Este código ya fue utilizado.");
-            } else {
-              alert("✅ Código QR aprobado. ¡Bienvenido a bordo!");
-            }
-            html5QrCode.stop().then(() => {
-              qrContenedor.innerHTML = "";
-              qrContenedor.style.display = "none";
-            });
-          }
-        )
-        .catch(err => {
-          alert("🚫 No se pudo activar la cámara: " + err);
+    function validarCodigo(codigo) {
+      const codigosValidos = [
+        { codigo: "1023", estado: "activo" },
+        { codigo: "1050", estado: "usado" },
+        { codigo: "9981", estado: "activo" }
+      ];
+
+      const resultado = codigosValidos.find(c => c.codigo === codigo);
+
+      if (!resultado) {
+        alert("❌ Código inválido. Verifica con el chofer.");
+      } else if (resultado.estado === "usado") {
+        alert("⚠️ Este código ya fue utilizado.");
+      } else {
+        alert("✅ Código aprobado. ¡Bienvenido a bordo!");
+        window.location.href = resultado.codigo === "9981"
+          ? "pantalla-4.2.html"
+          : "pantalla-4.1.html";
+      }
+    }
+
+    // 📂 Login modal
+    document.getElementById("close-modal").addEventListener("click", () => {
+      document.getElementById("login-modal").style.display = "none";
+    });
+
+    window.abrirLogin = function (rol) {
+      document.getElementById("login-title").innerText =
+        rol === "admin" ? "Acceso Administrativo" : "Acceso Colaborador";
+      document.getElementById("login-modal").style.display = "flex";
+      document.getElementById("login-modal").dataset.rol = rol;
+      menuLateral.style.display = "none";
+    };
+
+    window.ingresar = function () {
+      const user = document.getElementById("user").value.toLowerCase();
+      const pass = document.getElementById("pass").value;
+      const rol = document.getElementById("login-modal").dataset.rol;
+
+      if (
+        (rol === "admin" && user === "admin" && pass === "clave123") ||
+        (rol === "colaborador" && user === "chofer" && pass === "clave123")
+      ) {
+        const destino = rol === "admin" ? "admin-panel.html" : "chofer-panel.html";
+        window.location.href = destino;
+      } else {
+        alert("Credenciales incorrectas");
+      }
+    };
+
+    // 🧭 Ayuda flotante
+    document.querySelector("a[href='#ayuda']").addEventListener("click", () => {
+      document.getElementById("modal-ayuda").classList.add("active");
+      logo.style.display = "none";
+    });
+
+    window.cerrarAyuda = function () {
+      document.getElementById("modal-ayuda").classList.remove("active");
+      logo.style.display = "block";
+    };
+  });
+
+  // 📷 QR Scanner
+  window.escanearQR = function () {
+    const qrContenedor = document.getElementById("qr-reader");
+    qrContenedor.style.display = "block";
+    qrContenedor.innerHTML = "";
+
+    const html5QrCode = new Html5Qrcode("qr-reader");
+
+    html5QrCode.start(
+      { facingMode: "environment" },
+      { fps: 10, qrbox: 220 },
+      (decodedText) => {
+        const codigosValidos = [
+          { codigo: "1023", estado: "activo" },
+          { codigo: "1050", estado: "usado" },
+          { codigo: "9981", estado: "activo" }
+        ];
+
+        const resultado = codigosValidos.find(c => c.codigo === decodedText.trim());
+
+        if (!resultado) {
+          alert("❌ Código QR inválido.");
+        } else if (resultado.estado === "usado") {
+          alert("⚠️ Este código ya fue utilizado.");
+        } else {
+          alert("✅ Código QR aprobado. ¡Bienvenido a bordo!");
+          window.location.href = resultado.codigo === "9981"
+            ? "pantalla-4.2.html"
+            : "pantalla-4.1.html";
+        }
+
+        html5QrCode.stop().then(() => {
+          qrContenedor.innerHTML = "";
           qrContenedor.style.display = "none";
         });
-    };
+      }
+    ).catch(err => {
+      alert("🚫 No se pudo activar la cámara: " + err);
+      qrContenedor.style.display = "none";
+    });
+  };
   </script>
   <script src="https://unpkg.com/html5-qrcode"></script>
 </body>
