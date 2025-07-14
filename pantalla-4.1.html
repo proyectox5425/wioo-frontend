@@ -11,6 +11,7 @@
       background-image: url('fondo-autobus.jpg');
       background-size: cover;
       background-position: center;
+      background-repeat: no-repeat;
       color: white;
       display: flex;
       justify-content: center;
@@ -20,25 +21,25 @@
     }
 
     .mensaje-ok {
-      max-width: 480px;
+      max-width: 460px;
       width: 90%;
       background-color: rgba(0, 0, 0, 0.65);
-      padding: 50px 30px;
-      border-radius: 20px;
-      box-shadow: 0 0 20px rgba(0, 0, 0, 0.6);
+      padding: 40px 25px;
+      border-radius: 18px;
+      box-shadow: 0 0 18px rgba(0, 0, 0, 0.6);
       animation: fadeIn 0.8s ease-in-out;
     }
 
     .mensaje-ok img {
-      height: 70px;
-      margin-bottom: 24px;
+      height: 96px;
+      margin-bottom: 18px;
       filter: drop-shadow(0 0 10px #00ff99);
     }
 
     .mensaje-ok h1 {
-      font-size: 28px;
+      font-size: 26px;
       color: #00ff99;
-      margin-bottom: 16px;
+      margin-bottom: 14px;
       text-shadow: 0 0 6px #00ff99;
     }
 
@@ -64,10 +65,10 @@
 
   <script>
     setTimeout(() => {
-      window.close(); // O usa redirección si el navegador no permite cerrar
+      window.close(); // 👈 Si no funciona, usa redirección
       // window.location.href = "gracias.html";
     }, 10000); // ⏱️ 10 segundos
   </script>
 
 </body>
-</html>
+  </html>
