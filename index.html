@@ -434,12 +434,14 @@
     const cerrarMenu = document.getElementById("cerrar-menu");
 
     setTimeout(() => {
-      logo.classList.add("animar-logo");
-      pantalla1.style.display = "none";
-      pantalla2.style.display = "flex";
-      encabezado.style.opacity = "1";
-      document.getElementById("modal-terminos").style.display = "flex";
-    }, 5000);
+  logo.classList.add("animar-logo");
+  pantalla1.style.display = "none";
+  pantalla2.style.display = "flex";
+  encabezado.style.opacity = "1";
+
+  // ✅ Mostrar el modal justo ahora
+  document.getElementById("modal-terminos").style.display = "flex";
+}, 5000);
 
     menuToggle.addEventListener("click", () => {
       menuLateral.style.display = "flex";
