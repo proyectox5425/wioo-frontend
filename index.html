@@ -424,12 +424,12 @@
     const menuLateral = document.getElementById("menu-lateral");
     const cerrarMenu = document.getElementById("cerrar-menu");
 
-    // 🧠 Transición corregida
-    if (logo.complete) {
-      iniciarTransicion();
-    } else {
-      logo.onload = iniciarTransicion;
-    }
+    setTimeout(() => {
+  logo.classList.add("animar-logo");
+  pantalla1.style.display = "none";
+  pantalla2.style.display = "flex";
+  encabezado.style.opacity = "1";
+}, 4000);
 
     function iniciarTransicion() {
       setTimeout(() => {
