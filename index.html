@@ -439,8 +439,10 @@
   pantalla2.style.display = "flex";
   encabezado.style.opacity = "1";
 
-  // ✅ Mostrar el modal justo ahora
-  document.getElementById("modal-terminos").style.display = "flex";
+  // ✅ Esperamos medio segundo antes de mostrar el modal
+  setTimeout(() => {
+    document.getElementById("modal-terminos").style.display = "flex";
+  }, 800); // tiempo adicional para que la transición se aprecie
 }, 5000);
 
     menuToggle.addEventListener("click", () => {
