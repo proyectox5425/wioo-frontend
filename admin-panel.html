@@ -183,6 +183,43 @@
   z-index: 12;
 }
 
+    .encabezado-admin {
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(4px);
+  padding: 12px 20px;
+  position: sticky;
+  top: 0;
+  z-index: 11;
+}
+
+.contenido-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.encabezado-admin h1 {
+  font-size: 1.6rem;
+  margin: 0;
+  color: white;
+  flex: 1;
+  text-align: center;
+}
+
+.encabezado-admin img {
+  height: 48px;
+}
+
+.hamburger {
+  background: none;
+  border: none;
+  font-size: 24px;
+  color: #cfaaff;
+  cursor: pointer;
+      }
+
 .bloque-titulo h1 {
   font-size: 2rem;
   margin-bottom: 10px;
@@ -201,12 +238,12 @@
   </style>
 </head>
 <body>
-  <header style="position: relative; text-align: center; padding: 12px 0; background: rgba(0,0,0,0.6); backdrop-filter: blur(4px); z-index: 11;">
-  <button class="hamburger" onclick="toggleSidebar()" style="position: absolute; left: 16px; top: 16px; background: none; border: none; font-size: 24px; color: #cfaaff; cursor: pointer;">☰</button>
-
-  <h1 style="font-size: 1.6rem; margin: 0; color: white;">Panel de Administración</h1>
-
-  <img src="emoji-wioo-white.png" alt="Emoji Wioo" style="height: 48px; margin-top: 6px;" />
+  <header class="encabezado-admin">
+  <div class="contenido-header">
+    <button class="hamburger" onclick="toggleSidebar()">☰</button>
+    <h1>Panel de Administración</h1>
+    <img src="emoji-wioo-white.png" alt="Emoji Wioo" />
+  </div>
   </header>
   <div id="sidebar">
     <img src="emoji-wioo-white.png" alt="Logo Wioo" />
