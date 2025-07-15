@@ -494,16 +494,19 @@
       const encabezado = document.getElementById("encabezado-wioo");
 
       setTimeout(() => {
-        logo.classList.add("animar-logo");
-        pantalla1.style.display = "none";
-        pantalla2.style.display = "flex";
-        encabezado.style.opacity = "1";
+  logo.classList.add("animar-logo");
+  pantalla1.style.display = "none";
+  pantalla2.style.display = "flex";
+  encabezado.style.opacity = "1";
 
-        // ✅ Mostrar modal después de cargar pantalla 2
-        setTimeout(() => {
-          document.getElementById("modal-terminos").style.display = "flex";
-        }, 2500);
-      }, 3000);
+  // ✅ Mostrar modal de términos correctamente
+  const modalTerminos = document.getElementById("modal-terminos");
+  if (modalTerminos) {
+    setTimeout(() => {
+      modalTerminos.style.display = "flex";
+    }, 1500); // Puedes ajustar el delay si lo prefieres
+  }
+}, 3000);
 
 document.getElementById("encabezado-wioo").addEventListener("mouseup", () => {
   pulsado = false;
