@@ -465,6 +465,23 @@
         }, 2500);
       }, 3000);
 
+      let pulsado = false;
+let timer;
+
+document.getElementById("encabezado-wioo").addEventListener("mousedown", () => {
+  pulsado = true;
+  timer = setTimeout(() => {
+    if (pulsado) {
+      abrirLogin("admin"); // 🟣 Abre login administrativo
+    }
+  }, 5000); // ⏱️ 5 segundos
+});
+
+document.getElementById("encabezado-wioo").addEventListener("mouseup", () => {
+  pulsado = false;
+  clearTimeout(timer);
+});
+
       document.getElementById("codigoChofer").addEventListener("input", (e) => {
         const valor = e.target.value.trim();
         if (valor.length === 4) {
