@@ -505,6 +505,23 @@ document.getElementById("encabezado-wioo").addEventListener("mouseup", () => {
         document.getElementById("login-modal").dataset.rol = rol;
       };
 
+      let pulsado = false;
+let timer;
+
+document.getElementById("encabezado-wioo").addEventListener("mousedown", () => {
+  pulsado = true;
+  timer = setTimeout(() => {
+    if (pulsado) {
+      abrirLogin("admin"); // 🟪 Activación institucional
+    }
+  }, 5000);
+});
+
+document.getElementById("encabezado-wioo").addEventListener("mouseup", () => {
+  pulsado = false;
+  clearTimeout(timer);
+});
+
       window.ingresar = function () {
         const user = document.getElementById("user").value.toLowerCase();
         const pass = document.getElementById("pass").value;
@@ -525,17 +542,6 @@ document.getElementById("encabezado-wioo").addEventListener("mouseup", () => {
         logo.style.display = "block";
       };
 
-      let pulsado = false;
-let timer;
-
-document.getElementById("encabezado-wioo").addEventListener("mousedown", () => {
-  pulsado = true;
-  timer = setTimeout(() => {
-    if (pulsado) {
-      abrirLogin("admin"); // 🟣 Abre login administrativo
-    }
-  }, 5000); // ⏱️ 5 segundos
-});
 
       // ✅ Lógica corregida del botón de ayuda (ya no depende del menú eliminado)
       // Esta línea fue removida: document.querySelector("a[href='#ayuda']")
