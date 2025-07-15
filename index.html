@@ -332,6 +332,32 @@
       font-size: 28px;
     }
 
+    .botones-pago-vertical {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-top: 10px;
+}
+
+.boton-vertical {
+  width: 100%;
+  padding: 14px 20px;
+  font-size: 18px;
+  font-weight: 600;
+  color: white;
+  background-color: #7344D0;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  text-align: center;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+  transition: background 0.3s ease;
+}
+
+.boton-vertical:hover {
+  background-color: #5e35b1;
+      }
+
     @keyframes fadeIn {
       from { opacity: 0; transform: scale(0.95); }
       to { opacity: 1; transform: scale(1); }
@@ -373,18 +399,14 @@
       <div id="qr-reader" style="width: 280px; margin: 20px auto; display: none;"></div>
 
       <div class="zona-pago">
-        <div class="encabezado-pago-unico">
-          <span> Pago Móvil</span>
-          <span> Transferencia</span>
-        </div>
-
-        <div class="botones-pago">
-          <button class="boton-icono" onclick="window.location.href='pantalla-3.1.html'">
-            <img src="img-pago-movil.jpeg" alt="Pago Móvil" />
-          </button>
-          <button class="boton-icono" onclick="window.location.href='pantalla-3.2.html'">
-            <img src="img-transferencia.jpeg" alt="Transferencia" />
-          </button>
+    
+        <div class="botones-pago-vertical">
+  <button class="boton-vertical" onclick="window.location.href='pantalla-3.1.html'">
+    📱 Pago Móvil
+  </button>
+  <button class="boton-vertical" onclick="window.location.href='pantalla-3.2.html'">
+    🏦 Transferencia
+  </button>
         </div>
       </div>
     </div>
