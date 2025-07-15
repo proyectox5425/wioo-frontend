@@ -505,14 +505,15 @@ document.getElementById("encabezado-wioo").addEventListener("mouseup", () => {
         document.getElementById("login-modal").dataset.rol = rol;
       };
 
-      let pulsado = false;
+      // 🟣 Activación oculta del login administrativo
+let pulsado = false;
 let timer;
 
 document.getElementById("encabezado-wioo").addEventListener("mousedown", () => {
   pulsado = true;
   timer = setTimeout(() => {
     if (pulsado) {
-      abrirLogin("admin"); // 🟪 Activación institucional
+      abrirLogin("admin");
     }
   }, 5000);
 });
