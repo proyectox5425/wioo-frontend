@@ -509,7 +509,7 @@ document.getElementById("encabezado-wioo").addEventListener("mouseup", () => {
 let pulsado = false;
 let timer;
 
-document.getElementById("encabezado-wioo").addEventListener("mousedown", () => {
+encabezado.addEventListener("mousedown", () => {
   pulsado = true;
   timer = setTimeout(() => {
     if (pulsado) {
@@ -518,11 +518,25 @@ document.getElementById("encabezado-wioo").addEventListener("mousedown", () => {
   }, 5000);
 });
 
-document.getElementById("encabezado-wioo").addEventListener("mouseup", () => {
+encabezado.addEventListener("mouseup", () => {
   pulsado = false;
   clearTimeout(timer);
 });
 
+// 🟣 Activación táctil (solo en móviles)
+encabezado.addEventListener("touchstart", () => {
+  pulsado = true;
+  timer = setTimeout(() => {
+    if (pulsado) {
+      abrirLogin("admin");
+    }
+  }, 5000);
+});
+
+encabezado.addEventListener("touchend", () => {
+  pulsado = false;
+  clearTimeout(timer);
+});
       window.ingresar = function () {
         const user = document.getElementById("user").value.toLowerCase();
         const pass = document.getElementById("pass").value;
