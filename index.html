@@ -505,6 +505,22 @@
         }, 2500);
       }, 3000);
 
+      document.getElementById("preguntaUsuario").addEventListener("input", (e) => {
+  const texto = e.target.value.toLowerCase();
+  const respuestas = {
+    "wifi": "Activa tu WiFi y conéctate a la red 'Wioo Conexión'.",
+    "pago": "Puedes validar vía pago móvil, transferencia o efectivo según tu unidad.",
+    "rechazado": "Verifica el comprobante o consulta al chofer para repetir el intento.",
+    "qr": "Escanea tu código QR o ingresa el código manual entregado.",
+    "cuánto": "La conexión gratuita es de 5 minutos. Validación de 12 horas cuesta 120bs."
+  };
+  let respuesta = "❓ Aún no tenemos respuesta para esa pregunta.";
+  for (let clave in respuestas) {
+    if (texto.includes(clave)) {
+      respuesta = respuestas[clave];
+    }
+    }
+
 
 document.getElementById("encabezado-wioo").addEventListener("mouseup", () => {
   pulsado = false;
@@ -620,21 +636,7 @@ encabezado.addEventListener("touchend", () => {
       }
     });
 
-    document.getElementById("preguntaUsuario").addEventListener("input", (e) => {
-  const texto = e.target.value.toLowerCase();
-  const respuestas = {
-    "wifi": "Activa tu WiFi y conéctate a la red 'Wioo Conexión'.",
-    "pago": "Puedes validar vía pago móvil, transferencia o efectivo según tu unidad.",
-    "rechazado": "Verifica el comprobante o consulta al chofer para repetir el intento.",
-    "qr": "Escanea tu código QR o ingresa el código manual entregado.",
-    "cuánto": "La conexión gratuita es de 5 minutos. Validación de 12 horas cuesta 120bs."
-  };
-  let respuesta = "❓ Aún no tenemos respuesta para esa pregunta.";
-  for (let clave in respuestas) {
-    if (texto.includes(clave)) {
-      respuesta = respuestas[clave];
-    }
-  }
+    
   document.getElementById("respuestaAsistente").innerText = respuesta;
 });
   </script>
