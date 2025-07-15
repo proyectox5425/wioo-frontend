@@ -438,8 +438,8 @@
   // ✅ Esperamos medio segundo antes de mostrar el modal
   setTimeout(() => {
     document.getElementById("modal-terminos").style.display = "flex";
-  }, 3000); // tiempo adicional para que la transición se aprecie
-}, 4000);
+  }, 2500); // tiempo adicional para que la transición se aprecie
+}, 3000);
 
     menuToggle.addEventListener("click", () => {
       menuLateral.style.display = "flex";
@@ -607,8 +607,6 @@
   </div>
 </div>
 </div>
-
-<script src="https://unpkg.com/html5-qrcode"></script>
   <script>
 const contenedor = document.getElementById("contenedorTerminos");
 const boton = document.getElementById("botonAceptar");
@@ -624,6 +622,7 @@ contenedor.addEventListener("scroll", () => {
 boton.addEventListener("click", () => {
   document.getElementById("modal-terminos").style.display = "none";
 });
-  </script>
+</script>
+  <script src="https://unpkg.com/html5-qrcode"></script>
 </body>
  </html>
