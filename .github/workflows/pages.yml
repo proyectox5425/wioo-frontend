@@ -2,7 +2,7 @@ name: Despliegue Wioo con GitHub Pages
 
 on:
   push:
-    branches: [wioo-frontend]
+    branches: [main]
   workflow_dispatch:
 
 jobs:
