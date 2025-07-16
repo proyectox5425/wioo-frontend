@@ -2,98 +2,95 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=0.85, maximum-scale=0.85, user-scalable=no" />
-  <title>Wioo - Verificar</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Wioo - Verificación de Pago</title>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet" />
   <style>
     body {
       margin: 0;
       font-family: 'Poppins', sans-serif;
-      background-image: url('fondo-autobus.jpg');
-      background-size: cover;
-      background-position: center;
-      background-repeat: no-repeat;
+      background-color: #ffffff;
+      color: #333;
+    }
+
+    .encabezado {
+      background-color: #7344D0;
       color: white;
-    }
-
-    .interface-wrapper {
-      max-width: 360px;
-      margin: 30px auto;
-      background-color: rgba(28,28,28,0.75);
-      border-radius: 16px;
       padding: 18px 14px;
-      box-shadow: 0 0 12px rgba(0,0,0,0.4);
-      display: flex;
-      flex-direction: column;
-      gap: 14px;
-    }
-
-    .encabezado-verificacion {
       display: flex;
       align-items: center;
-      justify-content: center;
       gap: 12px;
+      justify-content: center;
     }
 
-    .emoji-wioo {
+    .encabezado img {
       height: 42px;
     }
 
-    .encabezado-verificacion h1 {
+    .encabezado h1 {
       font-size: 20px;
-      font-weight: 600;
       margin: 0;
-      color: #cfaaff;
+      font-weight: 600;
     }
 
     .mensaje-aviso {
-      font-size: 0.9rem;
-      background-color: rgba(255,255,255,0.08);
-      padding: 12px;
-      border-radius: 10px;
-      box-shadow: 0 0 8px #00000020;
+      background-color: #f2f2f2;
+      color: #555;
+      padding: 12px 16px;
+      font-size: 0.95rem;
+      margin: 0;
       line-height: 1.4;
+      border-bottom: 1px solid #ddd;
+    }
+
+    .contenido {
+      max-width: 360px;
+      margin: 20px auto;
+      padding: 0 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+    }
+
+    h2 {
+      font-size: 1rem;
+      font-weight: 600;
+      color: #7344D0;
+      border-bottom: 1px solid #7344D050;
+      padding-bottom: 6px;
       margin: 0;
     }
 
-    .contenedor-datos h2,
-    .contenedor-formulario h2 {
-      font-size: 1rem;
-      font-weight: 600;
-      margin-bottom: 4px;
-      color: #cfaaff;
-      border-bottom: 1px solid #7344D050;
-      padding-bottom: 6px;
-    }
-
     .bloque-dato {
-      background-color: rgba(255,255,255,0.08);
-      border-radius: 12px;
-      padding: 14px;
-      margin-bottom: 6px;
-      box-shadow: 0 0 10px #00000030;
+      background-color: #fafafa;
+      border-radius: 10px;
+      padding: 12px;
+      box-shadow: 0 1px 4px #00000010;
       border-left: 4px solid #7344D0;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
     }
 
     .bloque-dato label {
       font-weight: 600;
-      color: #cfaaff;
-      margin-bottom: 6px;
-      display: block;
+      color: #7344D0;
+      font-size: 0.9rem;
     }
 
     .dato-contenido {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      background-color: rgba(255,255,255,0.1);
-      padding: 10px 14px;
-      border-radius: 8px;
+      background-color: #ffffff;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      padding: 8px 12px;
     }
 
     .dato-contenido span {
-      color: white;
       font-size: 0.95rem;
+      color: #333;
       word-break: break-word;
     }
 
@@ -101,71 +98,95 @@
       background-color: #7344D0;
       color: white;
       border: none;
-      border-radius: 6px;
       padding: 6px 10px;
+      border-radius: 6px;
       cursor: pointer;
       font-size: 14px;
     }
 
-    .formulario label {
-      font-weight: 500;
-      font-size: 0.9rem;
-      margin-bottom: 6px;
-      display: block;
-    }
-
-    .formulario input,
-    .formulario select {
-      width: 100%;
-      padding: 10px;
-      border: none;
-      border-radius: 10px;
-      margin-bottom: 16px;
-      font-size: 1rem;
-      background-color: #ffffff;
-      color: #333;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.2);
-    }
-
-    .formulario input::placeholder {
-      color: #999;
-    }
-
-    .grupo-telefono {
-      display: flex;
-      gap: 10px;
-    }
-
-    .grupo-telefono select {
-      flex: 0 0 90px;
-    }
-
-    .grupo-telefono input {
-      flex: 1;
-    }
-
-    .boton-panel {
+    .boton-modal {
       background-color: #7344D0;
       color: white;
       padding: 12px 16px;
-      border-radius: 8px;
-      font-size: 18px;
       border: none;
+      font-size: 16px;
+      border-radius: 8px;
       cursor: pointer;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.3);
-      transition: background 0.3s ease;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.2);
     }
 
-    .boton-panel:hover {
-      background-color: #5e35b1;
+    .modal {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0,0,0,0.5);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      z-index: 100;
+    }
+
+    .modal-contenido {
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      max-width: 360px;
+      width: 90%;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .modal-contenido label {
+      font-weight: 500;
+      font-size: 0.9rem;
+      margin-bottom: 4px;
+      display: block;
+      color: #333;
+    }
+
+    .modal-contenido input,
+    .modal-contenido select {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      font-size: 1rem;
+    }
+
+    .modal-contenido input::placeholder {
+      color: #999;
+    }
+
+    .btn-enviar {
+      background-color: #7344D0;
+      color: white;
+      border: none;
+      padding: 12px 16px;
+      border-radius: 8px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+
+    .btn-cerrar {
+      background-color: #ccc;
+      color: #333;
+      border: none;
+      padding: 8px 12px;
+      border-radius: 6px;
+      font-size: 14px;
+      cursor: pointer;
+      align-self: flex-end;
     }
 
     .mensaje-enviado {
       text-align: center;
       font-size: 0.9rem;
-      padding: 10px;
       background-color: #00ff99;
       color: #000;
+      padding: 10px;
       border-radius: 8px;
       display: none;
     }
@@ -173,141 +194,99 @@
     .mensaje-enviado.visible {
       display: block;
     }
-
-    .fondo-validando {
-      position: fixed;
-      top: 0; left: 0;
-      width: 100vw;
-      height: 100vh;
-      background-color: rgba(0,0,0,0.6);
-      backdrop-filter: blur(2px);
-      z-index: 30;
-      display: none;
-      justify-content: center;
-      align-items: center;
-      flex-direction: column;
-    }
-
-    #texto-validando {
-      font-size: 22px;
-      font-weight: 600;
-      color: #cfaaff;
-      margin-bottom: 20px;
-      animation: textoFade 1.2s infinite ease-in-out;
-      text-shadow: 0 0 8px #7344D0;
-    }
-
-    #logo-validando {
-      height: 100px;
-      max-width: 180px;
-      object-fit: contain;
-    }
-
-    @keyframes textoFade {
-      0%, 100% { opacity: 1; transform: translateY(0); }
-      50% { opacity: 0.6; transform: translateY(2px); }
-    }
   </style>
 </head>
 <body>
 
-  <div class="interface-wrapper">
-    <div class="encabezado-verificacion">
-      <img src="emoji-wioo-white.png" class="emoji-wioo" />
-      <h1>Verificación de Pago</h1>
-    </div>
-
-    <p class="mensaje-aviso">⚠️ Asegúrate de pagar el monto exacto para que nuestro sistema lo pueda validar correctamente.</p>
-
-    <div class="contenedor-datos">
-      <h2>Datos Bancarios</h2>
-
-      <div class="bloque-dato">
-        <label>🏦 Banco Receptor</label>
-        <div class="dato-contenido">
-          <span id="copiarBanco">Banco Metropolitano</span>
-        </div>
-      </div>
-
-      <div class="bloque-dato">
-        <label>📞 Teléfono de pago</label>
-        <div class="dato-contenido">
-          <span id="copiarTelefono">0414-0001122</span>
-          <button onclick="copiarTexto('copiarTelefono')">📋</button>
-        </div>
-      </div>
-
-      <div class="bloque-dato">
-        <label>🆔 Cédula / RIF</label>
-        <div class="dato-contenido">
-          <span id="copiarRIF">V-12.345.678</span>
-          <button onclick="copiarTexto('copiarRIF')">📋</button>
-        </div>
-      </div>
-
-      <div class="bloque-dato">
-        <label>💳 Monto</label>
-        <div class="dato-contenido">
-          <span id="copiarMonto">150 Bs</span>
-          <button onclick="copiarTexto('copiarMonto')">📋</button>
-        </div>
-      </div>
-
-      <div class="bloque-dato">
-        <label>⏳ Tiempo de Navegación</label>
-        <div class="dato-contenido">
-          <span id="copiarTiempo">12 horas ILIMITADAS</span>
-        </div>
-      </div>
-    </div>
-
-    <div class="contenedor-formulario">
-      <h2>Carga tu pago</h2>
-      <form class="formulario">
-        <label for="cedula">Cédula o RIF del pagador</label>
-        <input type="text" id="cedula" placeholder="Ej: V-12345678" />
-
-        <label for="telefono">Teléfono desde el que pagaste</label>
-        <div class="grupo-telefono">
-          <select id="codigo">
-            <option value="0414">0414</option>
-            <option value="0412">0412</option>
-            <option value="0424">0424</option>
-            <option value="0416">0416</option>
-            <option value="0426">0426</option>
-          </select>
-          <input type="number" id="telefono" placeholder="0001122" min="1000000" max="9999999" />
-        </div>
-
-        <label for="banco">Banco desde el cual realizaste el pago</label>
-        <select id="banco">
-          <option value="">Selecciona tu banco</option>
-          <option value="banesco">Banesco</option>
-          <option value="provincial">Provincial</option>
-          <option value="mercantil">Mercantil</option>
-          <option value="venezuela">Banco de Venezuela</option>
-          <option value="tesoro">Banco del Tesoro</option>
-          <option value="bicentenario">Bicentenario</option>
-          <option value="banplus">Banplus</option>
-          <option value="exterior">Exterior</option>
-          <option value="otro">Otro</option>
-        </select>
-
-        <label for="referencia">Últimos 4 dígitos de la referencia</label>
-        <input type="text" id="referencia" maxlength="4" placeholder="Ej: 1234" />
-      </form>
-
-      <button class="boton-panel btn-enviar">Enviar Comprobante</button>
-      <div id="mensaje-enviado" class="mensaje-enviado">✅ Comprobante enviado. Estamos verificando...</div>
-    </div>
+  <div class="encabezado">
+    <img src="emoji-wioo-white.png" alt="Wioo Logo" />
+    <h1>Verificación de Pago</h1>
   </div>
-  <div id="fondo-validando" class="fondo-validando">
-    <div id="texto-validando">📡 Verificando pago...</div>
-    <img src="logo-wioo2.png" alt="Logo Wioo" id="logo-validando" />
+
+  <p class="mensaje-aviso">ℹ️ Asegúrate de pagar el monto exacto para que nuestro sistema lo pueda validar correctamente.</p>
+
+  <div class="contenido">
+    <h2>Datos Bancarios</h2>
+
+    <div class="bloque-dato">
+      <label>🏦 Banco Receptor</label>
+      <div class="dato-contenido">
+        <span id="copiarBanco">Banco Nacional</span>
+        <button onclick="copiarTexto('copiarBanco')">📋</button>
+      </div>
+    </div>
+
+    <div class="bloque-dato">
+      <label>👤 Nombre</label>
+      <div class="dato-contenido">
+        <span id="copiarNombre">Wioo, C.A.</span>
+        <button onclick="copiarTexto('copiarNombre')">📋</button>
+      </div>
+    </div>
+
+    <div class="bloque-dato">
+      <label>💳 Número de Cuenta</label>
+      <div class="dato-contenido">
+        <span id="copiarCuenta">0102 0123 4500 6789 1234</span>
+        <button onclick="copiarTexto('copiarCuenta')">📋</button>
+      </div>
+    </div>
+
+    <div class="bloque-dato">
+      <label>🆔 RIF</label>
+      <div class="dato-contenido">
+        <span id="copiarRIF">J-298765432</span>
+        <button onclick="copiarTexto('copiarRIF')">📋</button>
+      </div>
+    </div>
+
+    <div class="bloque-dato">
+      <label>💰 Monto</label>
+      <div class="dato-contenido">
+        <span id="copiarMonto">120 Bs</span>
+        <button onclick="copiarTexto('copiarMonto')">📋</button>
+      </div>
+    </div>
+
+    <button class="boton-modal" onclick="abrirModal()">📥 Cargar Comprobante</button>
+    <div id="mensaje-enviado" class="mensaje-enviado">✅ Comprobante enviado. Estamos verificando...</div>
+  </div>
+
+  <!-- Modal -->
+  <div id="modal" class="modal">
+    <div class="modal-contenido">
+      <button class="btn-cerrar" onclick="cerrarModal()">Cerrar</button>
+
+      <h2>Carga tu pago</h2>
+
+      <label for="titular">Titular que hizo la transferencia</label>
+      <input type="text" id="titular" placeholder="Ej: María Gómez" />
+
+      <label for="cedula">Cédula o RIF del pagador</label>
+      <input type="text" id="cedula" placeholder="Ej: V-12345678" />
+
+      <label for="banco">Banco desde donde transferiste</label>
+      <select id="banco">
+        <option value="">Selecciona tu banco</option>
+        <option value="banesco">Banesco</option>
+        <option value="provincial">Provincial</option>
+        <option value="mercantil">Mercantil</option>
+        <option value="venezuela">Banco de Venezuela</option>
+        <option value="tesoro">Banco del Tesoro</option>
+        <option value="bicentenario">Bicentenario</option>
+        <option value="banplus">Banplus</option>
+        <option value="exterior">Exterior</option>
+        <option value="otro">Otro</option>
+      </select>
+
+      <label for="referencia">Últimos 6 dígitos del comprobante</label>
+      <input type="text" id="referencia" maxlength="6" placeholder="Ej: 456789" />
+
+      <button class="btn-enviar" onclick="enviarFormulario()">Enviar Comprobante</button>
+    </div>
   </div>
 
   <script>
-    // 🟣 Función para copiar al portapapeles
     function copiarTexto(id) {
       const texto = document.getElementById(id).innerText;
       navigator.clipboard.writeText(texto).then(() => {
@@ -315,53 +294,43 @@
       });
     }
 
-    const btnEnviar = document.querySelector('.btn-enviar');
-    const cedula = document.getElementById('cedula');
-    const codigo = document.getElementById('codigo');
-    const telefono = document.getElementById('telefono');
-    const banco = document.getElementById('banco');
-    const referencia = document.getElementById('referencia');
-    const mensaje = document.getElementById('mensaje-enviado');
+    function abrirModal() {
+      document.getElementById('modal').style.display = 'flex';
+    }
 
-    const referenciasValidas = ["1234", "9876", "2024", "4321"]; // 🔐 Simulación interna
+    function cerrarModal() {
+      document.getElementById('modal').style.display = 'none';
+    }
 
-    btnEnviar.addEventListener('click', () => {
-      const numeroCompleto = codigo.value + telefono.value.trim();
+    function enviarFormulario() {
+      const titular = document.getElementById('titular').value.trim();
+      const cedula = document.getElementById('cedula').value.trim();
+      const banco = document.getElementById('banco').value;
+      const referencia = document.getElementById('referencia').value.trim();
+      const mensaje = document.getElementById('mensaje-enviado');
 
-      // 🛡️ Validación básica de campos
-      if (
-        cedula.value.trim() &&
-        codigo.value &&
-        telefono.value.trim().length === 7 &&
-        banco.value &&
-        referencia.value.trim().length === 4
-      ) {
-        btnEnviar.disabled = true;
-        mensaje.textContent = "✅ Comprobante enviado. Estamos verificando...";
+      if (titular && cedula && banco && referencia.length === 6) {
         mensaje.classList.add('visible');
+        cerrarModal();
 
-        // 🟣 Activar efecto institucional flotante
-        document.getElementById("fondo-validando").style.display = "flex";
-        document.getElementById("logo-validando").classList.add("logo-cargando");
-        document.getElementById("texto-validando").style.display = "block";
-
-        // ⏱️ Simular verificación por 8 segundos
-        setTimeout(() => {
-          document.getElementById("fondo-validando").style.display = "none";
-          document.getElementById("logo-validando").classList.remove("logo-cargando");
-          document.getElementById("texto-validando").style.display = "none";
-
-          // ✅ Verificación lógica
-          if (referenciasValidas.includes(referencia.value.trim())) {
-            window.location.href = "pantalla-4.1.html";
+        fetch('https://4040ff69-afcc-45b1-912d-c6125452d1df-00-26jceljsjubtr.kirk.replit.dev/', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ titular, cedula, banco, referencia })
+        })
+        .then(res => res.json())
+        .then(data => {
+          if (data.verificado) {
+            window.location.href = 'pantalla4-ok.html';
           } else {
-            window.location.href = "pantalla-4.2.html";
+            window.location.href = 'pantalla4-error.html';
           }
-        }, 8000); //
+        })
+        .catch(() => window.location.href = 'pantalla4-error.html');
       } else {
         alert("Por favor completa todos los campos correctamente.");
       }
-    });
+    }
   </script>
 </body>
-</html>
+  </html>
