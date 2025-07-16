@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=0.85, maximum-scale=0.85, user-scalable=no" />
   <title>Punto Click - Verificación Transferencia</title>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet" />
   <style>
@@ -18,37 +18,74 @@
 
     .interface-wrapper {
       max-width: 360px;
-      margin: 40px auto;
-      background-color: rgba(0,0,0,0.6);
+      margin: 30px auto;
+      background-color: rgba(28,28,28,0.75);
       border-radius: 16px;
-      padding: 30px 20px;
+      padding: 18px 14px;
       box-shadow: 0 0 12px rgba(0,0,0,0.4);
       display: flex;
       flex-direction: column;
-      gap: 10px;
+      gap: 14px;
     }
 
-    .logo {
+    .encabezado-verificacion {
       display: flex;
+      align-items: center;
       justify-content: center;
-      margin-bottom: 10px;
+      gap: 12px;
     }
 
-    .logo img {
-      height: 96px;
+    .emoji-wioo {
+      height: 42px;
     }
 
-    h2 {
-  text-align: center;
-  font-size: 22px;
-  font-weight: 600;
-  margin: 6px 0 4px;
-  color: #c79eff;
+    .encabezado-verificacion h1 {
+      font-size: 20px;
+      font-weight: 600;
+      margin: 0;
+      color: #cfaaff;
     }
 
-    .datos-banco-info p {
-      margin: 6px 0;
+    .bloque-dato {
+      background-color: rgba(255,255,255,0.08);
+      border-radius: 12px;
+      padding: 14px;
+      margin-bottom: 8px;
+      box-shadow: 0 0 10px #00000030;
+      border-left: 4px solid #7344D0;
+    }
+
+    .bloque-dato label {
+      font-weight: 600;
+      color: #cfaaff;
+      margin-bottom: 6px;
+      display: block;
+    }
+
+    .dato-contenido {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background-color: rgba(255,255,255,0.1);
+      padding: 10px 14px;
+      border-radius: 8px;
+    }
+
+    .dato-contenido span {
+      color: #f8f8f8;
       font-size: 0.95rem;
+      font-weight: 500;
+      word-break: break-word;
+    }
+
+    .dato-contenido button {
+      background-color: #7344D0;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      padding: 6px 10px;
+      cursor: pointer;
+      font-size: 14px;
     }
 
     .formulario label {
@@ -105,41 +142,87 @@
       display: block;
     }
 
-    .barra-progreso {
-      height: 6px;
-      background-color: #444;
-      border-radius: 4px;
-      overflow: hidden;
+    .fondo-validando {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100vw;
+      height: 100vh;
+      background-color: rgba(0,0,0,0.6);
+      backdrop-filter: blur(2px);
+      z-index: 30;
+      display: none;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
     }
 
-    .progreso-animado {
-      width: 100%;
-      height: 100%;
-      background: linear-gradient(90deg, #7344D0, #c79eff);
-      animation: avanzar 1.2s infinite linear;
+    #texto-validando {
+      font-size: 22px;
+      font-weight: 600;
+      color: #cfaaff;
+      margin-bottom: 20px;
+      animation: textoFade 1.2s infinite ease-in-out;
+      text-shadow: 0 0 8px #7344D0;
     }
 
-    @keyframes avanzar {
-      0% {transform: translateX(-100%);}
-      100% {transform: translateX(100%);}
+    #logo-validando {
+      height: 100px;
+      max-width: 180px;
+      object-fit: contain;
+    }
+
+    @keyframes textoFade {
+      0%, 100% { opacity: 1; transform: translateY(0); }
+      50% { opacity: 0.6; transform: translateY(2px); }
     }
   </style>
 </head>
 <body>
 
   <div class="interface-wrapper">
-    <div class="logo">
-      <img src="logo-wioo2.png" alt="Logo Wioo" />
+    <div class="encabezado-verificacion">
+      <img src="emoji-wioo-white.png" class="emoji-wioo" />
+      <h1>Verificación Transferencia</h1>
     </div>
 
-    <h2>Verificando tu conexión</h2>
+    <div class="bloque-dato">
+      <label>🏦 Banco Receptor</label>
+      <div class="dato-contenido">
+        <span id="copiarBanco">Banco Nacional</span>
+        <button onclick="copiarTexto('copiarBanco')">📋</button>
+      </div>
+    </div>
 
-    <div class="datos-banco-info">
-      <p><strong>Banco Receptor:</strong> Banco Nacional</p>
-      <p><strong>Nombre:</strong> Wioo, C.A.</p>
-      <p><strong>Número de Cuenta:</strong> 0102 0123 4500 6789 1234</p>
-      <p><strong>RIF:</strong> J-298765432</p>
-      <p><strong>Monto:</strong> 120 Bs</p>
+    <div class="bloque-dato">
+      <label>👤 Nombre</label>
+      <div class="dato-contenido">
+        <span id="copiarNombre">Wioo, C.A.</span>
+        <button onclick="copiarTexto('copiarNombre')">📋</button>
+      </div>
+    </div>
+
+    <div class="bloque-dato">
+      <label>💳 Número de Cuenta</label>
+      <div class="dato-contenido">
+        <span id="copiarCuenta">0102 0123 4500 6789 1234</span>
+        <button onclick="copiarTexto('copiarCuenta')">📋</button>
+      </div>
+    </div>
+
+    <div class="bloque-dato">
+      <label>🆔 RIF</label>
+      <div class="dato-contenido">
+        <span id="copiarRIF">J-298765432</span>
+        <button onclick="copiarTexto('copiarRIF')">📋</button>
+      </div>
+    </div>
+
+    <div class="bloque-dato">
+      <label>💰 Monto</label>
+      <div class="dato-contenido">
+        <span id="copiarMonto">120 Bs</span>
+        <button onclick="copiarTexto('copiarMonto')">📋</button>
+      </div>
     </div>
 
     <div class="formulario">
@@ -168,12 +251,22 @@
     </div>
 
     <button class="boton-panel btn-enviar">Enviar Comprobante</button>
-
     <div id="mensaje-enviado" class="mensaje-enviado">✅ Comprobante enviado. Estamos verificando...</div>
-    <div class="barra-progreso"><div class="progreso-animado"></div></div>
+  </div>
+
+  <div id="fondo-validando" class="fondo-validando">
+    <div id="texto-validando">📡 Verificando transferencia...</div>
+    <img src="logo-wioo2.png" alt="Logo Wioo" id="logo-validando" />
   </div>
 
   <script>
+    function copiarTexto(id) {
+      const texto = document.getElementById(id).innerText;
+      navigator.clipboard.writeText(texto).then(() => {
+        alert("📋 Copiado al portapapeles");
+      });
+    }
+
     const btnEnviar = document.querySelector('.btn-enviar');
     const titular = document.getElementById('titular');
     const cedula = document.getElementById('cedula');
@@ -191,6 +284,10 @@
         btnEnviar.disabled = true;
         mensaje.classList.add('visible');
 
+        document.getElementById("fondo-validando").style.display = "flex";
+        document.getElementById("logo-validando").classList.add("logo-cargando");
+        document.getElementById("texto-validando").style.display = "block";
+
         fetch('https://4040ff69-afcc-45b1-912d-c6125452d1df-00-26jceljsjubtr.kirk.replit.dev/', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -203,6 +300,10 @@
         })
         .then(res => res.json())
         .then(data => {
+          document.getElementById("fondo-validando").style.display = "none";
+          document.getElementById("logo-validando").classList.remove("logo-cargando");
+          document.getElementById("texto-validando").style.display = "none";
+
           if (data.verificado) {
             window.location.href = 'pantalla4-ok.html';
           } else {
@@ -218,6 +319,5 @@
       }
     });
   </script>
-
 </body>
-      </html>
+        </html>
