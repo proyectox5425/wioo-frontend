@@ -2,98 +2,96 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=0.85, maximum-scale=0.85, user-scalable=no" />
-  <title>Punto Click - Verificación Transferencia</title>
+  <meta name="viewport" content="width=device-width, initial-scale=0.75, maximum-scale=0.75, user-scalable=no" />
+  <title>Wioo - Verificación de Pago</title>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet" />
   <style>
     body {
       margin: 0;
       font-family: 'Poppins', sans-serif;
-      background-image: url('fondo-autobus.jpg');
-      background-size: cover;
-      background-position: center;
-      background-repeat: no-repeat;
-      color: white;
+      background-color: #ffffff;
+      color: #333;
     }
 
-    .interface-wrapper {
-      max-width: 360px;
-      margin: 30px auto;
-      background-color: rgba(28,28,28,0.75);
-      border-radius: 16px;
+    .encabezado {
+      background-color: #7344D0;
+      color: white;
       padding: 18px 14px;
-      box-shadow: 0 0 12px rgba(0,0,0,0.4);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      justify-content: center;
+    }
+
+    .encabezado img {
+      height: 42px;
+    }
+
+    .encabezado h1 {
+      font-size: 20px;
+      margin: 0;
+      font-weight: 600;
+    }
+
+    .mensaje-aviso {
+      background-color: #f2f2f2;
+      color: #555;
+      padding: 12px 16px;
+      font-size: 0.95rem;
+      margin: 0;
+      line-height: 1.4;
+      border-bottom: 1px solid #ddd;
+    }
+
+    .contenido {
+      max-width: 360px;
+      margin: 20px auto;
+      padding: 20px;
       display: flex;
       flex-direction: column;
       gap: 14px;
     }
 
-    .encabezado-verificacion {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 12px;
-    }
-
-    .emoji-wioo {
-      height: 42px;
-    }
-
-    .encabezado-verificacion h1 {
-      font-size: 20px;
-      font-weight: 600;
-      margin: 0;
-      color: #cfaaff;
-    }
-
-    .mensaje-aviso {
-      font-size: 0.9rem;
-      background-color: rgba(255,255,255,0.08);
-      padding: 12px;
-      border-radius: 10px;
-      box-shadow: 0 0 8px #00000020;
-      line-height: 1.4;
-      margin: 0;
-    }
-
     h2 {
       font-size: 1rem;
       font-weight: 600;
-      margin-bottom: 6px;
-      color: #cfaaff;
+      color: #7344D0;
       border-bottom: 1px solid #7344D050;
       padding-bottom: 6px;
+      margin: 0;
     }
 
     .bloque-dato {
-      background-color: rgba(255,255,255,0.08);
-      border-radius: 12px;
-      padding: 14px;
-      margin-bottom: 8px;
-      box-shadow: 0 0 10px #00000030;
+      background-color: #fafafa;
+      border-radius: 10px;
+      padding: 12px;
+      box-shadow: 0 1px 4px #00000010;
       border-left: 4px solid #7344D0;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
     }
 
     .bloque-dato label {
       font-weight: 600;
-      color: #cfaaff;
-      margin-bottom: 6px;
-      display: block;
+      color: #222;
+      font-size: 0.9rem;
     }
 
     .dato-contenido {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      background-color: rgba(255,255,255,0.1);
-      padding: 10px 14px;
-      border-radius: 8px;
+      background-color: #ffffff;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      padding: 8px 12px;
     }
 
     .dato-contenido span {
-      color: #f8f8f8;
-      font-size: 0.95rem;
-      font-weight: 500;
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: #222;
       word-break: break-word;
     }
 
@@ -101,58 +99,96 @@
       background-color: #7344D0;
       color: white;
       border: none;
-      border-radius: 6px;
       padding: 6px 10px;
+      border-radius: 6px;
       cursor: pointer;
       font-size: 14px;
     }
 
-    .formulario label {
-      font-weight: 500;
-      font-size: 0.9rem;
-      margin-bottom: 6px;
-      display: block;
-    }
-
-    .formulario input,
-    .formulario select {
-      width: 100%;
-      padding: 10px;
-      border: none;
-      border-radius: 10px;
-      margin-bottom: 16px;
-      font-size: 1rem;
-      background-color: #ffffff;
-      color: #333;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.2);
-    }
-
-    .formulario input::placeholder {
-      color: #999;
-    }
-
-    .boton-panel {
+    .boton-modal {
       background-color: #7344D0;
       color: white;
       padding: 12px 16px;
-      border-radius: 8px;
-      font-size: 18px;
       border: none;
+      font-size: 16px;
+      border-radius: 8px;
       cursor: pointer;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.3);
-      transition: background 0.3s ease;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.2);
     }
 
-    .boton-panel:hover {
-      background-color: #5e35b1;
+    .modal {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0,0,0,0.5);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      z-index: 100;
+    }
+
+    .modal-contenido {
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      max-width: 360px;
+      width: 90%;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .modal-contenido label {
+      font-weight: 600;
+      font-size: 0.9rem;
+      margin-bottom: 4px;
+      display: block;
+      color: #222;
+    }
+
+    .modal-contenido input,
+    .modal-contenido select {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      font-size: 1rem;
+      font-weight: 500;
+    }
+
+    .modal-contenido input::placeholder {
+      color: #999;
+    }
+
+    .btn-enviar {
+      background-color: #7344D0;
+      color: white;
+      border: none;
+      padding: 12px 16px;
+      border-radius: 8px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+
+    .btn-cerrar {
+      background-color: #ccc;
+      color: #333;
+      border: none;
+      padding: 8px 12px;
+      border-radius: 6px;
+      font-size: 14px;
+      cursor: pointer;
+      align-self: flex-end;
     }
 
     .mensaje-enviado {
       text-align: center;
       font-size: 0.9rem;
-      padding: 10px;
       background-color: #00ff99;
       color: #000;
+      padding: 10px;
       border-radius: 8px;
       display: none;
     }
@@ -160,59 +196,24 @@
     .mensaje-enviado.visible {
       display: block;
     }
-
-    .fondo-validando {
-      position: fixed;
-      top: 0; left: 0;
-      width: 100vw;
-      height: 100vh;
-      background-color: rgba(0,0,0,0.6);
-      backdrop-filter: blur(2px);
-      z-index: 30;
-      display: none;
-      justify-content: center;
-      align-items: center;
-      flex-direction: column;
-    }
-
-    #texto-validando {
-      font-size: 22px;
-      font-weight: 600;
-      color: #cfaaff;
-      margin-bottom: 20px;
-      animation: textoFade 1.2s infinite ease-in-out;
-      text-shadow: 0 0 8px #7344D0;
-    }
-
-    #logo-validando {
-      height: 100px;
-      max-width: 180px;
-      object-fit: contain;
-    }
-
-    @keyframes textoFade {
-      0%, 100% { opacity: 1; transform: translateY(0); }
-      50% { opacity: 0.6; transform: translateY(2px); }
-    }
   </style>
 </head>
 <body>
 
-  <div class="interface-wrapper">
-    <div class="encabezado-verificacion">
-      <img src="emoji-wioo-white.png" class="emoji-wioo" />
-      <h1>Verificación Transferencia</h1>
-    </div>
+  <div class="encabezado">
+    <img src="emoji-wioo-white.png" alt="Wioo Logo" />
+    <h1>Verificación de Pago</h1>
+  </div>
 
-    <p class="mensaje-aviso">⚠️ Asegúrate de pagar el monto exacto para que nuestro sistema lo pueda validar correctamente.</p>
+  <p class="mensaje-aviso">ℹ️ Asegúrate de pagar el monto exacto para que nuestro sistema lo pueda validar correctamente.</p>
 
+  <div class="contenido">
     <h2>Datos Bancarios</h2>
 
     <div class="bloque-dato">
       <label>🏦 Banco Receptor</label>
       <div class="dato-contenido">
         <span id="copiarBanco">Banco Nacional</span>
-        <button onclick="copiarTexto('copiarBanco')">📋</button>
       </div>
     </div>
 
@@ -220,7 +221,6 @@
       <label>👤 Nombre</label>
       <div class="dato-contenido">
         <span id="copiarNombre">Wioo, C.A.</span>
-        <button onclick="copiarTexto('copiarNombre')">📋</button>
       </div>
     </div>
 
@@ -244,13 +244,20 @@
       <label>💰 Monto</label>
       <div class="dato-contenido">
         <span id="copiarMonto">120 Bs</span>
-        <button onclick="copiarTexto('copiarMonto')">📋</button>
       </div>
     </div>
 
-    <h2>Carga tu pago</h2>
+    <button class="boton-modal" onclick="abrirModal()">📥 Cargar Comprobante</button>
+    <div id="mensaje-enviado" class="mensaje-enviado">✅ Comprobante enviado. Estamos verificando...</div>
+  </div>
 
-    <div class="formulario">
+  <!-- Modal -->
+  <div id="modal" class="modal">
+    <div class="modal-contenido">
+      <button class="btn-cerrar" onclick="cerrarModal()">Cerrar</button>
+
+      <h2>Carga tu pago</h2>
+
       <label for="titular">Titular que hizo la transferencia</label>
       <input type="text" id="titular" placeholder="Ej: María Gómez" />
 
@@ -273,15 +280,9 @@
 
       <label for="referencia">Últimos 6 dígitos del comprobante</label>
       <input type="text" id="referencia" maxlength="6" placeholder="Ej: 456789" />
+
+      <button class="btn-enviar" onclick="enviarFormulario()">Enviar Comprobante</button>
     </div>
-
-    <button class="boton-panel btn-enviar">Enviar Comprobante</button>
-    <div id="mensaje-enviado" class="mensaje-enviado">✅ Comprobante enviado. Estamos verificando...</div>
-  </div>
-
-  <div id="fondo-validando" class="fondo-validando">
-    <div id="texto-validando">📡 Verificando transferencia...</div>
-    <img src="logo-wioo2.png" alt="Logo Wioo" id="logo-validando" />
   </div>
 
   <script>
@@ -292,57 +293,43 @@
       });
     }
 
-    const btnEnviar = document.querySelector('.btn-enviar');
-    const titular = document.getElementById('titular');
-    const cedula = document.getElementById('cedula');
-    const banco = document.getElementById('banco');
-    const referencia = document.getElementById('referencia');
-    const mensaje = document.getElementById('mensaje-enviado');
+    function abrirModal() {
+      document.getElementById('modal').style.display = 'flex';
+    }
 
-    btnEnviar.addEventListener('click', () => {
-      if (
-        titular.value.trim() &&
-        cedula.value.trim() &&
-        banco.value &&
-        referencia.value.trim().length === 6
-      ) {
-        btnEnviar.disabled = true;
+    function cerrarModal() {
+      document.getElementById('modal').style.display = 'none';
+    }
+
+    function enviarFormulario() {
+      const titular = document.getElementById('titular').value.trim();
+      const cedula = document.getElementById('cedula').value.trim();
+      const banco = document.getElementById('banco').value;
+      const referencia = document.getElementById('referencia').value.trim();
+      const mensaje = document.getElementById('mensaje-enviado');
+
+      if (titular && cedula && banco && referencia.length === 6) {
         mensaje.classList.add('visible');
-
-        document.getElementById("fondo-validando").style.display = "flex";
-        document.getElementById("logo-validando").classList.add("logo-cargando");
-        document.getElementById("texto-validando").style.display = "block";
+        cerrarModal();
 
         fetch('https://4040ff69-afcc-45b1-912d-c6125452d1df-00-26jceljsjubtr.kirk.replit.dev/', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            titular: titular.value.trim(),
-            cedula: cedula.value.trim(),
-            banco: banco.value,
-            referencia: referencia.value.trim()
-          })
+          body: JSON.stringify({ titular, cedula, banco, referencia })
         })
         .then(res => res.json())
         .then(data => {
-          document.getElementById("fondo-validando").style.display = "none";
-          document.getElementById("logo-validando").classList.remove("logo-cargando");
-          document.getElementById("texto-validando").style.display = "none";
-
           if (data.verificado) {
             window.location.href = 'pantalla4-ok.html';
           } else {
             window.location.href = 'pantalla4-error.html';
           }
         })
-        .catch(err => {
-          console.error('Error en la verificación:', err);
-          window.location.href = 'pantalla4-error.html';
-        });
+        .catch(() => window.location.href = 'pantalla4-error.html');
       } else {
         alert("Por favor completa todos los campos correctamente.");
       }
-    });
+    }
   </script>
 </body>
   </html>
