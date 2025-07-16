@@ -46,6 +46,25 @@
       color: #cfaaff;
     }
 
+    .mensaje-aviso {
+      font-size: 0.9rem;
+      background-color: rgba(255,255,255,0.08);
+      padding: 12px;
+      border-radius: 10px;
+      box-shadow: 0 0 8px #00000020;
+      line-height: 1.4;
+      margin: 0;
+    }
+
+    h2 {
+      font-size: 1rem;
+      font-weight: 600;
+      margin-bottom: 6px;
+      color: #cfaaff;
+      border-bottom: 1px solid #7344D050;
+      padding-bottom: 6px;
+    }
+
     .bloque-dato {
       background-color: rgba(255,255,255,0.08);
       border-radius: 12px;
@@ -185,6 +204,10 @@
       <h1>Verificación Transferencia</h1>
     </div>
 
+    <p class="mensaje-aviso">⚠️ Asegúrate de pagar el monto exacto para que nuestro sistema lo pueda validar correctamente.</p>
+
+    <h2>Datos Bancarios</h2>
+
     <div class="bloque-dato">
       <label>🏦 Banco Receptor</label>
       <div class="dato-contenido">
@@ -224,6 +247,8 @@
         <button onclick="copiarTexto('copiarMonto')">📋</button>
       </div>
     </div>
+
+    <h2>Carga tu pago</h2>
 
     <div class="formulario">
       <label for="titular">Titular que hizo la transferencia</label>
@@ -320,4 +345,4 @@
     });
   </script>
 </body>
-        </html>
+  </html>
