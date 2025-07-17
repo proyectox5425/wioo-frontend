@@ -933,62 +933,10 @@ document.querySelector('form').addEventListener('submit', function(e) {
   }
 });
 
-// ✏️ Botón EDITAR
-document.querySelectorAll('button.nav-link').forEach(btn => {
-  if (btn.textContent.includes('✏️')) {
-    btn.addEventListener('click', () => {
-      const fila = btn.closest('tr');
-      const codigo = fila.children[1].textContent;
-      const nombreActual = fila.children[0].textContent;
-      const rutaActual = fila.children[2].textContent;
-
-      const nuevoNombre = prompt("Nuevo nombre:", nombreActual);
-      const nuevaRuta = prompt("Nueva ruta:", rutaActual);
-
-      if (nuevoNombre && nuevaRuta) {
-        editarChofer(codigo, nuevoNombre, nuevaRuta);
-        alert("✅ Chofer editado correctamente");
-      }
-    });
-  }
-});
-
-// 🔒 Botón INHABILITAR
-document.querySelectorAll('button.nav-link').forEach(btn => {
-  if (btn.textContent.includes('🔒')) {
-    btn.addEventListener('click', () => {
-      const codigo = btn.closest('tr').children[1].textContent;
-      inhabilitarChofer(codigo);
-      alert("🔒 Chofer inhabilitado");
-    });
-  }
-});
-
-// ✅ Botón ACTIVAR
-document.querySelectorAll('button.nav-link').forEach(btn => {
-  if (btn.textContent.includes('✅')) {
-    btn.addEventListener('click', () => {
-      const codigo = btn.closest('tr').children[1].textContent;
-      activarChofer(codigo);
-      alert("✅ Chofer activado");
-    });
-  }
-});
-
-// 🗑️ Botón ELIMINAR
-document.querySelectorAll('button.nav-link').forEach(btn => {
-  if (btn.textContent.includes('🗑️')) {
-    btn.addEventListener('click', () => {
-      const codigo = btn.closest('tr').children[1].textContent;
-      const confirmacion = confirm("¿Seguro que deseas eliminar este chofer?");
-      if (confirmacion) {
-        eliminarChofer(codigo);
-        alert("🗑️ Chofer eliminado");
-      }
-    });
-  }
-});
+// ✅ Renderizar choferes al cargar el panel
+window.onload = function() {
+  renderChoferes();
+};
 </script>
-  </script>
 </body>
 </html>
