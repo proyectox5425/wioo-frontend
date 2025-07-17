@@ -758,6 +758,237 @@
       document.getElementById(id).classList.add('active');
       closeSidebar();
     }
+
+    // Apertura y estructura base
+const dbName = "WiooDB";
+const dbVersion = 1;
+let db;
+
+const request = indexedDB.open(dbName, dbVersion);
+request.onupgradeneeded = function(e) {
+  db = e.target.result;
+  if (!db.objectStoreNames.contains("choferes")) {
+    db.createObjectStore("choferes", { keyPath: "id" });
+  }
+};
+
+request.onsuccess = function(e) {
+  db = e.target.result;
+  console.log("IndexedDB lista ✅");
+};
+
+// Función para agregar chofer
+function agregarChofer(id, nombre, ruta) {
+  const tx = db.transaction("choferes", "readwrite");
+  const store = tx.objectStore("choferes");
+  const registro = { id, nombre, ruta, estado: true };
+  store.put(registro);
+  console.log("Chofer registrado:", registro);
+}
+
+// Función para editar chofer
+function editarChofer(id, nuevoNombre, nuevaRuta) {
+  const tx = db.transaction("choferes", "readwrite");
+  const store = tx.objectStore("choferes");
+  const get = store.get(id);
+  get.onsuccess = function() {
+    const registro = get.result;
+    registro.nombre = nuevoNombre;
+    registro.ruta = nuevaRuta;
+    store.put(registro);
+    console.log("Chofer editado:", registro);
+  };
+}
+
+// Inhabilitar chofer
+function inhabilitarChofer(id) {
+  const tx = db.transaction("choferes", "readwrite");
+  const store = tx.objectStore("choferes");
+  const get = store.get(id);
+  get.onsuccess = function() {
+    const registro = get.result;
+    registro.estado = false;
+    store.put(registro);
+    console.log("Chofer inhabilitado:", registro);
+  };
+}
+
+// Activar chofer
+function activarChofer(id) {
+  const tx = db.transaction("choferes", "readwrite");
+  const store = tx.objectStore("choferes");
+  const get = store.get(id);
+  get.onsuccess = function() {
+    const registro = get.result;
+    registro.estado = true;
+    store.put(registro);
+    console.log("Chofer activado:", registro);
+  };
+}
+
+// Eliminar chofer
+function eliminarChofer(id) {
+  const tx = db.transaction("choferes", "readwrite");
+  const store = tx.objectStore("choferes");
+  store.delete(id);
+  console.log("Chofer eliminado:", id);
+    }
+
+    function renderChoferes() {
+  const tx = db.transaction("choferes", "readonly");
+  const store = tx.objectStore("choferes");
+  const request = store.getAll();
+  request.onsuccess = function() {
+    const datos = request.result;
+    const cuerpo = document.querySelector('#choferes-table-body');
+    cuerpo.innerHTML = "";
+
+    datos.forEach(c => {
+      const fila = document.createElement("tr");
+      fila.innerHTML = `
+        <td>${c.nombre}</td>
+        <td>${c.id}</td>
+        <td>${c.ruta}</td>
+        <td class="${c.estado ? 'activo' : 'inactivo'}">${c.estado ? '✅ Activo' : '⛔ Inactivo'}</td>
+        <td>
+          <button class="nav-link editar">✏️ Editar</button>
+          <button class="nav-link ${c.estado ? 'inhabilitar' : 'activar'}">
+            ${c.estado ? '🔒 Inhabilitar' : '✅ Activar'}
+          </button>
+          <button class="nav-link eliminar">🗑️ Eliminar</button>
+        </td>
+      `;
+      cuerpo.appendChild(fila);
+    });
+
+    function conectarBotonesChoferes() {
+  const filas = document.querySelectorAll("#choferes-table-body tr");
+
+  filas.forEach(fila => {
+    const codigo = fila.children[1].textContent;
+
+    // Editar
+    const editarBtn = fila.querySelector(".editar");
+    editarBtn.addEventListener("click", () => {
+      const nombreActual = fila.children[0].textContent;
+      const rutaActual = fila.children[2].textContent;
+
+      const nuevoNombre = prompt("Nuevo nombre:", nombreActual);
+      const nuevaRuta = prompt("Nueva ruta:", rutaActual);
+
+      if (nuevoNombre && nuevaRuta) {
+        editarChofer(codigo, nuevoNombre, nuevaRuta);
+        renderChoferes();
+        alert("✏️ Chofer editado");
+      }
+    });
+
+    // Activar o Inhabilitar
+    const estadoBtn = fila.querySelector(".activar, .inhabilitar");
+    estadoBtn.addEventListener("click", () => {
+      if (estadoBtn.classList.contains("inhabilitar")) {
+        inhabilitarChofer(codigo);
+        renderChoferes();
+        alert("🔒 Chofer inhabilitado");
+      } else {
+        activarChofer(codigo);
+        renderChoferes();
+        alert("✅ Chofer activado");
+      }
+    });
+
+    // Eliminar
+    const eliminarBtn = fila.querySelector(".eliminar");
+    eliminarBtn.addEventListener("click", () => {
+      const confirmacion = confirm("¿Eliminar chofer definitivamente?");
+      if (confirmacion) {
+        eliminarChofer(codigo);
+        renderChoferes();
+        alert("🗑️ Chofer eliminado");
+      }
+    });
+  });
+    }
+    // Reactivar listeners tras renderizado
+    conectarBotonesChoferes();
+  };
+    }
+
+    <script>
+// 🔧 Mapeo funcional entre botones y base de datos real
+
+// 🚀 Registrar nuevo chofer
+document.querySelector('form').addEventListener('submit', function(e) {
+  e.preventDefault();
+  const nombre = this.querySelector('input[placeholder*="Luis"]').value;
+  const ruta = this.querySelector('input[placeholder*="Ruta"]').value;
+  const codigo = this.querySelector('input[placeholder*="CHF"]').value;
+
+  if (nombre && ruta && codigo) {
+    agregarChofer(codigo, nombre, ruta);
+    alert("✅ Chofer registrado exitosamente");
+    this.reset();
+  } else {
+    alert("⚠️ Todos los campos son obligatorios");
+  }
+});
+
+// ✏️ Botón EDITAR
+document.querySelectorAll('button.nav-link').forEach(btn => {
+  if (btn.textContent.includes('✏️')) {
+    btn.addEventListener('click', () => {
+      const fila = btn.closest('tr');
+      const codigo = fila.children[1].textContent;
+      const nombreActual = fila.children[0].textContent;
+      const rutaActual = fila.children[2].textContent;
+
+      const nuevoNombre = prompt("Nuevo nombre:", nombreActual);
+      const nuevaRuta = prompt("Nueva ruta:", rutaActual);
+
+      if (nuevoNombre && nuevaRuta) {
+        editarChofer(codigo, nuevoNombre, nuevaRuta);
+        alert("✅ Chofer editado correctamente");
+      }
+    });
+  }
+});
+
+// 🔒 Botón INHABILITAR
+document.querySelectorAll('button.nav-link').forEach(btn => {
+  if (btn.textContent.includes('🔒')) {
+    btn.addEventListener('click', () => {
+      const codigo = btn.closest('tr').children[1].textContent;
+      inhabilitarChofer(codigo);
+      alert("🔒 Chofer inhabilitado");
+    });
+  }
+});
+
+// ✅ Botón ACTIVAR
+document.querySelectorAll('button.nav-link').forEach(btn => {
+  if (btn.textContent.includes('✅')) {
+    btn.addEventListener('click', () => {
+      const codigo = btn.closest('tr').children[1].textContent;
+      activarChofer(codigo);
+      alert("✅ Chofer activado");
+    });
+  }
+});
+
+// 🗑️ Botón ELIMINAR
+document.querySelectorAll('button.nav-link').forEach(btn => {
+  if (btn.textContent.includes('🗑️')) {
+    btn.addEventListener('click', () => {
+      const codigo = btn.closest('tr').children[1].textContent;
+      const confirmacion = confirm("¿Seguro que deseas eliminar este chofer?");
+      if (confirmacion) {
+        eliminarChofer(codigo);
+        alert("🗑️ Chofer eliminado");
+      }
+    });
+  }
+});
+</script>
   </script>
 </body>
 </html>
