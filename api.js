@@ -51,3 +51,45 @@ export async function login(usuario, contraseña) {
     return { estado: "error", mensaje: "Credenciales inválidas." };
   }
       }
+
+const BASE_URL = "https://tu-backend-wioo.com/api"; // ← reemplaza por tu URL real
+const token = localStorage.getItem("tokenWioo") || "";
+
+export async function traerChoferes() {
+  const res = await fetch(`${BASE_URL}/choferes`, {
+    headers: { Authorization: `Bearer ${token}` }
+  });
+  return await res.json();
+}
+
+export async function registrarChofer(datos) {
+  const res = await fetch(`${BASE_URL}/choferes`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`
+    },
+    body: JSON.stringify(datos)
+  });
+  return await res.json();
+}
+
+export async function editarChofer(id, datos) {
+  const res = await fetch(`${BASE_URL}/choferes/${id}`, {
+    method: "PATCH",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`
+    },
+    body: JSON.stringify(datos)
+  });
+  return await res.json();
+}
+
+export async function eliminarChofer(id) {
+  const res = await fetch(`${BASE_URL}/choferes/${id}`, {
+    method: "DELETE",
+    headers: { Authorization: `Bearer ${token}` }
+  });
+  return await res.json();
+    }
