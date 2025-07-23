@@ -319,38 +319,48 @@
     }
 
     function enviarFormulario() {
-      const cedula = document.getElementById('cedula').value.trim();
-      const codigo = document.getElementById('codigo').value;
-      const telefono = document.getElementById('telefono').value.trim();
-      const banco = document.getElementById('banco').value;
-      const referencia = document.getElementById('referencia').value.trim();
-      const mensaje = document.getElementById('mensaje-enviado');
+  const cedula = document.getElementById('cedula').value.trim();
+  const codigo = document.getElementById('codigo').value;
+  const telefono = document.getElementById('telefono').value.trim();
+  const banco = document.getElementById('banco').value;
+  const referencia = document.getElementById('referencia').value.trim();
+  const mensaje = document.getElementById('mensaje-enviado');
 
-      if (
-        cedula &&
-        codigo &&
-        telefono.length === 7 &&
-        banco &&
-        referencia.length === 4
-      ) {
-        mensaje.classList.add('visible');
-        cerrarModal();
+  if (
+    cedula &&
+    codigo &&
+    telefono.length === 7 &&
+    banco &&
+    referencia.length === 4
+  ) {
+    mensaje.classList.add('visible');
+    cerrarModal();
 
-        const numeroCompleto = codigo + telefono;
+    const datos = {
+      metodo: "pago-movil",
+      cedula: cedula,
+      telefono: `${codigo}${telefono}`,
+      banco: banco,
+      referencia: referencia,
+      monto: "150",
+      tiempo: "12h"
+    };
 
-        // Simulación de verificación
-        const referenciasValidas = ["1234", "9876", "2024", "4321"];
-        setTimeout(() => {
-          if (referenciasValidas.includes(referencia)) {
-            window.location.href = "pantalla-4.1.html";
-          } else {
-            window.location.href = "pantalla-4.2.html";
-          }
-        }, 3000);
+    cargarComprobante(datos).then((respuesta) => {
+      if (respuesta.estado === "aprobado") {
+        window.location.href = "pantalla-4.1.html";
+      } else if (respuesta.estado === "rechazado") {
+        window.location.href = "pantalla-4.2.html";
       } else {
-        alert("Por favor completa todos los campos correctamente.");
+        alert("⚠️ Respuesta desconocida del sistema. Contacta soporte.");
       }
+    });
+
+  } else {
+    alert("Por favor completa todos los campos correctamente.");
+  }
     }
   </script>
+  <script src="api.js"></script>
 </body>
 </html>
