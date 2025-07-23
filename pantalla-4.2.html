@@ -78,6 +78,10 @@
     <img src="logo-wioo2.png" alt="Logo Wioo" />
     <h1>🔴 Pago no verificado</h1>
     <p>Tu comprobante fue rechazado.<br>Por favor revisa tus datos e inténtalo nuevamente.</p>
+    <p style="margin-bottom:24px;">
+  🚫 Referencia: <strong id="referencia"></strong><br>
+  🏦 Banco: <strong id="banco"></strong>
+    </p>
     <button class="boton-volver" onclick="volver()">Volver a intentar</button>
   </div>
 
@@ -85,6 +89,10 @@
     function volver() {
     window.location.href = "index.html";
     }
+    const datos = JSON.parse(localStorage.getItem("datosPagoWioo") || "{}");
+document.getElementById("referencia").innerText = datos.referencia || "–";
+document.getElementById("banco").innerText = datos.banco || "–";
+    localStorage.removeItem("datosPagoWioo");
   </script>
 
 </body>
