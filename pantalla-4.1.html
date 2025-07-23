@@ -61,9 +61,21 @@
     <img src="logo-wioo2.png" alt="Logo Wioo" />
     <h1>💚 Comprobante verificado</h1>
     <p>Ahora estás conectado.<br>Esta ventana se cerrará automáticamente.</p>
+    <p style="margin-top:30px;">
+  ✅ Método: <strong id="metodo"></strong><br>
+  🏦 Banco: <strong id="banco"></strong><br>
+  📜 Referencia: <strong id="referencia"></strong><br>
+  ⏳ Tiempo: <strong id="tiempo"></strong>
+    </p>
   </div>
 
   <script>
+    const datos = JSON.parse(localStorage.getItem("datosPagoWioo") || "{}");
+document.getElementById("metodo").innerText = datos.metodo || "–";
+document.getElementById("banco").innerText = datos.banco || "–";
+document.getElementById("referencia").innerText = datos.referencia || "–";
+document.getElementById("tiempo").innerText = datos.tiempo || "–";
+    localStorage.removeItem("datosPagoWioo");
     setTimeout(() => {
       window.close(); // Si no funciona, puedes redirigir
       // window.location.href = "gracias.html";
