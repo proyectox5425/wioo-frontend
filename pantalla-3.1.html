@@ -348,8 +348,10 @@
 
     cargarComprobante(datos).then((respuesta) => {
       if (respuesta.estado === "aprobado") {
+        localStorage.setItem("datosPagoWioo", JSON.stringify(datos));
         window.location.href = "pantalla-4.1.html";
       } else if (respuesta.estado === "rechazado") {
+        localStorage.setItem("datosPagoWioo", JSON.stringify(datos));
         window.location.href = "pantalla-4.2.html";
       } else {
         alert("⚠️ Respuesta desconocida del sistema. Contacta soporte.");
