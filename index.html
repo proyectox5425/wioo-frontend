@@ -579,30 +579,28 @@ document.getElementById("encabezado-wioo").addEventListener("mouseup", () => {
   clearTimeout(timer);
 });
 
-      document.getElementById("codigoChofer").addEventListener("input", (e) => {
-        const valor = e.target.value.trim();
-        if (valor.length === 4) {
-          validarCodigo(valor);
-        }
-      });
+     document.getElementById("encabezado-wioo").addEventListener("mouseup", () => {
+  pulsado = false;
+  clearTimeout(timer);
+});
 
-      function validarCodigo(codigo) {
-        const codigosValidos = [
-          { codigo: "1023", estado: "activo" },
-          { codigo: "1050", estado: "usado" },
-          { codigo: "9981", estado: "activo" }
-        ];
-        const resultado = codigosValidos.find(c => c.codigo === codigo);
-        if (!resultado) {
-          alert("❌ Código inválido. Verifica con el chofer.");
-        } else if (resultado.estado === "usado") {
-          alert("⚠️ Este código ya fue utilizado.");
-        } else {
-          alert("✅ Código aprobado. ¡Bienvenido a bordo!");
-        }
+document.getElementById("codigoChofer").addEventListener("input", (e) => {
+  const valor = e.target.value.trim();
+  if (valor.length === 4) {
+    validarCodigo(valor).then((respuesta) => {
+      if (respuesta.estado === "aprobado") {
+        alert("✅ Código aprobado. ¡Bienvenido a bordo!");
+        // Aquí puedes redirigir, activar conexión, o mostrar pantalla operativa
+      } else if (respuesta.estado === "rechazado") {
+        alert("❌ Código inválido. Verifica con el chofer.");
+      } else {
+        alert("⚠️ Estado desconocido. Contacta soporte.");
       }
-
-      document.getElementById("close-modal").addEventListener("click", () => {
+    });
+  }
+});
+      
+     document.getElementById("close-modal").addEventListener("click", () => {
         document.getElementById("login-modal").style.display = "none";
       });
 
@@ -715,5 +713,6 @@ if (campoPregunta && bloqueRespuesta) {
 
 </script>
 <script src="https://unpkg.com/html5-qrcode"></script>
+  <script src="api.js"></script>
 </body>
 </html>
