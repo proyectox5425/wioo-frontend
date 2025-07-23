@@ -302,34 +302,43 @@
     }
 
     function enviarFormulario() {
-      const titular = document.getElementById('titular').value.trim();
-      const cedula = document.getElementById('cedula').value.trim();
-      const banco = document.getElementById('banco').value;
-      const referencia = document.getElementById('referencia').value.trim();
-      const mensaje = document.getElementById('mensaje-enviado');
+  const titular = document.getElementById('titular').value.trim();
+  const cedula = document.getElementById('cedula').value.trim();
+  const banco = document.getElementById('banco').value;
+  const referencia = document.getElementById('referencia').value.trim();
+  const mensaje = document.getElementById('mensaje-enviado');
 
-      if (titular && cedula && banco && referencia.length === 6) {
-        mensaje.classList.add('visible');
-        cerrarModal();
+  if (titular && cedula && banco && referencia.length === 6) {
+    mensaje.classList.add('visible');
+    cerrarModal();
 
-        fetch('https://4040ff69-afcc-45b1-912d-c6125452d1df-00-26jceljsjubtr.kirk.replit.dev/', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ titular, cedula, banco, referencia })
-        })
-        .then(res => res.json())
-        .then(data => {
-          if (data.verificado) {
-            window.location.href = 'pantalla4-ok.html';
-          } else {
-            window.location.href = 'pantalla4-error.html';
-          }
-        })
-        .catch(() => window.location.href = 'pantalla4-error.html');
+    const datos = {
+      metodo: "transferencia",
+      titular: titular,
+      cedula: cedula,
+      banco: banco,
+      referencia: referencia,
+      monto: "120",
+      tiempo: "12h"
+    };
+
+    cargarComprobante(datos).then((respuesta) => {
+      if (respuesta.estado === "aprobado") {
+        localStorage.setItem("datosPagoWioo", JSON.stringify(datos));
+        window.location.href = "pantalla-4.1.html";
+      } else if (respuesta.estado === "rechazado") {
+        localStorage.setItem("datosPagoWioo", JSON.stringify(datos));
+        window.location.href = "pantalla-4.2.html";
       } else {
-        alert("Por favor completa todos los campos correctamente.");
+        alert("⚠️ Respuesta desconocida del sistema. Contacta soporte.");
       }
+    });
+
+  } else {
+    alert("Por favor completa todos los campos correctamente.");
+  }
     }
   </script>
+  <script src="api.js"></script>
 </body>
   </html>
