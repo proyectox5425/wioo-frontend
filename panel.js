@@ -237,3 +237,44 @@ document.querySelector('button.nav-link[onclick*="descargarJSON"]')?.addEventLis
   link.download = "resumen-wioo.json";
   link.click();
 });
+
+import { traerTicketsPorChofer } from "./api.js";
+
+document.getElementById("select-chofer").addEventListener("change", async () => {
+  const codigo = document.getElementById("select-chofer").value;
+  const resumen = document.getElementById("resumen-chofer");
+  const tabla = document.getElementById("tabla-detalle-tickets");
+  const total = document.getElementById("total-tickets");
+
+  if (!codigo) {
+    resumen.style.display = "none";
+    tabla.innerHTML = "";
+    return;
+  }
+
+  try {
+    const tickets = await traerTicketsPorChofer(codigo);
+    if (!tickets.length) {
+      resumen.style.display = "none";
+      tabla.innerHTML = "";
+      return;
+    }
+
+    total.innerText = tickets.length;
+    tabla.innerHTML = "";
+
+    tickets.forEach(t => {
+      const fila = `<tr>
+        <td>${new Date(t.creado_en).toLocaleDateString()}</td>
+        <td>${new Date(t.creado_en).toLocaleTimeString()}</td>
+        <td>${t.estado}</td>
+      </tr>`;
+      tabla.innerHTML += fila;
+    });
+
+    resumen.style.display = "block";
+  } catch (error) {
+    console.error("Error al cargar tickets:", error);
+    alert("⛔ No se pudieron cargar los tickets. Verifica conexión.");
+  }
+});
