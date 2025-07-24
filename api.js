@@ -93,3 +93,9 @@ export async function eliminarChofer(id) {
   });
   return await res.json();
     }
+
+export async function traerTicketsPorChofer(codigo) {
+  const res = await fetch(`/tickets?codigo_chofer=${codigo}`);
+  if (!res.ok) throw new Error("Error al traer tickets");
+  return await res.json();
+    }
