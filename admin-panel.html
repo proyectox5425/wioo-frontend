@@ -844,6 +844,40 @@ document.querySelector('form').addEventListener('submit', function(e) {
 // ✅ Renderizar choferes al cargar el panel
 window.onload = function() {
   renderChoferes();
+  async function editarChoferManual(id, actualNombre, actualRuta) {
+  const nuevoNombre = prompt("Nuevo nombre:", actualNombre);
+  const nuevaRuta = prompt("Nueva ruta:", actualRuta);
+
+  if (nuevoNombre && nuevaRuta) {
+    await editarChofer(id, {
+      nombre: nuevoNombre,
+      ruta: nuevaRuta
+    });
+    alert("✏️ Chofer editado correctamente");
+    renderChoferes();
+  }
+    }
+
+  async function inhabilitarChofer(id) {
+  await editarChofer(id, { activo: false });
+  alert("🔒 Chofer inhabilitado");
+  renderChoferes();
+    }
+
+  async function activarChofer(id) {
+  await editarChofer(id, { activo: true });
+  alert("✅ Chofer activado");
+  renderChoferes();
+    }
+
+  async function eliminarChoferManual(id) {
+  const confirmar = confirm("¿Eliminar este chofer definitivamente?");
+  if (confirmar) {
+    await eliminarChofer(id);
+    alert("🗑️ Chofer eliminado");
+    renderChoferes();
+  }
+      }
 };
 </script>
 </body>
