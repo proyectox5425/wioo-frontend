@@ -421,8 +421,8 @@
     <button id="close-modal">✖</button>
     <div id="login-box">
       <h3 id="login-title">Acceso</h3>
-      <input type="text" id="user" placeholder="Usuario" />
-      <input type="password" id="pass" placeholder="Contraseña" />
+      <input type="email" id="correo" placeholder="Correo institucional" />
+<input type="password" id="contrasena" placeholder="Contraseña" />
       <button onclick="ingresar()">Ingresar</button>
     </div>
   </div>
@@ -604,13 +604,11 @@ document.getElementById("codigoChofer").addEventListener("input", (e) => {
         document.getElementById("login-modal").style.display = "none";
       });
 
-      window.abrirLogin = function (rol) {
-        document.getElementById("login-title").innerText =
-          rol === "admin" ? "Acceso Administrativo" : "Acceso Colaborador";
-        document.getElementById("login-modal").style.display = "flex";
-        document.getElementById("login-modal").dataset.rol = rol;
-      };
-
+      window.abrirLogin = function () {
+  document.getElementById("login-title").innerText = "Ingreso institucional";
+  document.getElementById("login-modal").style.display = "flex";
+};
+      
       // 🟣 Activación oculta del login administrativo
 let pulsado = false;
 let timer;
@@ -619,7 +617,7 @@ encabezado.addEventListener("mousedown", () => {
   pulsado = true;
   timer = setTimeout(() => {
     if (pulsado) {
-      abrirLogin("admin");
+      abrirLogin();  // sin parámetro
     }
   }, 5000);
 });
@@ -643,21 +641,27 @@ encabezado.addEventListener("touchend", () => {
   pulsado = false;
   clearTimeout(timer);
 });
-      window.ingresar = function () {
-        const user = document.getElementById("user").value.toLowerCase();
-        const pass = document.getElementById("pass").value;
-        const rol = document.getElementById("login-modal").dataset.rol;
-        if (
-          (rol === "admin" && user === "admin" && pass === "clave123") ||
-          (rol === "colaborador" && user === "chofer" && pass === "clave123")
-        ) {
-          const destino = rol === "admin" ? "admin-panel.html" : "chofer-panel.html";
-          window.location.href = destino;
-        } else {
-          alert("Credenciales incorrectas");
-        }
-      };
+      window.ingresar = async function () {
+  const correo = document.getElementById("user").value.toLowerCase();
+  const contrasena = document.getElementById("pass").value;
 
+  const exito = await iniciarSesion(correo, contrasena);  // viene del módulo login.js
+  const rol = localStorage.getItem("rol");
+
+  if (!exito) {
+    alert("⛔ Credenciales incorrectas");
+    return;
+  }
+
+  // 🎯 Redirección institucional
+  if (rol === "admin") {
+    window.location.href = "admin-panel.html";
+  } else if (rol === "chofer") {
+    window.location.href = "chofer-panel.html";
+  } else {
+    alert("⚠️ Rol no reconocido. Contacta al equipo técnico.");
+  }
+};
       window.cerrarAyuda = function () {
         document.getElementById("modal-ayuda").classList.remove("active");
         logo.style.display = "block";
@@ -714,5 +718,6 @@ if (campoPregunta && bloqueRespuesta) {
 </script>
 <script src="https://unpkg.com/html5-qrcode"></script>
   <script src="api.js"></script>
+      <script type="module" src="login.js"></script>
 </body>
 </html>
