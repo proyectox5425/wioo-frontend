@@ -135,6 +135,56 @@ document.querySelector('form').addEventListener('submit', async function(e) {
   }
 });
 
+import { createClient } from '@supabase/supabase-js';
+
+const supabase = createClient('https://TU_URL.supabase.co', 'TU_PUBLIC_KEY'); // reemplaza con tus datos reales
+
+async function cargarComprobantes() {
+  const { data, error } = await supabase
+    .from('pago_manual')
+    .select('*')
+    .order('fecha', { ascending: false });
+
+  const tbody = document.getElementById('tabla-comprobantes');
+  tbody.innerHTML = '';
+
+  data.forEach(item => {
+    const tr = document.createElement('tr');
+
+    const estado = item.estado === 'aprobado'
+      ? '🟢 Aprobado'
+      : '🕒 Pendiente';
+
+    const boton = item.estado === 'aprobado'
+      ? '<button disabled style="opacity:0.5;">✔️ Activado</button>'
+      : `<button onclick="activarComprobante('${item.id}')">✅ Activar</button>`;
+
+    tr.innerHTML = `
+      <td>${item.telefono}</td>
+      <td>${item.banco}</td>
+      <td>${item.referencia}</td>
+      <td>$${item.monto}</td>
+      <td>${item.unidad}</td>
+      <td>${estado}</td>
+      <td>${item.fecha}</td>
+      <td>${boton}</td>
+    `;
+
+    tbody.appendChild(tr);
+  });
+}
+
+window.activarComprobante = async function(id) {
+  await supabase
+    .from('pago_manual')
+    .update({ estado: 'aprobado' })
+    .eq('id', id);
+
+  cargarComprobantes(); // recarga visual
+};
+
+cargarComprobantes(); // inicialización
+
 // 🔧 Gráficas institucionales y exportación
 
 import Chart from "https://cdn.jsdelivr.net/npm/chart.js";
