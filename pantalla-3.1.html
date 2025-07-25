@@ -336,32 +336,48 @@
     mensaje.classList.add('visible');
     cerrarModal();
 
+    const fullTelefono = `${codigo}${telefono}`;
+    const hash = `${navigator.userAgent}-${cedula}-${new Date().toISOString()}`;
+
     const datos = {
       metodo: "pago-movil",
-      cedula: cedula,
-      telefono: `${codigo}${telefono}`,
-      banco: banco,
-      referencia: referencia,
-      monto: "150",
-      tiempo: "12h"
+      cedula,
+      telefono: fullTelefono,
+      banco,
+      referencia,
+      monto: 150,
+      unidad: localStorage.getItem("unidadId") || "desconocida",
+      estado: "pendiente",
+      hash_dispositivo: hash
     };
 
-    cargarComprobante(datos).then((respuesta) => {
-      if (respuesta.estado === "aprobado") {
-        localStorage.setItem("datosPagoWioo", JSON.stringify(datos));
-        window.location.href = "pantalla-4.1.html";
-      } else if (respuesta.estado === "rechazado") {
-        localStorage.setItem("datosPagoWioo", JSON.stringify(datos));
-        window.location.href = "pantalla-4.2.html";
-      } else {
-        alert("⚠️ Respuesta desconocida del sistema. Contacta soporte.");
-      }
-    });
+    fetch("/api/cargar-comprobante", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(datos)
+    })
+      .then((res) => res.json())
+      .then((respuesta) => {
+        if (respuesta.estado === "aprobado") {
+          localStorage.setItem("datosPagoWioo", JSON.stringify(datos));
+          window.location.href = "pantalla-4.1.html";
+        } else if (respuesta.estado === "rechazado") {
+          localStorage.setItem("datosPagoWioo", JSON.stringify(datos));
+          window.location.href = "pantalla-4.2.html";
+        } else {
+          alert("⚠️ Respuesta desconocida del sistema. Contacta soporte.");
+        }
+      })
+      .catch((error) => {
+        console.error("Error al enviar:", error);
+        alert("⛔ No se pudo enviar el comprobante.");
+      });
 
   } else {
     alert("Por favor completa todos los campos correctamente.");
   }
     }
+
   </script>
   <script src="api.js"></script>
 </body>
