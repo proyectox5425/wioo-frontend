@@ -165,22 +165,49 @@
 
   <!-- Script funcional -->
   <script>
-    function generarCodigo() {
-      const codigo = Math.floor(1000 + Math.random() * 9000).toString();
-      const now = new Date();
-      const hora = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-      const fecha = now.toISOString().split('T')[0];
+    async function generarCodigo() {
+  const codigo = Math.floor(1000 + Math.random() * 9000).toString();
+  const now = new Date();
+  const hora = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+  const fecha = now.toISOString().split('T')[0];
 
-      const nuevo = {
+  const nuevo = {
+    codigo,
+    hora,
+    fecha,
+    estado: Math.random() > 0.3 ? "✅ Activado" : "⏳ Pendiente"
+  };
+
+  // 🔒 ID institucional oculto desde sesión o storage
+  const unidad = localStorage.getItem("unidadId");
+  const chofer = localStorage.getItem("choferId");
+
+  // ⛓️ Enviar a backend institucional
+  try {
+    await fetch("/api/generar-codigo", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
         codigo,
-        hora,
+        unidad,
+        chofer,
         fecha,
-        estado: Math.random() > 0.3 ? "✅ Activado" : "⏳ Pendiente"
-      };
+        hora,
+        estado: nuevo.estado
+      })
+    });
+  } catch (error) {
+    console.error("Error al enviar al backend:", error);
+  }
 
-      guardarCodigo(nuevo);
-      renderizarCodigoActual(codigo);
-      renderizarHistorial();
+  // 🧠 Guardado local opcional (para fallback visual)
+  guardarCodigo(nuevo);
+
+  // 🖥️ Renderizar código y QR visual
+  renderizarCodigoActual(codigo);
+
+  // 📋 Refrescar historial visual desde local o Supabase (puedes cambiar luego)
+  renderizarHistorial();
     }
 
     function guardarCodigo(data) {
