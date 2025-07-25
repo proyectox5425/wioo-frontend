@@ -303,6 +303,7 @@
   </div>
 
   <script>
+    const BACKEND_URL = "https://wioo-backend.onrender.com";
     function copiarTexto(id) {
       const texto = document.getElementById(id).innerText;
       navigator.clipboard.writeText(texto).then(() => {
@@ -353,7 +354,7 @@
       hash_dispositivo: hash
     };
 
-    fetch("/api/cargar-comprobante", {
+    fetch(`${BACKEND_URL}/api/cargar-comprobante`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(datos)
