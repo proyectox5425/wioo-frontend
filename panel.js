@@ -69,10 +69,6 @@ function activarBotonesChoferes(listaChoferes) {
     const chofer = listaChoferes[index];
     const { codigo, nombre, ruta } = chofer;
 
-    function filtrarComprobantes() {
-  const estado = document.getElementById("filtro-estado").value;
-  cargarComprobantes(estado);
-    }
 
     // ✏️ Editar
     fila.querySelector(".editar").addEventListener("click", async () => {
@@ -189,6 +185,11 @@ async function cargarComprobantes(filtro = "") {
     tbody.appendChild(tr);
   });
 }
+
+    function filtrarComprobantes() {
+  const estado = document.getElementById("filtro-estado").value;
+  cargarComprobantes(estado);
+    }
 
 window.activarComprobante = async function(id) {
   await supabase
