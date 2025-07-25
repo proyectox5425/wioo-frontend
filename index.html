@@ -642,17 +642,6 @@ encabezado.addEventListener("touchend", () => {
   pulsado = false;
   clearTimeout(timer);
 });
-      window.ingresar = async function () {
-  const correo = document.getElementById("user").value.toLowerCase();
-  const contrasena = document.getElementById("pass").value;
-
-  const exito = await iniciarSesion(correo, contrasena);  // viene del módulo login.js
-  const rol = localStorage.getItem("rol");
-
-  if (!exito) {
-    alert("⛔ Credenciales incorrectas");
-    return;
-  }
 
   // 🎯 Redirección institucional
   if (rol === "admin") {
