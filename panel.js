@@ -69,6 +69,11 @@ function activarBotonesChoferes(listaChoferes) {
     const chofer = listaChoferes[index];
     const { codigo, nombre, ruta } = chofer;
 
+    function filtrarComprobantes() {
+  const estado = document.getElementById("filtro-estado").value;
+  cargarComprobantes(estado);
+    }
+
     // ✏️ Editar
     fila.querySelector(".editar").addEventListener("click", async () => {
       const nuevoNombre = prompt("Nuevo nombre:", nombre);
@@ -139,11 +144,22 @@ import { createClient } from '@supabase/supabase-js';
 
 const supabase = createClient('https://TU_URL.supabase.co', 'TU_PUBLIC_KEY'); // reemplaza con tus datos reales
 
-async function cargarComprobantes() {
-  const { data, error } = await supabase
+async function cargarComprobantes(filtro = "") {
+  let query = supabase
     .from('pago_manual')
     .select('*')
     .order('fecha', { ascending: false });
+
+  if (filtro) query = query.eq('estado', filtro);
+
+  const { data, error } = await query;
+  const tbody = document.getElementById('tabla-comprobantes');
+  tbody.innerHTML = "";
+
+  data.forEach(item => {
+    // ... render como ya lo tienes
+  });
+}
 
   const tbody = document.getElementById('tabla-comprobantes');
   tbody.innerHTML = '';
