@@ -337,6 +337,7 @@
     cerrarModal();
 
     const fullTelefono = `${codigo}${telefono}`;
+    const unidad = localStorage.getItem("unidadId") || "desconocida";
     const hash = `${navigator.userAgent}-${cedula}-${new Date().toISOString()}`;
 
     const datos = {
@@ -346,7 +347,8 @@
       banco,
       referencia,
       monto: 150,
-      unidad: localStorage.getItem("unidadId") || "desconocida",
+      tiempo: "12h",
+      unidad,
       estado: "pendiente",
       hash_dispositivo: hash
     };
@@ -368,9 +370,8 @@
           alert("⚠️ Respuesta desconocida del sistema. Contacta soporte.");
         }
       })
-      .catch((error) => {
-        console.error("Error al enviar:", error);
-        alert("⛔ No se pudo enviar el comprobante.");
+      .catch(() => {
+        alert("⛔ No se pudo enviar el comprobante. Verifica tu conexión.");
       });
 
   } else {
