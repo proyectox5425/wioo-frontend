@@ -719,5 +719,129 @@ if (campoPregunta && bloqueRespuesta) {
 <script src="https://unpkg.com/html5-qrcode"></script>
   <script src="api.js"></script>
       <script type="module" src="login.js"></script>
+    <script src="https://unpkg.com/html5-qrcode"></script>
+<script type="module" src="login.js"></script>
+<script src="api.js"></script>
+<script>
+  const modalTerminos = document.getElementById("modal-terminos");
+  const botonAceptar = document.getElementById("botonAceptar");
+
+  document.addEventListener("DOMContentLoaded", () => {
+    // Activación institucional visual
+    setTimeout(() => {
+      document.getElementById("logo").classList.add("animar-logo");
+      document.getElementById("pantalla1").style.display = "none";
+      document.getElementById("pantalla2").style.display = "flex";
+      document.getElementById("encabezado-wioo").style.opacity = "1";
+
+      setTimeout(() => {
+        modalTerminos.style.display = "flex";
+      }, 1500);
+    }, 3000);
+  });
+
+  // Activación del login por gesto prolongado
+  const encabezado = document.getElementById("encabezado-wioo");
+  let pulsado = false;
+  let timer;
+
+  encabezado.addEventListener("mousedown", () => {
+    pulsado = true;
+    timer = setTimeout(() => {
+      if (pulsado) abrirLogin("admin");
+    }, 5000);
+  });
+  encabezado.addEventListener("mouseup", () => {
+    pulsado = false;
+    clearTimeout(timer);
+  });
+
+  encabezado.addEventListener("touchstart", () => {
+    pulsado = true;
+    timer = setTimeout(() => {
+      if (pulsado) abrirLogin("admin");
+    }, 5000);
+  });
+  encabezado.addEventListener("touchend", () => {
+    pulsado = false;
+    clearTimeout(timer);
+  });
+
+  // Validación de código manual
+  const inputCodigo = document.getElementById("codigoChofer");
+  inputCodigo.setAttribute("inputmode", "numeric");
+  inputCodigo.addEventListener("input", async (e) => {
+    const valor = e.target.value.trim();
+    if (/^\d{4}$/.test(valor)) {
+      const res = await fetch("/api/validar-codigo", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ codigo: valor })
+      });
+      const datos = await res.json();
+      if (datos.estado === "aprobado") {
+        alert("✅ Código aprobado. ¡Bienvenido!");
+        localStorage.setItem("choferId", datos.choferId);
+        localStorage.setItem("unidadId", datos.unidadId);
+      } else {
+        alert("❌ Código inválido.");
+      }
+    }
+  });
+
+  // Activar lector QR
+  window.escanearQR = () => {
+    const qr = document.getElementById("qr-reader");
+    qr.style.display = "block";
+    const html5QrCode = new Html5Qrcode("qr-reader");
+    html5QrCode.start(
+      { facingMode: "environment" },
+      { fps: 10, qrbox: 250 },
+      async (decodedText) => {
+        const res = await fetch("/api/validar-codigo", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ codigo: decodedText })
+        });
+        const datos = await res.json();
+        if (datos.estado === "aprobado") {
+          alert("✅ Código QR validado");
+          html5QrCode.stop();
+          localStorage.setItem("choferId", datos.choferId);
+          localStorage.setItem("unidadId", datos.unidadId);
+        } else {
+          alert("❌ Código QR rechazado");
+          html5QrCode.stop();
+        }
+      }
+    );
+  };
+
+  // Registro de términos aceptados
+  const contenedor = document.getElementById("contenedorTerminos");
+  if (contenedor && botonAceptar) {
+    contenedor.addEventListener("scroll", () => {
+      if (contenedor.scrollTop + contenedor.clientHeight >= contenedor.scrollHeight) {
+        botonAceptar.disabled = false;
+        botonAceptar.style.opacity = "1";
+        botonAceptar.style.cursor = "pointer";
+      }
+    });
+
+    botonAceptar.addEventListener("click", async () => {
+      modalTerminos.style.display = "none";
+      const payload = {
+        unidad: localStorage.getItem("unidadId"),
+        chofer: localStorage.getItem("choferId"),
+        hora: new Date().toISOString()
+      };
+      await fetch("/api/registro-terminos", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload)
+      });
+    });
+  }
+</script>
 </body>
 </html>
