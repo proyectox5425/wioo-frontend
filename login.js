@@ -36,24 +36,28 @@ export async function iniciarSesion(correo, contrasena) {
 }
 
 // 🚪 Evento que se dispara desde el botón "Ingresar"
-window.ingresar = async function () {
-  const correo = document.getElementById("user").value.toLowerCase();
-  const contrasena = document.getElementById("pass").value;
+document.addEventListener("DOMContentLoaded", () => {
+  const boton = document.getElementById("botonLogin");
+  if (boton) {
+    boton.addEventListener("click", async () => {
+      const correo = document.getElementById("user").value.toLowerCase();
+      const contrasena = document.getElementById("pass").value;
 
-  const exito = await iniciarSesion(correo, contrasena);
-  const rol = localStorage.getItem("rol");
+      const exito = await iniciarSesion(correo, contrasena);
+      const rol = localStorage.getItem("rol");
 
-  if (!exito) {
-    alert("⛔ Credenciales incorrectas");
-    return;
+      if (!exito) {
+        alert("⛔ Credenciales incorrectas");
+        return;
+      }
+
+      if (rol === "admin") {
+        window.location.href = "admin-panel.html";
+      } else if (rol === "chofer") {
+        window.location.href = "chofer-panel.html";
+      } else {
+        alert("⚠️ Rol no reconocido. Contacta al equipo técnico.");
+      }
+    });
   }
-
-  // 🔁 Redirección por rol institucional
-  if (rol === "admin") {
-    window.location.href = "admin-panel.html";
-  } else if (rol === "chofer") {
-    window.location.href = "chofer-panel.html";
-  } else {
-    alert("⚠️ Rol no reconocido. Contacta al equipo técnico.");
-  }
-};
+});
