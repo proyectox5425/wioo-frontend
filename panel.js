@@ -138,8 +138,10 @@ document.querySelector('form').addEventListener('submit', async function(e) {
 
 import { createClient } from '@supabase/supabase-js';
 
-const supabase = createClient('https://TU_URL.supabase.co', 'TU_PUBLIC_KEY'); // reemplaza con tus datos reales
-
+const supabase = createClient(
+  "https://sjrmzkomzlqpsfvjdnle.supabase.co",
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNqcm16a29temxxcHNmdmpkbmxlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTI4MDU0NTMsImV4cCI6MjA2ODM4MTQ1M30.lX1F-w3ar2LEunf6OTfHoWkDOGFn4KdFTxEuCm34Wmw"
+);
 async function cargarComprobantes(filtro = "") {
   let query = supabase
     .from('pago_manual')
