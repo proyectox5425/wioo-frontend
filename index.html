@@ -605,10 +605,7 @@ document.getElementById("codigoChofer").addEventListener("input", (e) => {
         document.getElementById("login-modal").style.display = "none";
       });
 
-      window.abrirLogin = function () {
-  document.getElementById("login-title").innerText = "Ingreso institucional";
-  document.getElementById("login-modal").style.display = "flex";
-};
+      abrirLogin("admin");
       
       // 🟣 Activación oculta del login administrativo
 let pulsado = false;
