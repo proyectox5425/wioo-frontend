@@ -164,117 +164,107 @@
   <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
 
   <!-- Script funcional -->
-  <script>
-    async function generarCodigo() {
+<script type="module">
+import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
+
+const supabase = createClient(
+  "https://sirxmzomlazpsfyjdnle.supabase.co", // ← tu URL real
+  "eyJhbGciOiJI..."                            // ← tu clave pública
+);
+
+const unidad = localStorage.getItem("unidadId");
+const chofer_id = localStorage.getItem("choferId");
+
+async function generarCodigo() {
   const codigo = Math.floor(1000 + Math.random() * 9000).toString();
-  const now = new Date();
-  const hora = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-  const fecha = now.toISOString().split('T')[0];
+  const timestamp = new Date().toISOString();
+  const estado = Math.random() > 0.3 ? "activo" : "pendiente";
 
-  const nuevo = {
-    codigo,
-    hora,
-    fecha,
-    estado: Math.random() > 0.3 ? "✅ Activado" : "⏳ Pendiente"
-  };
+  const { error } = await supabase
+    .from("codigo_manual")
+    .insert([
+      { código: codigo, unidad, chofer_id, estado, timestamp }
+    ]);
 
-  // 🔒 ID institucional oculto desde sesión o storage
-  const unidad = localStorage.getItem("unidadId");
-  const chofer = localStorage.getItem("choferId");
-
-  // ⛓️ Enviar a backend institucional
-  try {
-    await fetch("/api/generar-codigo", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        codigo,
-        unidad,
-        chofer,
-        fecha,
-        hora,
-        estado: nuevo.estado
-      })
-    });
-  } catch (error) {
-    console.error("Error al enviar al backend:", error);
+  if (error) {
+    console.error("❌ Error al guardar:", error.message);
+    alert("Error al generar código.");
+    return;
   }
 
-  // 🧠 Guardado local opcional (para fallback visual)
-  guardarCodigo(nuevo);
+  document.getElementById("codigo-display").innerText = codigo;
 
-  // 🖥️ Renderizar código y QR visual
-  renderizarCodigoActual(codigo);
+  const qrContainer = document.getElementById("qr");
+  qrContainer.innerHTML = "";
+  new QRCode(qrContainer, {
+    text: codigo,
+    width: 180,
+    height: 180,
+    colorDark: "#ffffff",
+    colorLight: "#14002d",
+    correctLevel: QRCode.CorrectLevel.H
+  });
 
-  // 📋 Refrescar historial visual desde local o Supabase (puedes cambiar luego)
-  renderizarHistorial();
+  await renderizarHistorial(); // ← refresca directamente desde Supabase
+}
+
+async function renderizarHistorial() {
+  const { data, error } = await supabase
+    .from("codigo_manual")
+    .select("*")
+    .eq("chofer_id", chofer_id)
+    .order("timestamp", { ascending: false });
+
+  if (error) {
+    console.error("❌ Error al cargar historial:", error.message);
+    return;
+  }
+
+  const tablaDia = document.querySelector("#tabla-dia tbody");
+  const semanaContenedor = document.getElementById("tabla-semana-contenedor");
+
+  const hoy = new Date().toISOString().split("T")[0];
+  const dias = {};
+
+  tablaDia.innerHTML = "";
+  semanaContenedor.innerHTML = "";
+
+  data.forEach(t => {
+    const fecha = t.timestamp.split("T")[0];
+    const hora = new Date(t.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+    if (fecha === hoy) {
+      tablaDia.innerHTML += `
+        <tr>
+          <td>${t.código}</td>
+          <td>${hora}</td>
+          <td class="${t.estado === 'activo' ? 'estado-activo' : 'estado-pendiente'}">${t.estado}</td>
+        </tr>`;
     }
 
-    function guardarCodigo(data) {
-      const historial = JSON.parse(localStorage.getItem("tickets_chofer") || "[]");
-      historial.push(data);
-      localStorage.setItem("tickets_chofer", JSON.stringify(historial));
-    }
+    if (!dias[fecha]) dias[fecha] = [];
+    dias[fecha].push({ ...t, hora });
+  });
 
-    function renderizarCodigoActual(codigo) {
-      document.getElementById("codigo-display").innerText = codigo;
-      const qrContainer = document.getElementById("qr");
-      qrContainer.innerHTML = "";
-      new QRCode(qrContainer, {
-        text: codigo,
-        width: 180,
-        height: 180,
-        colorDark: "#ffffff",
-        colorLight: "#14002d",
-        correctLevel: QRCode.CorrectLevel.H
-      });
-    }
+  Object.keys(dias).sort((a,b)=>b.localeCompare(a)).forEach(fecha => {
+    semanaContenedor.innerHTML += `
+      <h3>🗓️ ${fecha}</h3>
+      <table>
+        <thead><tr><th>Código</th><th>Hora</th><th>Estado</th></tr></thead>
+        <tbody>
+          ${dias[fecha].map(t => `
+            <tr>
+              <td>${t.código}</td>
+              <td>${t.hora}</td>
+              <td class="${t.estado === 'activo' ? 'estado-activo' : 'estado-pendiente'}">${t.estado}</td>
+            </tr>`).join('')}
+        </tbody>
+      </table>
+    `;
+  });
+}
 
-    function renderizarHistorial() {
-      const hoy = new Date().toISOString().split('T')[0];
-      const data = JSON.parse(localStorage.getItem("tickets_chofer") || "[]");
-
-      const diaFilas = data.filter(t => t.fecha === hoy);
-      const tablaDia = document.querySelector("#tabla-dia tbody");
-      tablaDia.innerHTML = "";
-      diaFilas.forEach(t => {
-        tablaDia.innerHTML += `
-          <tr>
-            <td>${t.codigo}</td>
-            <td>${t.hora}</td>
-            <td class="${t.estado.includes('Activado') ? 'estado-activo' : 'estado-pendiente'}">${t.estado}</td>
-          </tr>`;
-      });
-
-      const dias = {};
-      data.forEach(t => {
-        if (!dias[t.fecha]) dias[t.fecha] = [];
-        dias[t.fecha].push(t);
-      });
-
-      const semanaContenedor = document.getElementById("tabla-semana-contenedor");
-      semanaContenedor.innerHTML = "";
-      Object.keys(dias).sort((a,b)=>b.localeCompare(a)).forEach(fecha => {
-        semanaContenedor.innerHTML += `
-          <h3>🗓️ ${fecha}</h3>
-          <table>
-            <thead><tr><th>Código</th><th>Hora</th><th>Estado</th></tr></thead>
-            <tbody>
-              ${dias[fecha].map(t => `
-                <tr>
-                  <td>${t.codigo}</td>
-                  <td>${t.hora}</td>
-                  <td class="${t.estado.includes('Activado') ? 'estado-activo' : 'estado-pendiente'}">${t.estado}</td>
-                </tr>`).join('')}
-            </tbody>
-          </table>
-        `;
-      });
-    }
-
-    window.onload = () => {
-      renderizarHistorial();
-    };
-  </script>
+window.onload = renderizarHistorial;
+</script>
 </body>
 </html>
