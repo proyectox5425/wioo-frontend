@@ -47,13 +47,19 @@ window.abrirLogin = function (rol = "") {
 
   // Muestra el modal correctamente
   if (modal) {
-    modal.style.display = "flex";
+    modal.classList.add("activo");
     modal.style.opacity = "1";
     modal.style.visibility = "visible";
   } else {
     console.warn("⚠️ Modal institucional no encontrado");
   }
 };
+
+window.cerrarLogin = function () {
+  const modal = document.getElementById("login-modal");
+  if (modal) modal.classList.remove("activo");
+};
+
 // 🔁 Evento institucional cuando el DOM esté listo
 document.addEventListener("DOMContentLoaded", () => {
   const boton = document.getElementById("botonLogin");
