@@ -85,3 +85,36 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 };
 });
+const encabezado = document.getElementById("encabezado-wioo");
+if (encabezado) {
+  let pulsado = false;
+  let timer;
+
+  encabezado.addEventListener("mousedown", () => {
+    pulsado = true;
+    timer = setTimeout(() => {
+      if (pulsado && typeof abrirLogin === "function") {
+        abrirLogin("admin");
+      }
+    }, 5000);
+  });
+
+  encabezado.addEventListener("mouseup", () => {
+    pulsado = false;
+    clearTimeout(timer);
+  });
+
+  encabezado.addEventListener("touchstart", () => {
+    pulsado = true;
+    timer = setTimeout(() => {
+      if (pulsado && typeof abrirLogin === "function") {
+        abrirLogin("admin");
+      }
+    }, 5000);
+  });
+
+  encabezado.addEventListener("touchend", () => {
+    pulsado = false;
+    clearTimeout(timer);
+  });
+}
