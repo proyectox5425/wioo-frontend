@@ -165,6 +165,12 @@
 
   <!-- Script funcional -->
 <script type="module">
+  if (!localStorage.getItem("unidadId")) {
+  localStorage.setItem("unidadId", "BUS-001");
+}
+if (!localStorage.getItem("choferId")) {
+  localStorage.setItem("choferId", "CHF-1023");
+  }
 import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
 
 const supabase = createClient(
@@ -183,7 +189,7 @@ async function generarCodigo() {
   const { error } = await supabase
     .from("codigo_manual")
     .insert([
-      { código: codigo, unidad, chofer_id, estado, timestamp }
+      { codigo: codigo, unidad, chofer_id, estado, timestamp }
     ]);
 
   if (error) {
@@ -236,7 +242,7 @@ async function renderizarHistorial() {
     if (fecha === hoy) {
       tablaDia.innerHTML += `
         <tr>
-          <td>${t.código}</td>
+          <td>${t.codigo}</td>
           <td>${hora}</td>
           <td class="${t.estado === 'activo' ? 'estado-activo' : 'estado-pendiente'}">${t.estado}</td>
         </tr>`;
