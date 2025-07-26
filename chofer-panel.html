@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -137,7 +138,7 @@
     <div id="codigo-display" class="codigo">— —</div>
 
     <div class="botones">
-      <button onclick="generarCodigo()">🔄 Generar Código</button>
+      <button id="generar">🔄 Generar Código</button>
     </div>
 
     <div id="qr"></div>
@@ -164,113 +165,74 @@
   <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
 
   <!-- Script funcional -->
-<script type="module">
-  if (!localStorage.getItem("unidadId")) {
-  localStorage.setItem("unidadId", "BUS-001");
-}
-if (!localStorage.getItem("choferId")) {
-  localStorage.setItem("choferId", "CHF-1023");
-  }
-import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
+<script>
+document.addEventListener("DOMContentLoaded", async () => {
+  const tabla = document.getElementById("historial");
+  const semana = document.getElementById("historial-semanal");
+  const qr = document.getElementById("qr");
+  const info = document.getElementById("info");
+  const url = "https://your-supabase-url.supabase.co";
+  const key = "your-supabase-api-key";
 
-const supabase = createClient(
-  "https://sirxmzomlazpsfyjdnle.supabase.co", // ← tu URL real
-  "eyJhbGciOiJI..."                            // ← tu clave pública
-);
+  async function generarCodigo() {
+    const codigo = Math.random().toString(36).substring(2, 10).toUpperCase();
+    const unidad = "A123"; // puedes reemplazar dinámicamente
+    const chofer_id = "CH001"; // puedes reemplazar dinámicamente
+    const estado = "pendiente";
+    const timestamp = new Date().toISOString();
 
-const unidad = localStorage.getItem("unidadId");
-const chofer_id = localStorage.getItem("choferId");
+    const payload = {
+      codigo, unidad, chofer_id, estado, timestamp
+    };
 
-async function generarCodigo() {
-  const codigo = Math.floor(1000 + Math.random() * 9000).toString();
-  const timestamp = new Date().toISOString();
-  const estado = Math.random() > 0.3 ? "activo" : "pendiente";
+    const response = await fetch(`${url}/rest/v1/validaciones`, {
+      method: "POST",
+      headers: {
+        "apikey": key,
+        "Content-Type": "application/json",
+        "Prefer": "return=representation"
+      },
+      body: JSON.stringify(payload)
+    });
 
-  const { error } = await supabase
-    .from("codigo_manual")
-    .insert([
-      { codigo: codigo, unidad, chofer_id, estado, timestamp }
-    ]);
-
-  if (error) {
-    console.error("❌ Error al guardar:", error.message);
-    alert("Error al generar código.");
-    return;
-  }
-
-  document.getElementById("codigo-display").innerText = codigo;
-
-  const qrContainer = document.getElementById("qr");
-  qrContainer.innerHTML = "";
-  new QRCode(qrContainer, {
-    text: codigo,
-    width: 180,
-    height: 180,
-    colorDark: "#ffffff",
-    colorLight: "#14002d",
-    correctLevel: QRCode.CorrectLevel.H
-  });
-
-  await renderizarHistorial(); // ← refresca directamente desde Supabase
-}
-
-async function renderizarHistorial() {
-  const { data, error } = await supabase
-    .from("codigo_manual")
-    .select("*")
-    .eq("chofer_id", chofer_id)
-    .order("timestamp", { ascending: false });
-
-  if (error) {
-    console.error("❌ Error al cargar historial:", error.message);
-    return;
-  }
-
-  const tablaDia = document.querySelector("#tabla-dia tbody");
-  const semanaContenedor = document.getElementById("tabla-semana-contenedor");
-
-  const hoy = new Date().toISOString().split("T")[0];
-  const dias = {};
-
-  tablaDia.innerHTML = "";
-  semanaContenedor.innerHTML = "";
-
-  data.forEach(t => {
-    const fecha = t.timestamp.split("T")[0];
-    const hora = new Date(t.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-
-    if (fecha === hoy) {
-      tablaDia.innerHTML += `
-        <tr>
-          <td>${t.codigo}</td>
-          <td>${hora}</td>
-          <td class="${t.estado === 'activo' ? 'estado-activo' : 'estado-pendiente'}">${t.estado}</td>
-        </tr>`;
+    const resultado = await response.json();
+    if (resultado && resultado[0]) {
+      info.innerHTML = `<strong>Código generado:</strong> ${codigo}`;
+      qr.src = `https://api.qrserver.com/v1/create-qr-code/?data=${codigo}&size=150x150`;
+      await cargarHistorial();
     }
+  }
 
-    if (!dias[fecha]) dias[fecha] = [];
-    dias[fecha].push({ ...t, hora });
-  });
+  async function cargarHistorial() {
+    const response = await fetch(`${url}/rest/v1/validaciones?select=*`, {
+      headers: { apikey: key }
+    });
+    const data = await response.json();
+    tabla.innerHTML = "";
+    semana.innerHTML = "";
 
-  Object.keys(dias).sort((a,b)=>b.localeCompare(a)).forEach(fecha => {
-    semanaContenedor.innerHTML += `
-      <h3>🗓️ ${fecha}</h3>
-      <table>
-        <thead><tr><th>Código</th><th>Hora</th><th>Estado</th></tr></thead>
-        <tbody>
-          ${dias[fecha].map(t => `
-            <tr>
-              <td>${t.código}</td>
-              <td>${t.hora}</td>
-              <td class="${t.estado === 'activo' ? 'estado-activo' : 'estado-pendiente'}">${t.estado}</td>
-            </tr>`).join('')}
-        </tbody>
-      </table>
-    `;
-  });
-}
+    const hoy = new Date().toISOString().split("T")[0];
 
-window.onload = renderizarHistorial;
+    data.forEach(t => {
+      const fecha = t.timestamp.split("T")[0];
+      const row = `<tr>
+        <td>${t.codigo}</td>
+        <td>${t.unidad}</td>
+        <td>${t.estado}</td>
+        <td>${fecha}</td>
+      </tr>`;
+
+      tabla.innerHTML += row;
+
+      if (fecha >= hoy) {
+        semana.innerHTML += row;
+      }
+    });
+  }
+
+  document.getElementById("generar").addEventListener("click", generarCodigo);
+  await cargarHistorial();
+});
 </script>
 </body>
 </html>
