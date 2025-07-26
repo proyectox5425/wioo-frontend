@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -165,74 +164,36 @@
   <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
 
   <!-- Script funcional -->
-<script>
-document.addEventListener("DOMContentLoaded", async () => {
-  const tabla = document.getElementById("historial");
-  const semana = document.getElementById("historial-semanal");
+<script type="module">
+  // 🔐 Clave y URL institucional de Supabase
+  const url = "https://sjrmzkomzlqpsfvjdnle.supabase.co";
+  const key = "eyJhbGciOi...tu_token_publico..."; // ← token real, mantené privacidad
+
+  const tablaDia = document.getElementById("tabla-dia");
+  const codigoDisplay = document.getElementById("codigo-display");
   const qr = document.getElementById("qr");
-  const info = document.getElementById("info");
-  const url = "https://your-supabase-url.supabase.co";
-  const key = "your-supabase-api-key";
 
-  async function generarCodigo() {
-    const codigo = Math.random().toString(36).substring(2, 10).toUpperCase();
-    const unidad = "A123"; // puedes reemplazar dinámicamente
-    const chofer_id = "CH001"; // puedes reemplazar dinámicamente
-    const estado = "pendiente";
-    const timestamp = new Date().toISOString();
+  document.getElementById("generar").addEventListener("click", async () => {
+    const codigo = `CH-${Date.now().toString().slice(-6)}`;
+    codigoDisplay.textContent = codigo;
 
-    const payload = {
-      codigo, unidad, chofer_id, estado, timestamp
-    };
-
-    const response = await fetch(`${url}/rest/v1/validaciones`, {
+    const res = await fetch(`${url}/rest/v1/codigos`, {
       method: "POST",
       headers: {
-        "apikey": key,
+        apikey: key,
+        Authorization: `Bearer ${key}`,
         "Content-Type": "application/json",
-        "Prefer": "return=representation"
+        Prefer: "return=representation"
       },
-      body: JSON.stringify(payload)
+      body: JSON.stringify({ codigo, tipo: "chofer", estado: "activo", creado: new Date().toISOString() })
     });
 
-    const resultado = await response.json();
-    if (resultado && resultado[0]) {
-      info.innerHTML = `<strong>Código generado:</strong> ${codigo}`;
-      qr.src = `https://api.qrserver.com/v1/create-qr-code/?data=${codigo}&size=150x150`;
-      await cargarHistorial();
-    }
-  }
+    const fila = document.createElement("tr");
+    fila.innerHTML = `<td>${codigo}</td><td>activo</td><td>${new Date().toLocaleString()}</td>`;
+    tablaDia.appendChild(fila);
 
-  async function cargarHistorial() {
-    const response = await fetch(`${url}/rest/v1/validaciones?select=*`, {
-      headers: { apikey: key }
-    });
-    const data = await response.json();
-    tabla.innerHTML = "";
-    semana.innerHTML = "";
-
-    const hoy = new Date().toISOString().split("T")[0];
-
-    data.forEach(t => {
-      const fecha = t.timestamp.split("T")[0];
-      const row = `<tr>
-        <td>${t.codigo}</td>
-        <td>${t.unidad}</td>
-        <td>${t.estado}</td>
-        <td>${fecha}</td>
-      </tr>`;
-
-      tabla.innerHTML += row;
-
-      if (fecha >= hoy) {
-        semana.innerHTML += row;
-      }
-    });
-  }
-
-  document.getElementById("generar").addEventListener("click", generarCodigo);
-  await cargarHistorial();
-});
+    qr.src = `https://api.qrserver.com/v1/create-qr-code/?data=${codigo}&size=120x120`;
+  });
 </script>
 </body>
 </html>
