@@ -33,6 +33,27 @@ export async function iniciarSesion(correo, contrasena) {
   }
 }
 
+// 🟪 Activador visual global del modal institucional
+window.abrirLogin = function (rol = "") {
+  const loginTitle = document.getElementById("login-title");
+  const modal = document.getElementById("login-modal");
+
+  // Cambia el título según el rol (admin o chofer)
+  if (loginTitle) {
+    loginTitle.innerText = rol === "admin"
+      ? "Acceso administrativo"
+      : "Ingreso institucional";
+  }
+
+  // Muestra el modal correctamente
+  if (modal) {
+    modal.style.display = "flex";
+    modal.style.opacity = "1";
+    modal.style.visibility = "visible";
+  } else {
+    console.warn("⚠️ Modal institucional no encontrado");
+  }
+};
 // 🔁 Evento institucional cuando el DOM esté listo
 document.addEventListener("DOMContentLoaded", () => {
   const boton = document.getElementById("botonLogin");
@@ -64,26 +85,7 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     });
   }
-
-  // 🟣 Activador institucional oculto: abrir modal desde encabezado invisible
-  window.abrirLogin = function (rol = "") {
-  const loginTitle = document.getElementById("login-title");
-  const modal = document.getElementById("login-modal");
-
-  if (loginTitle) {
-    loginTitle.innerText = rol === "admin"
-      ? "Acceso administrativo"
-      : "Ingreso institucional";
-  }
-
-  if (modal) {
-    modal.style.display = "flex";
-    modal.style.opacity = "1";
-    modal.style.visibility = "visible";
-  } else {
-    console.warn("⚠️ Modal institucional no encontrado");
-  }
-};
+  
 });
 const encabezado = document.getElementById("encabezado-wioo");
 if (encabezado) {
@@ -91,13 +93,13 @@ if (encabezado) {
   let timer;
 
   encabezado.addEventListener("mousedown", () => {
-    pulsado = true;
-    timer = setTimeout(() => {
-      if (pulsado && typeof abrirLogin === "function") {
-        abrirLogin("admin");
-      }
-    }, 5000);
-  });
+  pulsado = true;
+  timer = setTimeout(() => {
+    if (pulsado && typeof window.abrirLogin === "function") {
+      window.abrirLogin("admin");
+    }
+  }, 5000);
+});
 
   encabezado.addEventListener("mouseup", () => {
     pulsado = false;
@@ -105,14 +107,13 @@ if (encabezado) {
   });
 
   encabezado.addEventListener("touchstart", () => {
-    pulsado = true;
-    timer = setTimeout(() => {
-      if (pulsado && typeof abrirLogin === "function") {
-        abrirLogin("admin");
-      }
-    }, 5000);
-  });
-
+  pulsado = true;
+  timer = setTimeout(() => {
+    if (pulsado && typeof window.abrirLogin === "function") {
+      window.abrirLogin("admin");
+    }
+  }, 5000);
+});
   encabezado.addEventListener("touchend", () => {
     pulsado = false;
     clearTimeout(timer);
