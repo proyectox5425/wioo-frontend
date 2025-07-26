@@ -165,40 +165,49 @@
 
   <!-- Script funcional -->
 <script type="module">
-  // 🔷 Referencias visuales
   const qr = document.getElementById("qr");
-  const cod = document.getElementById("codigo-display"); // ← ID correcto
+  const cod = document.getElementById("codigo-display");
+  const tablaDia = document.getElementById("tabla-dia").querySelector("tbody");
 
-  // 🔢 Generar código institucional
-  const codigo = `CH-${Math.floor(1000 + Math.random() * 9000)}`;
-  cod.textContent = codigo;
+  const url = "https://sjrmzkomzlqpsfvjdnle.supabase.co/rest/v1/codigos";
+  const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."; // ← tu clave real
 
-  // 📸 Mostrar QR del código generado
-  qr.innerHTML = `<img src="https://api.qrserver.com/v1/create-qr-code/?data=${codigo}&size=120x120" alt="QR" style="width:120px;">`;
+  document.getElementById("generar").addEventListener("click", async () => {
+    const codigo = `CH-${Math.floor(1000 + Math.random() * 9000)}`;
+    cod.textContent = codigo;
 
-  // 🗂️ Registrar en Supabase
-  const registro = {
-    codigo,
-    tipo: "chofer",
-    estado: "activo",
-    creado: new Date().toISOString()
-  };
+    qr.innerHTML = `<img src="https://api.qrserver.com/v1/create-qr-code/?data=${codigo}&size=120x120" alt="QR" style="width:120px;">`;
 
-  const url = "https://sjrmzkomzlqpsfvjdnle.supabase.co/rest/v1/codigos"; // ← tabla real
-  const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."; // ← clave pública real
+    const registro = {
+      codigo,
+      tipo: "chofer",
+      estado: "activo",
+      creado: new Date().toISOString()
+    };
 
-  fetch(url, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      "Authorization": `Bearer ${token}`,
-      "apikey": token,
-      "Prefer": "return=representation"
-    },
-    body: JSON.stringify(registro)
-  })
-    .then(res => res.ok ? console.log("🟢 Código registrado en Supabase") : console.error("🔴 Error de registro"))
-    .catch(err => console.error("⚠️ Error de conexión", err));
+    const res = await fetch(url, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${token}`,
+        "apikey": token,
+        "Prefer": "return=representation"
+      },
+      body: JSON.stringify(registro)
+    });
+
+    if (res.ok) {
+      const hora = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+      const fila = `<tr>
+        <td>${codigo}</td>
+        <td>${hora}</td>
+        <td class="estado-activo">activo</td>
+      </tr>`;
+      tablaDia.innerHTML += fila;
+    } else {
+      console.error("🔴 Error al registrar código");
+    }
+  });
 </script>
 </body>
 </html>
