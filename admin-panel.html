@@ -2,276 +2,49 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Panel Administrativo Wioo PRO</title>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <title>Admin Panel Wioo</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link href="estilos.css" rel="stylesheet" />
   <style>
-    * { box-sizing: border-box; }
-
-    body {
-      margin: 0;
-      font-family: 'Poppins', sans-serif;
-      background: linear-gradient(to bottom, #220033, #11001a);
-      color: white;
-    }
-
-    header {
-      background: rgba(0, 0, 0, 0.6);
-      backdrop-filter: blur(4px);
-      padding: 16px 20px;
-      position: sticky;
-      top: 0;
-      z-index: 11;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
-
-    header h1 {
-      font-size: 1.4rem;
-      margin: 0;
-      text-align: center;
-      flex: 1;
-    }
-
-    header img {
-      height: 48px;
-    }
-
-    .hamburger {
-      background: none;
-      border: none;
-      font-size: 24px;
-      color: #cfaaff;
-      cursor: pointer;
-    }
-
-    #sidebar {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 220px;
-      height: 100%;
-      background-color: #1a002a;
-      padding: 20px 10px;
-      box-shadow: 4px 0 8px rgba(0,0,0,0.3);
-      transform: translateX(-220px);
-      transition: transform 0.3s ease-in-out;
-      z-index: 12;
-    }
-
-    #sidebar.show {
-      transform: translateX(0);
-    }
-
-    #overlay {
-      position: fixed;
-      top: 0;
-      left: 0;
-      height: 100%;
-      width: 100%;
-      background: rgba(0,0,0,0.4);
-      display: none;
-      z-index: 10;
-    }
-
-    #overlay.active {
-      display: block;
-    }
-
-    #sidebar img {
-      height: 60px;
-      margin-bottom: 20px;
-    }
-
-    #sidebar h2 {
-      font-size: 16px;
-      margin-bottom: 30px;
-      color: #b87fff;
-      text-align: center;
-    }
-
-    .nav-link {
-      background: none;
-      border: none;
-      color: #cfaaff;
-      font-size: 14px;
-      margin: 10px 0;
-      cursor: pointer;
-      text-align: center;
-      width: 100%;
-    }
-
-    .nav-link:hover {
-      color: #ffffff;
-      font-weight: bold;
-    }
-
-    main {
-      margin-left: 0;
-      padding: 20px;
-      transition: margin-left 0.3s ease-in-out;
-    }
-
-    .section {
-      display: none;
-    }
-
-    .section.active {
-      display: block;
-    }
-
-    .interface-wrapper {
-      max-width: 1000px;
-      margin: 0 auto;
-      background-color: rgba(0,0,0,0.6);
-      border-radius: 16px;
-      padding: 30px 20px;
-      display: flex;
-      flex-direction: column;
-      gap: 25px;
-      box-shadow: 0 0 12px rgba(0,0,0,0.4);
-    }
-
-    .mini-encabezado {
-      background-color: #7344D0;
-      color: white;
-      font-size: 22px;
-      font-weight: 600;
-      padding: 16px;
-      border-radius: 8px;
-      text-align: center;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.3);
-    }
-
-    @media (max-width: 768px) {
-      .hamburger { display: block; }
-      #sidebar { transform: translateX(-220px); }
-      #sidebar.show { transform: translateX(0); }
-    }
+    body { font-family: 'Segoe UI', sans-serif; background: #f8f9fc; margin:0; padding:0; }
+    main { padding: 20px; max-width: 1400px; margin: auto; }
+    h3 { font-weight: 500; }
+    .nav-link { background-color: #7344D0; color: white; padding: 6px 12px; border: none; border-radius: 6px; cursor: pointer; }
+    .card-container { display: flex; gap: 20px; flex-wrap: wrap; margin: 20px 0; }
+    .card { background: white; border-radius: 8px; padding: 20px; flex: 1; text-align: center; box-shadow: 0 0 5px rgba(0,0,0,0.1); min-width: 150px; }
+    .section { margin-bottom: 60px; }
+    .interface-wrapper { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 0 5px rgba(0,0,0,0.05); }
+    .mini-encabezado { font-weight: bold; font-size: 1.1em; margin-bottom: 10px; color: #7344D0; }
+    table.tabla-usuarios { width: 100%; border-collapse: collapse; margin-top: 10px; }
+    table th, table td { padding: 10px; border: 1px solid #e0e0e0; text-align: center; }
+    .activo { font-weight: bold; color: green; }
+    .inactivo { color: red; }
   </style>
 </head>
 <body>
-  <header>
-    <button class="hamburger" onclick="toggleSidebar()">☰</button>
-    <h1>Panel Administrativo</h1>
-    <img src="emoji-wioo-white.png" alt="Logo Wioo" />
-  </header>
-
-  <div id="sidebar">
-    <img src="emoji-wioo-white.png" alt="Logo Wioo" />
-    <h2>Panel Wioo PRO</h2>
-    <button class="nav-link" onclick="showSection('inicio')">🏠 Inicio</button>
-    <button class="nav-link" onclick="showSection('empresas')">🚌 Empresas</button>
-    <button class="nav-link" onclick="showSection('unidades')">🚍 Unidades</button>
-    <button class="nav-link" onclick="showSection('choferes')">🧑‍💼 Choferes</button>
-    <button class="nav-link" onclick="showSection('anuncios')">📺 Anuncios</button>
-    <button class="nav-link" onclick="showSection('estadisticas')">📈 Estadísticas</button>
-    <button class="nav-link" onclick="showSection('gestion')">⚙️ Gestión</button>
-  </div>
-
-  <div id="overlay" onclick="closeSidebar()"></div>
   <main>
-    <!-- Panel de Empresas -->
-<section id="empresas" class="section active">
-  <div class="interface-wrapper">
-    <div class="mini-encabezado">🚌 Compañías de Transporte</div>
+    <!-- Panel de Validaciones recientes -->
+<h3 style="color:#d2a6ff; margin-top:40px;">Validaciones recientes</h3>
+<table class="tabla-usuarios">
+  <thead>
+    <tr><th>Unidad</th><th>Chofer</th><th>Hora</th><th>Tickets</th><th>Pago</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>BUS-001</td><td>CHF-1023</td><td>14:10</td><td>8</td><td>Pago móvil</td></tr>
+    <tr><td>BUS-007</td><td>CHF-1050</td><td>13:55</td><td>3</td><td>Efectivo</td></tr>
+    <tr><td>BUS-013</td><td>CHF-9901</td><td>13:25</td><td>5</td><td>Transferencia</td></tr>
+    <tr><td>BUS-017</td><td>CHF-9864</td><td>12:45</td><td>2</td><td>Pago móvil</td></tr>
+  </tbody>
+</table>
 
-    <h3 style="color:#d2a6ff;">Expresos Occidente</h3>
-    <div class="card-container">
-      <div class="card">
-        <h3>Autobuses registrados</h3>
-        <p>22</p>
-      </div>
-      <div class="card">
-        <h3>Unidades en ruta</h3>
-        <p>14</p>
-      </div>
-      <div class="card">
-        <h3>En terminal</h3>
-        <p>6</p>
-      </div>
-      <div class="card">
-        <h3>En mantenimiento</h3>
-        <p>2</p>
-      </div>
-    </div>
-
-    <h3 style="color:#d2a6ff; margin-top:40px;">Choferes asignados</h3>
-    <table class="tabla-usuarios">
-      <thead><tr><th>Unidad</th><th>Chofer</th><th>Código</th><th>Estado</th></tr></thead>
-      <tbody>
-        <tr><td>BUS-001</td><td>José Rivas</td><td>CHF-1023</td><td class="activo">✅ En ruta</td></tr>
-        <tr><td>BUS-007</td><td>Karla Pérez</td><td>CHF-1050</td><td>🟡 En terminal</td></tr>
-        <tr><td>BUS-011</td><td>Andrés León</td><td>CHF-1168</td><td>🔧 En mantenimiento</td></tr>
-      </tbody>
-    </table>
-
-    <h3 style="color:#d2a6ff; margin-top:40px;">Validaciones recientes</h3>
-    <table class="tabla-usuarios">
-      <thead>
-        <tr><th>Unidad</th><th>Chofer</th><th>Hora</th><th>Tickets</th><th>Pago</th></tr>
-      </thead>
-      <tbody>
-        <tr><td>BUS-001</td><td>CHF-1023</td><td>14:10</td><td>8</td><td>Pago móvil</td></tr>
-        <tr><td>BUS-007</td><td>CHF-1050</td><td>13:55</td><td>3</td><td>Efectivo</td></tr>
-      </tbody>
-    </table>
-
-    <hr style="margin:40px 0; border:none; border-top:2px solid #7344D0;">
-
-    <h3 style="color:#d2a6ff;">Expresos Los Llanos</h3>
-    <div class="card-container">
-      <div class="card">
-        <h3>Autobuses registrados</h3>
-        <p>17</p>
-      </div>
-      <div class="card">
-        <h3>Unidades en ruta</h3>
-        <p>10</p>
-      </div>
-      <div class="card">
-        <h3>En terminal</h3>
-        <p>5</p>
-      </div>
-      <div class="card">
-        <h3>En mantenimiento</h3>
-        <p>2</p>
-      </div>
-    </div>
-
-    <h3 style="color:#d2a6ff; margin-top:40px;">Choferes asignados</h3>
-    <table class="tabla-usuarios">
-      <thead><tr><th>Unidad</th><th>Chofer</th><th>Código</th><th>Estado</th></tr></thead>
-      <tbody>
-        <tr><td>BUS-013</td><td>Raúl Vargas</td><td>CHF-9901</td><td class="activo">✅ En ruta</td></tr>
-        <tr><td>BUS-017</td><td>María Gómez</td><td>CHF-9864</td><td>🟡 En terminal</td></tr>
-      </tbody>
-    </table>
-
-    <h3 style="color:#d2a6ff; margin-top:40px;">Validaciones recientes</h3>
-    <table class="tabla-usuarios">
-      <thead>
-        <tr><th>Unidad</th><th>Chofer</th><th>Hora</th><th>Tickets</th><th>Pago</th></tr>
-      </thead>
-      <tbody>
-        <tr><td>BUS-013</td><td>CHF-9901</td><td>13:25</td><td>5</td><td>Transferencia</td></tr>
-        <tr><td>BUS-017</td><td>CHF-9864</td><td>12:45</td><td>2</td><td>Pago móvil</td></tr>
-      </tbody>
-    </table>
-  </div>
-        </section>
-        <!-- Panel por Unidades -->
+<!-- Panel Estado de Unidades -->
 <section id="unidades" class="section">
   <div class="interface-wrapper">
     <div class="mini-encabezado">🚍 Unidades Operativas</div>
-
     <h3 style="color:#d2a6ff;">Estado por autobús</h3>
     <table class="tabla-usuarios">
       <thead>
-        <tr>
-          <th>Unidad</th><th>Chofer</th><th>Estado</th><th>Tickets generados</th><th>Tickets usados</th><th>Conexión</th><th>Acciones</th>
-        </tr>
+        <tr><th>Unidad</th><th>Chofer</th><th>Estado</th><th>Tickets generados</th><th>Tickets usados</th><th>Conexión</th><th>Acciones</th></tr>
       </thead>
       <tbody>
         <tr>
@@ -284,15 +57,11 @@
         </tr>
         <tr>
           <td>BUS-007</td><td>CHF-1050</td><td>🟡 En terminal</td><td>4</td><td>4</td><td>🟢 Online</td>
-          <td>
-            <button class="nav-link">🔒 Inhabilitar</button>
-          </td>
+          <td><button class="nav-link">🔒 Inhabilitar</button></td>
         </tr>
         <tr>
           <td>BUS-011</td><td>CHF-1168</td><td>🔧 En mantenimiento</td><td>—</td><td>—</td><td>🔴 Offline</td>
-          <td>
-            <button class="nav-link">✅ Activar</button>
-          </td>
+          <td><button class="nav-link">✅ Activar</button></td>
         </tr>
       </tbody>
     </table>
@@ -304,29 +73,8 @@
         <tr><td>BUS-001</td><td>Terminal Norte</td><td>Valencia</td><td>13:30</td><td>15:15</td></tr>
         <tr><td>BUS-007</td><td>Terminal Sur</td><td>Maracay</td><td>12:40</td><td>14:00</td></tr>
       </tbody>
-    </table>
-
-    <h3 style="color:#d2a6ff; margin-top:40px;">Monitoreo de conexión</h3>
-    <table class="tabla-usuarios">
-      <thead><tr><th>Unidad</th><th>IP actual</th><th>Última conexión</th><th>Estado</th></tr></thead>
-      <tbody>
-        <tr><td>BUS-001</td><td>192.168.0.21</td><td>14:02</td><td class="activo">🟢 Estable</td></tr>
-        <tr><td>BUS-011</td><td>—</td><td>—</td><td class="inactivo">🔴 Sin señal</td></tr>
-      </tbody>
-    </table>
-
-    <h3 style="color:#d2a6ff; margin-top:40px;">Control remoto</h3>
-    <p>Puedes activar usuarios o reiniciar el router del sistema remoto si detectas fallas o desconexión prolongada.</p>
-    <table class="tabla-usuarios">
-      <thead><tr><th>Unidad</th><th>Acción</th><th>Estado</th></tr></thead>
-      <tbody>
-        <tr><td>BUS-001</td><td><button class="nav-link">🔄 Reiniciar Mikrotik</button></td><td>🟢 Operativa</td></tr>
-        <tr><td>BUS-011</td><td><button class="nav-link">⚠️ Enviar alerta</button></td><td>🔴 Sin conexión</td></tr>
-      </tbody>
-    </table>
-  </div>
-</section>
-<!-- Panel de Choferes -->
+  </table>
+  <!-- Panel de Choferes -->
 <section id="choferes" class="section">
   <div class="interface-wrapper">
     <div class="mini-encabezado">🧑‍💼 Gestión de Choferes</div>
@@ -334,23 +82,20 @@
     <h3 style="color:#d2a6ff;">Choferes registrados</h3>
     <table class="tabla-usuarios">
       <thead><tr><th>Nombre</th><th>Código</th><th>Ruta</th><th>Estado</th><th>Acciones</th></tr></thead>
-        <tbody id="choferes-table-body"></tbody>
+      <tbody id="choferes-table-body"></tbody>
     </table>
 
     <h3 style="color:#d2a6ff; margin-top:40px;">Registrar nuevo chofer</h3>
     <form onsubmit="return false;">
-      <label>
-        <span>Nombre:</span><br/>
+      <label><span>Nombre:</span><br/>
         <input type="text" placeholder="Ej: Luis Martínez" style="width:100%; padding:8px; border-radius:6px; margin:5px 0; border:none;" />
       </label>
 
-      <label>
-        <span>Ruta asignada:</span><br/>
+      <label><span>Ruta asignada:</span><br/>
         <input type="text" placeholder="Ej: Ruta 12" style="width:100%; padding:8px; border-radius:6px; margin:5px 0; border:none;" />
       </label>
 
-      <label>
-        <span>Código del chofer:</span><br/>
+      <label><span>Código del chofer:</span><br/>
         <input type="text" placeholder="Ej: CHF-1075" style="width:100%; padding:8px; border-radius:6px; margin:5px 0; border:none;" />
       </label>
 
@@ -379,31 +124,27 @@
   </div>
 </section>
 
-    <!-- Panel de Comprobantes -->
+<!-- Panel de Comprobantes -->
 <section id="comprobantes" class="section">
   <div class="interface-wrapper">
     <div class="mini-encabezado">📥 Comprobantes cargados</div>
 
     <h3 style="color:#d2a6ff;">Pagos manuales registrados</h3>
-    <!-- 🔍 Filtro institucional por estado -->
-<select id="filtro-estado" onchange="filtrarComprobantes()" style="margin-bottom:12px;">
-  <option value="">— Todos —</option>
-  <option value="pendiente">🕒 Pendientes</option>
-  <option value="aprobado">🟢 Aprobados</option>
-</select>
+    <select id="filtro-estado" onchange="filtrarComprobantes()" style="margin-bottom:12px;">
+      <option value="">— Todos —</option>
+      <option value="pendiente">🕒 Pendientes</option>
+      <option value="aprobado">🟢 Aprobados</option>
+    </select>
     <table class="tabla-usuarios">
       <thead>
-        <tr>
-          <th>Teléfono</th><th>Banco</th><th>Referencia</th><th>Monto</th><th>Unidad</th>
-          <th>Estado</th><th>Fecha</th><th>Acción</th>
-        </tr>
+        <tr><th>Teléfono</th><th>Banco</th><th>Referencia</th><th>Monto</th><th>Unidad</th><th>Estado</th><th>Fecha</th><th>Acción</th></tr>
       </thead>
       <tbody id="tabla-comprobantes"></tbody>
     </table>
   </div>
 </section>
 
-  <!-- Panel de Anuncios -->
+<!-- Panel de Anuncios -->
 <section id="anuncios" class="section">
   <div class="interface-wrapper">
     <div class="mini-encabezado">📺 Gestión de Anuncios Institucionales</div>
@@ -411,38 +152,20 @@
     <h3 style="color:#d2a6ff;">Campañas activas</h3>
     <table class="tabla-usuarios">
       <thead><tr><th>Título</th><th>Duración</th><th>Destino</th><th>Segmentación</th><th>Frecuencia</th><th>Acciones</th></tr></thead>
-      <tbody>
-        <tr>
-          <td>Promoción Wioo</td><td>5 min</td><td>Usuario final</td><td>Expresos Occidente</td><td>Inicio de sesión</td>
-          <td>
-            <button class="nav-link">✏️ Editar</button>
-            <button class="nav-link">🗑️ Eliminar</button>
-          </td>
-        </tr>
-        <tr>
-          <td>Anuncio institucional urbano</td><td>20 seg</td><td>Pantalla del usuario</td><td>Todos</td><td>Rotativo cada 10 min</td>
-          <td>
-            <button class="nav-link">✏️ Editar</button>
-            <button class="nav-link">🗑️ Eliminar</button>
-          </td>
-        </tr>
-      </tbody>
+      <tbody id="tabla-anuncios-activos"></tbody>
     </table>
 
     <h3 style="color:#d2a6ff; margin-top:40px;">Registrar nuevo anuncio</h3>
     <form onsubmit="return false;">
-      <label>
-        <span>Título del anuncio:</span><br/>
+      <label><span>Título del anuncio:</span><br/>
         <input type="text" placeholder="Ej: Conectividad Wioo segura" style="width:100%; padding:8px; border-radius:6px; margin:5px 0; border:none;" />
       </label>
 
-      <label>
-        <span>Duración (segundos):</span><br/>
+      <label><span>Duración (segundos):</span><br/>
         <input type="number" placeholder="Ej: 30" style="width:100%; padding:8px; border-radius:6px; margin:5px 0; border:none;" />
       </label>
 
-      <label>
-        <span>Segmentación:</span><br/>
+      <label><span>Segmentación:</span><br/>
         <select style="width:100%; padding:8px; border-radius:6px; margin:5px 0;">
           <option value="">— Seleccionar —</option>
           <option>Todos</option>
@@ -451,8 +174,7 @@
         </select>
       </label>
 
-      <label>
-        <span>Frecuencia:</span><br/>
+      <label><span>Frecuencia:</span><br/>
         <select style="width:100%; padding:8px; border-radius:6px; margin:5px 0;">
           <option value="">— Seleccionar —</option>
           <option>Inicio de sesión</option>
@@ -461,8 +183,7 @@
         </select>
       </label>
 
-      <label>
-        <span>Contenido visual (URL o texto):</span><br/>
+      <label><span>Contenido visual (URL o texto):</span><br/>
         <textarea placeholder="Ej: https://wioo.com/banner.jpg o mensaje urbano" style="width:100%; padding:8px; border-radius:6px; margin:5px 0; border:none;"></textarea>
       </label>
 
@@ -474,36 +195,22 @@
     <h3 style="color:#d2a6ff; margin-top:40px;">Activaciones programadas</h3>
     <table class="tabla-usuarios">
       <thead><tr><th>Fecha</th><th>Hora</th><th>Anuncio</th><th>Destino</th></tr></thead>
-      <tbody>
-        <tr><td>2025-07-16</td><td>08:30</td><td>Seguridad Wioo</td><td>Usuarios nuevos</td></tr>
-        <tr><td>2025-07-16</td><td>12:00</td><td>Viaje gratis patrocinado</td><td>Expresos Occidente</td></tr>
-      </tbody>
+      <tbody id="tabla-anuncios-programados"></tbody>
     </table>
   </div>
-</section>
-<!-- Panel de Estadísticas -->
+               </section>
+
+    <!-- Panel de Estadísticas -->
 <section id="estadisticas" class="section">
   <div class="interface-wrapper">
     <div class="mini-encabezado">📈 Estadísticas Institucionales</div>
 
     <h3 style="color:#d2a6ff;">Indicadores globales</h3>
     <div class="card-container">
-      <div class="card">
-        <h3>Total de tickets hoy</h3>
-        <p>214</p>
-      </div>
-      <div class="card">
-        <h3>Tickets usados</h3>
-        <p>189</p>
-      </div>
-      <div class="card">
-        <h3>Validaciones por chofer</h3>
-        <p>37</p>
-      </div>
-      <div class="card">
-        <h3>Conexiones activas</h3>
-        <p>21</p>
-      </div>
+      <div class="card"><h3>Total de tickets hoy</h3><p>214</p></div>
+      <div class="card"><h3>Tickets usados</h3><p>189</p></div>
+      <div class="card"><h3>Validaciones por chofer</h3><p>37</p></div>
+      <div class="card"><h3>Conexiones activas</h3><p>21</p></div>
     </div>
 
     <h3 style="color:#d2a6ff; margin-top:40px;">Distribución de pagos</h3>
@@ -518,16 +225,12 @@
     <h3 style="color:#d2a6ff; margin-top:40px;">Exportación institucional</h3>
     <p>Descarga los datos consolidados para análisis externo:</p>
     <button class="nav-link">📄 Descargar PDF</button>
-<button class="nav-link">📊 Exportar CSV</button>
-<button class="nav-link">📥 Exportar JSON</button>
+    <button class="nav-link">📊 Exportar CSV</button>
+    <button class="nav-link">📥 Exportar JSON</button>
   </div>
 </section>
 
-<!-- Librerías necesarias -->
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-
-  <!-- Panel de Gestión Técnica -->
+<!-- Panel de Gestión Técnica -->
 <section id="gestion" class="section">
   <div class="interface-wrapper">
     <div class="mini-encabezado">⚙️ Centro de Gestión Institucional</div>
@@ -602,7 +305,12 @@
     </form>
   </div>
 </section>
+
+<!-- Librerías necesarias + Lógica JS real -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script type="module" src="panel.js"></script>
+
 </main>
-  <script type="module" src="panel.js"></script>
 </body>
-</html>
+  </html>
