@@ -1,11 +1,11 @@
-// login.js - acceso institucional con Supabase y evento por DOM
+// login.js - acceso institucional completo con Supabase y activador visual oculto
 
 import { createClient } from "@supabase/supabase-js";
 
 // 🔗 Conexión real al proyecto Supabase
 const supabase = createClient(
   "https://sirxmzomlazpsfyjdnle.supabase.co",
-  "eyJhBGiOiJIUzI1NiIsInR5cCI6IkpXVCJ9..." // ← mantené tu clave como la tenés
+  "eyJhBGiOiJIUzI1NiIsInR5cCI6IkpXVCJ9..." // ← tu clave permanece intacta
 );
 
 // 🔐 Función principal de validación con trazabilidad urbana
@@ -19,7 +19,7 @@ export async function iniciarSesion(correo, contrasena) {
 
     if (error) throw new Error("📧 Correo no registrado");
     if (!data.activo) throw new Error("🚫 Usuario desactivado");
-    if (data.contrasena != contrasena)
+    if (data.contrasena !== contrasena)
       throw new Error("🔑 Contraseña incorrecta");
 
     localStorage.setItem("token", data.id);
@@ -36,20 +36,17 @@ export async function iniciarSesion(correo, contrasena) {
 // 🔁 Evento institucional cuando el DOM esté listo
 document.addEventListener("DOMContentLoaded", () => {
   const boton = document.getElementById("botonLogin");
+
   if (boton) {
     boton.addEventListener("click", async () => {
       const correo = document.getElementById("user")?.value?.toLowerCase();
       const contrasena = document.getElementById("pass")?.value;
-// 🟣 Activador institucional oculto: abrir modal
-window.abrirLogin = function () {
-  document.getElementById("login-title").innerText = "Ingreso institucional";
-  document.getElementById("login-modal").style.display = "flex";
-};
+
       if (!correo || !contrasena) {
-        alert("Completa los campos por favor.");
+        alert("⚠️ Completa los campos por favor.");
         return;
       }
-      
+
       const exito = await iniciarSesion(correo, contrasena);
       const rol = localStorage.getItem("rol");
 
@@ -68,9 +65,18 @@ window.abrirLogin = function () {
     });
   }
 
-  // 🟣 Activador institucional oculto: abrir modal
+  // 🟣 Activador institucional oculto: abrir modal desde encabezado invisible
   window.abrirLogin = function () {
-    document.getElementById("login-title").innerText = "Ingreso institucional";
-    document.getElementById("login-modal").style.display = "flex";
+    const modal = document.getElementById("login-modal");
+    const titulo = document.getElementById("login-title");
+
+    if (modal && titulo) {
+      titulo.innerText = "Ingreso institucional";
+      modal.style.display = "flex";
+      modal.style.opacity = "1";
+      modal.style.visibility = "visible";
+    } else {
+      console.warn("⚠️ Modal institucional no encontrado");
+    }
   };
 });
