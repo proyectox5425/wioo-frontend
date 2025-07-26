@@ -66,17 +66,22 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   // 🟣 Activador institucional oculto: abrir modal desde encabezado invisible
-  window.abrirLogin = function () {
-    const modal = document.getElementById("login-modal");
-    const titulo = document.getElementById("login-title");
+  window.abrirLogin = function (rol = "") {
+  const loginTitle = document.getElementById("login-title");
+  const modal = document.getElementById("login-modal");
 
-    if (modal && titulo) {
-      titulo.innerText = "Ingreso institucional";
-      modal.style.display = "flex";
-      modal.style.opacity = "1";
-      modal.style.visibility = "visible";
-    } else {
-      console.warn("⚠️ Modal institucional no encontrado");
-    }
-  };
+  if (loginTitle) {
+    loginTitle.innerText = rol === "admin"
+      ? "Acceso administrativo"
+      : "Ingreso institucional";
+  }
+
+  if (modal) {
+    modal.style.display = "flex";
+    modal.style.opacity = "1";
+    modal.style.visibility = "visible";
+  } else {
+    console.warn("⚠️ Modal institucional no encontrado");
+  }
+};
 });
