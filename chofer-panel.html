@@ -165,35 +165,40 @@
 
   <!-- Script funcional -->
 <script type="module">
-  // 🔐 Clave y URL institucional de Supabase
-  const url = "https://sjrmzkomzlqpsfvjdnle.supabase.co";
-  const key = "eyJhbGciOi...tu_token_publico..."; // ← token real, mantené privacidad
-
-  const tablaDia = document.getElementById("tabla-dia");
-  const codigoDisplay = document.getElementById("codigo-display");
+  // 🔷 Referencias visuales
   const qr = document.getElementById("qr");
+  const cod = document.getElementById("codigo-display"); // ← ID correcto
 
-  document.getElementById("generar").addEventListener("click", async () => {
-    const codigo = `CH-${Date.now().toString().slice(-6)}`;
-    codigoDisplay.textContent = codigo;
+  // 🔢 Generar código institucional
+  const codigo = `CH-${Math.floor(1000 + Math.random() * 9000)}`;
+  cod.textContent = codigo;
 
-    const res = await fetch(`${url}/rest/v1/codigos`, {
-      method: "POST",
-      headers: {
-        apikey: key,
-        Authorization: `Bearer ${key}`,
-        "Content-Type": "application/json",
-        Prefer: "return=representation"
-      },
-      body: JSON.stringify({ codigo, tipo: "chofer", estado: "activo", creado: new Date().toISOString() })
-    });
+  // 📸 Mostrar QR del código generado
+  qr.innerHTML = `<img src="https://api.qrserver.com/v1/create-qr-code/?data=${codigo}&size=120x120" alt="QR" style="width:120px;">`;
 
-    const fila = document.createElement("tr");
-    fila.innerHTML = `<td>${codigo}</td><td>activo</td><td>${new Date().toLocaleString()}</td>`;
-    tablaDia.appendChild(fila);
+  // 🗂️ Registrar en Supabase
+  const registro = {
+    codigo,
+    tipo: "chofer",
+    estado: "activo",
+    creado: new Date().toISOString()
+  };
 
-    qr.src = `https://api.qrserver.com/v1/create-qr-code/?data=${codigo}&size=120x120`;
-  });
+  const url = "https://sjrmzkomzlqpsfvjdnle.supabase.co/rest/v1/codigos"; // ← tabla real
+  const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."; // ← clave pública real
+
+  fetch(url, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": `Bearer ${token}`,
+      "apikey": token,
+      "Prefer": "return=representation"
+    },
+    body: JSON.stringify(registro)
+  })
+    .then(res => res.ok ? console.log("🟢 Código registrado en Supabase") : console.error("🔴 Error de registro"))
+    .catch(err => console.error("⚠️ Error de conexión", err));
 </script>
 </body>
 </html>
