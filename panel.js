@@ -251,3 +251,20 @@ document.addEventListener("DOMContentLoaded", () => {
   renderChoferes();
   renderTickets();
 });
+
+async function activarWifi(id) {
+  const res = await updateEstadoWifi(id, 'activo');
+  document.getElementById(`estado-wifi-${id}`).textContent = 'Estado: ✅ Activado';
+}
+
+async function desactivarWifi(id) {
+  const res = await updateEstadoWifi(id, 'inactivo');
+  document.getElementById(`estado-wifi-${id}`).textContent = 'Estado: ❌ Desactivado';
+}
+
+async function updateEstadoWifi(id, estado) {
+  return await supabase
+    .from('comprobantes')
+    .update({ estado_wifi: estado })
+    .eq('id', id);
+}
