@@ -573,6 +573,7 @@
   encabezado.style.opacity = "1";
 
   // ✅ Mostrar modal de términos correctamente
+    setTimeout(() => {
   const modalTerminos = document.getElementById("modal-terminos");
   if (modalTerminos) {
     setTimeout(() => {
@@ -647,14 +648,13 @@ encabezado.addEventListener("touchend", () => {
 });
 
   // 🎯 Redirección institucional
-  if (rol === "admin") {
-    window.location.href = "admin-panel.html";
-  } else if (rol === "chofer") {
-    window.location.href = "chofer-panel.html";
-  } else {
-    alert("⚠️ Rol no reconocido. Contacta al equipo técnico.");
+ if (rol === "admin") {
+  window.location.href = "admin-panel.html";
+} else if (rol === "chofer") {
+  window.location.href = "chofer-panel.html";
+} else {
+  alert("⚠️ Rol no reconocido. Contacta al equipo técnico.");
   }
-};
       window.cerrarAyuda = function () {
         document.getElementById("modal-ayuda").classList.remove("active");
         logo.style.display = "block";
