@@ -303,3 +303,24 @@ document.getElementById("select-chofer").addEventListener("change", async () => 
     alert("⛔ No se pudieron cargar los tickets. Verifica conexión.");
   }
 });
+
+const ctx = document.getElementById("graficoPagos").getContext("2d");
+
+new Chart(ctx, {
+  type: "bar", // o "pie", "line", etc.
+  data: {
+    labels: ["Pago móvil", "Transferencia", "Efectivo"],
+    datasets: [{
+      label: "Distribución de pagos",
+      data: [12, 5, 8],
+      backgroundColor: ["#7344D0", "#d2a6ff", "#c0c0ff"]
+    }]
+  },
+  options: {
+    responsive: true,
+    plugins: {
+      legend: { position: "top" },
+      title: { display: true, text: "Pagos registrados hoy" }
+    }
+  }
+});
