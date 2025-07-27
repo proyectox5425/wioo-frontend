@@ -125,7 +125,7 @@ document.querySelector('form').addEventListener('submit', async function(e) {
 });
 
 // 🔧 Comprobantes y activación institucional
-import { createClient } from '@supabase/supabase-js';
+import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
 
 const supabase = createClient(
   "https://sjrmzkomzlqpsfvjdnle.supabase.co",
