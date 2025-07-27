@@ -169,7 +169,7 @@
   const cod = document.getElementById("codigo-display");
   const tablaDia = document.getElementById("tabla-dia").querySelector("tbody");
 
-  const url = "https://sjrmzkomzlqpsfvjdnle.supabase.co/rest/v1/codigos";
+  const url = "https://sjrmzkomzlqpsfvjdnle.supabase.co/rest/v1/codigos_activos";
   const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."; // ← tu clave real
 
   document.getElementById("generar").addEventListener("click", async () => {
@@ -180,9 +180,9 @@
 
     const registro = {
       codigo,
-      tipo: "chofer",
-      estado: "activo",
-      creado: new Date().toISOString()
+      unidad: "RUTA 7",
+      creado_en: new Date().toISOString(),
+      activo: true 
     };
 
     const res = await fetch(url, {
