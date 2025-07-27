@@ -22,9 +22,9 @@ function showSection(id) {
 const SUPABASE_URL = "https://sjrmzkomzlqpsfvjdnle.supabase.co";
 const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNqcm16a29temxxcHNmdmpkbmxlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTI4MDU0NTMsImV4cCI6MjA2ODM4MTQ1M30.lX1F-w3ar2LEunf6OTfHoWkDOGFn4KdFTxEuCm34Wmw";
 
-console.log('supabase global:', typeof supabase); // Debe dar "object"
+console.log("¿Existe Supabase global?", typeof window.supabase);
 
-const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+const supabase = window.supabase?.createClient(SUPABASE_URL, SUPABASE_KEY);
 
 // 🔧 Funciones API institucionales
 async function traerChoferes() {
