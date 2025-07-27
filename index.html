@@ -560,153 +560,131 @@
   </div>
 
 <script>
-    window.addEventListener("DOMContentLoaded", () => {
-      const logo = document.getElementById("logo");
-      const pantalla1 = document.getElementById("pantalla1");
-      const pantalla2 = document.getElementById("pantalla2");
-      const encabezado = document.getElementById("encabezado-wioo");
+window.addEventListener("DOMContentLoaded", () => {
+  const logo = document.getElementById("logo");
+  const pantalla1 = document.getElementById("pantalla1");
+  const pantalla2 = document.getElementById("pantalla2");
+  const encabezado = document.getElementById("encabezado-wioo");
 
-      setTimeout(() => {
-  logo.classList.add("animar-logo");
-  pantalla1.style.display = "none";
-  pantalla2.style.display = "flex";
-  encabezado.style.opacity = "1";
+  setTimeout(() => {
+    logo.classList.add("animar-logo");
+    pantalla1.style.display = "none";
+    pantalla2.style.display = "flex";
+    encabezado.style.opacity = "1";
 
-  // ✅ Mostrar modal de términos correctamente
+    // ✅ Mostrar modal de términos correctamente
     setTimeout(() => {
-  const modalTerminos = document.getElementById("modal-terminos");
-  if (modalTerminos) {
-    setTimeout(() => {
-      modalTerminos.style.display = "flex";
-    }, 1500); // Puedes ajustar el delay si lo prefieres
-  }
-}, 3000);
-
-document.getElementById("encabezado-wioo").addEventListener("mouseup", () => {
-  pulsado = false;
-  clearTimeout(timer);
-});
-
-     document.getElementById("encabezado-wioo").addEventListener("mouseup", () => {
-  pulsado = false;
-  clearTimeout(timer);
-});
-
-document.getElementById("codigoChofer").addEventListener("input", (e) => {
-  const valor = e.target.value.trim();
-  if (valor.length === 4) {
-    validarCodigo(valor).then((respuesta) => {
-      if (respuesta.estado === "aprobado") {
-        alert("✅ Código aprobado. ¡Bienvenido a bordo!");
-        // Aquí puedes redirigir, activar conexión, o mostrar pantalla operativa
-      } else if (respuesta.estado === "rechazado") {
-        alert("❌ Código inválido. Verifica con el chofer.");
-      } else {
-        alert("⚠️ Estado desconocido. Contacta soporte.");
+      const modalTerminos = document.getElementById("modal-terminos");
+      if (modalTerminos) {
+        setTimeout(() => {
+          modalTerminos.style.display = "flex";
+        }, 1500);
       }
-    });
-  }
-});
-      
-     document.getElementById("close-modal").addEventListener("click", () => {
-        document.getElementById("login-modal").style.display = "none";
-      });
+    }, 3000);
+  }, 3000);
 
-      abrirLogin("admin");
-      
-      // 🟣 Activación oculta del login administrativo
-let pulsado = false;
-let timer;
+  document.getElementById("encabezado-wioo").addEventListener("mouseup", () => {
+    pulsado = false;
+    clearTimeout(timer);
+  });
 
-encabezado.addEventListener("mousedown", () => {
-  pulsado = true;
-  timer = setTimeout(() => {
-    if (pulsado) {
-      abrirLogin();  // sin parámetro
-    }
-  }, 5000);
-});
+  document.getElementById("close-modal").addEventListener("click", () => {
+    document.getElementById("login-modal").style.display = "none";
+  });
 
-encabezado.addEventListener("mouseup", () => {
-  pulsado = false;
-  clearTimeout(timer);
-});
+  abrirLogin("admin");
 
-// 🟣 Activación táctil (solo en móviles)
-encabezado.addEventListener("touchstart", () => {
-  pulsado = true;
-  timer = setTimeout(() => {
-    if (pulsado) {
-      abrirLogin("admin");
-    }
-  }, 5000);
-});
+  // 🟣 Activación oculta del login administrativo
+  let pulsado = false;
+  let timer;
 
-encabezado.addEventListener("touchend", () => {
-  pulsado = false;
-  clearTimeout(timer);
-});
+  encabezado.addEventListener("mousedown", () => {
+    pulsado = true;
+    timer = setTimeout(() => {
+      if (pulsado) {
+        abrirLogin();
+      }
+    }, 5000);
+  });
+
+  encabezado.addEventListener("mouseup", () => {
+    pulsado = false;
+    clearTimeout(timer);
+  });
+
+  encabezado.addEventListener("touchstart", () => {
+    pulsado = true;
+    timer = setTimeout(() => {
+      if (pulsado) {
+        abrirLogin("admin");
+      }
+    }, 5000);
+  });
+
+  encabezado.addEventListener("touchend", () => {
+    pulsado = false;
+    clearTimeout(timer);
+  });
 
   // 🎯 Redirección institucional
- if (rol === "admin") {
-  window.location.href = "admin-panel.html";
-} else if (rol === "chofer") {
-  window.location.href = "chofer-panel.html";
-} else {
-  alert("⚠️ Rol no reconocido. Contacta al equipo técnico.");
+  if (rol === "admin") {
+    window.location.href = "admin-panel.html";
+  } else if (rol === "chofer") {
+    window.location.href = "chofer-panel.html";
+  } else {
+    alert("⚠️ Rol no reconocido. Contacta al equipo técnico.");
   }
-      window.cerrarAyuda = function () {
-        document.getElementById("modal-ayuda").classList.remove("active");
-        logo.style.display = "block";
+
+  window.cerrarAyuda = function () {
+    document.getElementById("modal-ayuda").classList.remove("active");
+    logo.style.display = "block";
+  };
+
+  // ✅ Modal de términos con scroll
+  const contenedor = document.getElementById("contenedorTerminos");
+  const boton = document.getElementById("botonAceptar");
+
+  if (contenedor && boton) {
+    contenedor.addEventListener("scroll", () => {
+      if (contenedor.scrollTop + contenedor.clientHeight >= contenedor.scrollHeight) {
+        boton.disabled = false;
+        boton.style.opacity = "1";
+        boton.style.cursor = "pointer";
+      }
+    });
+
+    boton.addEventListener("click", () => {
+      document.getElementById("modal-terminos").style.display = "none";
+    });
+  }
+
+  // 🧠 Asistente virtual
+  const campoPregunta = document.getElementById("preguntaUsuario");
+  const bloqueRespuesta = document.getElementById("respuestaAsistente");
+
+  if (campoPregunta && bloqueRespuesta) {
+    campoPregunta.addEventListener("input", (e) => {
+      const texto = e.target.value.toLowerCase();
+      const respuestas = {
+        "wifi": "Activa tu WiFi y conéctate a la red 'Wioo Conexión'.",
+        "pago": "Puedes validar vía pago móvil, transferencia o efectivo según tu unidad.",
+        "rechazado": "Verifica el comprobante o consulta al chofer para repetir el intento.",
+        "qr": "Escanea tu código QR o ingresa el código manual entregado.",
+        "cuánto": "La conexión gratuita es de 5 minutos. Validación de 12 horas cuesta 120bs.",
+        "conecto": "Abre tu configuración WiFi y selecciona la red 'Wioo Conexión'. Luego sigue los pasos en pantalla.",
+        "cómo me conecto": "Escanea tu QR, selecciona método de pago, valida, y listo: ¡conexión activa!"
       };
-
-
-      // ✅ Lógica corregida del botón de ayuda (ya no depende del menú eliminado)
-      // Esta línea fue removida: document.querySelector("a[href='#ayuda']")
-
-      // ✅ Lógica del modal de términos con scroll
-      const contenedor = document.getElementById("contenedorTerminos");
-      const boton = document.getElementById("botonAceptar");
-
-      if (contenedor && boton) {
-        contenedor.addEventListener("scroll", () => {
-          if (contenedor.scrollTop + contenedor.clientHeight >= contenedor.scrollHeight) {
-            boton.disabled = false;
-            boton.style.opacity = "1";
-            boton.style.cursor = "pointer";
-          }
-        });
-
-        boton.addEventListener("click", () => {
-          document.getElementById("modal-terminos").style.display = "none";
-        });
+      let respuesta = "❓ Aún no tenemos respuesta para esa pregunta.";
+      for (let clave in respuestas) {
+        if (texto.includes(clave)) {
+          respuesta = respuestas[clave];
+        }
       }
-
-      const campoPregunta = document.getElementById("preguntaUsuario");
-const bloqueRespuesta = document.getElementById("respuestaAsistente");
-
-if (campoPregunta && bloqueRespuesta) {
-  campoPregunta.addEventListener("input", (e) => {
-    const texto = e.target.value.toLowerCase();
-    const respuestas = {
-      "wifi": "Activa tu WiFi y conéctate a la red 'Wioo Conexión'.",
-      "pago": "Puedes validar vía pago móvil, transferencia o efectivo según tu unidad.",
-      "rechazado": "Verifica el comprobante o consulta al chofer para repetir el intento.",
-      "qr": "Escanea tu código QR o ingresa el código manual entregado.",
-      "cuánto": "La conexión gratuita es de 5 minutos. Validación de 12 horas cuesta 120bs.",
-      "conecto": "Abre tu configuración WiFi y selecciona la red 'Wioo Conexión'. Luego sigue los pasos en pantalla.",
-      "cómo me conecto": "Escanea tu QR, selecciona método de pago, valida, y listo: ¡conexión activa!"
-    };
-    let respuesta = "❓ Aún no tenemos respuesta para esa pregunta.";
-    for (let clave in respuestas) {
-      if (texto.includes(clave)) {
-        respuesta = respuestas[clave];
-      }
-    }
-    bloqueRespuesta.innerText = respuesta;
-  });
+      bloqueRespuesta.innerText = respuesta;
+    });
   }
-</script>
+}); // ✅ cierre completo de la función principal
+</script> <!-- ✅ cierre limpio del script -->
 
 <script>
   const modalTerminos = document.getElementById("modal-terminos");
