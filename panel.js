@@ -232,7 +232,6 @@ document.querySelector('button.nav-link[onclick*="descargarPDF"]')?.addEventList
   doc.text("Total tickets: 214", 20, 30);
   doc.text("Tickets usados: 189", 20, 40);
   doc.text("Validaciones: 37", 20, 50);
-  doc.save
   doc.save("resumen-wioo.pdf");
 });
 
