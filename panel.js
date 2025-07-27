@@ -20,11 +20,11 @@ function showSection(id) {
 
 // 🔧 Supabase institucional
 const SUPABASE_URL = "https://sjrmzkomzlqpsfvjdnle.supabase.co";
-const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...";
+const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNqcm16a29temxxcHNmdmpkbmxlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTI4MDU0NTMsImV4cCI6MjA2ODM4MTQ1M30.lX1F-w3ar2LEunf6OTfHoWkDOGFn4KdFTxEuCm34Wmw";
 
 const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-// 🔧 Funciones API para choferes
+// 🔧 Funciones API institucionales
 async function traerChoferes() {
   const { data, error } = await supabase.from("choferes").select("*");
   if (error) throw error;
@@ -44,6 +44,16 @@ async function editarChofer(codigo, campos) {
 async function eliminarChofer(codigo) {
   const { error } = await supabase.from("choferes").delete().eq("codigo", codigo);
   if (error) throw error;
+}
+
+async function traerTicketsPorChofer(codigoChofer) {
+  const { data, error } = await supabase
+    .from("tickets_wifi")
+    .select("*")
+    .eq("codigo_chofer", codigoChofer)
+    .order("creado_en", { ascending: false });
+  if (error) throw error;
+  return data;
 }
 
 // 🔧 Renderizado institucional de choferes
@@ -114,7 +124,7 @@ function activarBotonesChoferes(listaChoferes) {
   });
 }
 
-// 🔧 Registro institucional desde formulario
+// 🔧 Registro desde formulario institucional
 document.querySelector('form').addEventListener('submit', async function(e) {
   e.preventDefault();
   const nombre = this.querySelector('input[placeholder*="Luis"]').value.trim();
@@ -144,210 +154,98 @@ document.querySelector('form').addEventListener('submit', async function(e) {
   }
 });
 
-// 🔧 Comprobantes institucionales
-async function cargarComprobantes(filtro = "") {
-  let query = supabase.from("pago_manual").select("*").order("fecha", { ascending: false });
-  if (filtro) query = query.eq("estado", filtro);
-
-  const { data, error } = await query;
-  const tabla = document.getElementById("tabla-comprobantes");
-
-  if (error) {
-    console.error("❌ Error al consultar comprobantes:", error);
-    return;
-  }
-
-  if (!tabla || !Array.isArray(data)) {
-    console.warn("⚠️ Tabla no encontrada o datos inválidos");
-    return;
-  }
-
-  tabla.innerHTML = "";
-
-  data.forEach((item) => {
-    const estado = item.estado === "aprobado" ? "🟢 Aprobado" : "🕒 Pendiente";
-    const boton = item.estado === "aprobado"
-      ? '<button disabled style="opacity:0.5;">✔️ Activado</button>'
-      : `<button onclick="activarComprobante('${item.id}')">✅ Activar</button>`;
-
-    const fila = document.createElement("tr");
-    fila.innerHTML = `
-      <td>${item.telefono || "—"}</td>
-      <td>${item.banco || "—"}</td>
-      <td>${item.referencia || "—"}</td>
-      <td>${item.monto || "—"}</td>
-      <td>${item.unidad || "—"}</td>
-      <td>${estado}</td>
-      <td>${item.fecha || "—"}</td>
-      <td>${boton}</td>
-    `;
-    tabla.appendChild(fila);
-  });
-}
-
-window.activarComprobante = async function(id) {
-  try {
-    await supabase.from("pago_manual").update({ estado: "aprobado" }).eq("id", id);
-    await fetch("http://192.168.88.1/extender-wifi?comprobante=" + id);
-    alert(`✅ WiFi activado para comprobante #${id}`);
-    cargarComprobantes();
-  } catch (error) {
-    alert("⛔ Error al activar WiFi. Verifica conexión.");
-    console.error(error);
-  }
-};
-
-// 🔧 Filtro visual por estado
-function filtrarComprobantes() {
-  const estado = document.getElementById("filtro-estado").value;
-  cargarComprobantes(estado);
-}
-
-// 🔧 Gráficas institucionales
-function renderGraficos() {
-  const pagosCanvas = document.getElementById("graficoPagos");
-  if (window.graficoPagosInstance) window.graficoPagosInstance.destroy();
-  window.graficoPagosInstance = new Chart(pagosCanvas, {
-    type: "pie",
-    data: {
-      labels: ["Pago móvil", "Transferencia", "Efectivo"],
-      datasets: [{ data: [92, 60, 62], backgroundColor: ["#7344D0", "#FFB347", "#88CC88"] }]
-    },
-    options: {
-      plugins: {
-        legend: { position: "top" },
-        title: { display: true, text: "Métodos de pago" }
-      }
-    }
-  });
-
-  new Chart(document.getElementById("graficoRutas"), {
-    type: "bar",
-    data: {
-      labels: ["Ruta 3", "Ruta 9", "Ruta 14", "Ruta 7"],
-      datasets: [{ label: "Tickets por ruta", data: [24, 41, 55, 32], backgroundColor: "#7344D0" }]
-    },
-    options: {
-      plugins: {
-        legend: { display: false },
-        title: { display: true, text: "Rutas activas" }
-      }
-    }
-  });
-
-  new Chart(document.getElementById("graficoEmpresas"), {
-    type: "bar",
-    data: {
-      labels: ["Expresos Occidente", "Expresos Los Llanos"],
-      datasets: [{ label: "Validaciones semanales", data: [83, 52], backgroundColor: "#b87fff" }]
-    },
-    options: {
-      plugins: {
-        legend: { display: false },
-        title: { display: true, text: "Actividad por empresa" }
-      }
-    }
-  });
-}
-
-// 🔧 Exportaciones institucionales
-function prepararExportaciones() {
-  document.querySelector('button.nav-link[onclick*="descargarPDF"]')?.addEventListener("click", () => {
-    const { jsPDF } = window.jspdf;
-    const doc = new jsPDF();
-    doc.text("Resumen institucional Wioo", 20, 20);
-    doc.text("Total tickets: 214", 20, 30);
-    doc.text("Tickets usados: 189", 20, 40);
-    doc.text("Validaciones: 37", 20, 50);
-    doc.save("resumen-wioo.pdf");
-  });
-
-  document.querySelector('button.nav-link[onclick*="descargarCSV"]')?.addEventListener("click", () => {
-    const data = [
-      ["Empresa", "Tickets", "Choferes", "Activos"],
-      ["Expresos Occidente", 122, 14, "Sí"],
-      ["Expresos Los Llanos", 92, 11, "Sí"]
-    ];
-    const csv = data.map(r => r.join(",")).join("\n");
-    const blob = new Blob([csv], { type: "text/csv" });
-    const link = document.createElement("a");
-    link.href = URL.createObjectURL(blob);
-    link.download = "resumen-wioo.csv";
-    link.click();
-  });
-
-  document.querySelector('button.nav-link[onclick*="descargarJSON"]')?.addEventListener("click", () => {
-    const datos = {
-      tickets: 214,
-      usados: 189,
-      empresas: {
-        occidente: { validaciones: 122 },
-        llanos: { validaciones: 92 }
-      }
-    };
-    const blob = new Blob([JSON.stringify(datos, null, 2)], { type: "application/json" });
-    const link = document.createElement("a");
-    link.href = URL.createObjectURL(blob);
-    link.download = "resumen-wioo.json";
-    link.click();
-  });
-      }
-
-// 🔧 Detalle de tickets por chofer
-async function traerTicketsPorChofer(codigoChofer) {
+// 🔧 Traer todos los tickets
+async function traerTickets() {
   const { data, error } = await supabase
     .from("tickets_wifi")
     .select("*")
-    .eq("codigo_chofer", codigoChofer)
     .order("creado_en", { ascending: false });
-
   if (error) throw error;
   return data;
 }
 
-document.getElementById("select-chofer").addEventListener("change", async () => {
-  const codigo = document.getElementById("select-chofer").value;
-  const resumen = document.getElementById("resumen-chofer");
-  const tabla = document.getElementById("tabla-detalle-tickets");
-  const total = document.getElementById("total-tickets");
+// 🔧 Validar código manual por panel administrativo
+async function validarTicketManual() {
+  const input = document.querySelector("#codigo-manual");
+  const codigoIngresado = input.value.trim();
 
-  if (!codigo) {
-    resumen.style.display = "none";
-    tabla.innerHTML = "";
+  if (!codigoIngresado) {
+    alert("⚠️ Debes ingresar un código");
     return;
   }
 
   try {
-    const tickets = await traerTicketsPorChofer(codigo);
-    if (!tickets.length) {
-      resumen.style.display = "none";
-      tabla.innerHTML = "";
+    const { data, error } = await supabase
+      .from("tickets_wifi")
+      .select("*")
+      .eq("codigo", codigoIngresado)
+      .single();
+
+    if (error || !data) {
+      alert("⛔ Código no encontrado o inválido");
       return;
     }
 
-    total.innerText = tickets.length;
+    // Activación simulada del WiFi institucional
+    const actualizado = await supabase
+      .from("tickets_wifi")
+      .update({ validado: true, validado_por: "admin" })
+      .eq("codigo", codigoIngresado);
+
+    alert("✅ Código validado. WiFi activado institucionalmente.");
+    input.value = "";
+    renderTickets();
+  } catch (error) {
+    console.error("Error al validar ticket manual:", error);
+    alert("⛔ Fallo en validación manual");
+  }
+}
+
+// 🔧 Activar WiFi desde QR del chofer
+async function activarWifiDesdeChofer(codigoTicket, codigoChofer) {
+  try {
+    const { data, error } = await supabase
+      .from("tickets_wifi")
+      .update({ validado: true, validado_por: codigoChofer })
+      .eq("codigo", codigoTicket);
+
+    if (error) throw error;
+
+    alert("✅ WiFi activado desde panel del chofer");
+    renderTickets();
+  } catch (error) {
+    console.error("Error activando WiFi desde chofer:", error);
+    alert("⛔ Fallo en activación por chofer");
+  }
+}
+
+// 🔧 Render institucional de tickets comprobantes
+async function renderTickets() {
+  try {
+    const lista = await traerTickets();
+    const tabla = document.querySelector("#tickets-table-body");
     tabla.innerHTML = "";
 
-    tickets.forEach(t => {
-      const fila = `<tr>
-        <td>${new Date(t.creado_en).toLocaleDateString()}</td>
-        <td>${new Date(t.creado_en).toLocaleTimeString()}</td>
-        <td>${t.estado || "—"}</td>
-      </tr>`;
-      tabla.innerHTML += fila;
+    lista.forEach(ticket => {
+      const fila = document.createElement("tr");
+      fila.innerHTML = `
+        <td>${ticket.codigo}</td>
+        <td>${ticket.codigo_chofer || '🧍‍♂️ Manual'}</td>
+        <td>${ticket.validado ? '✅ Validado' : '⛔ Pendiente'}</td>
+        <td>${new Date(ticket.creado_en).toLocaleString()}</td>
+      `;
+      tabla.appendChild(fila);
     });
-
-    resumen.style.display = "block";
   } catch (error) {
-    console.error("Error al cargar tickets:", error);
-    alert("⛔ No se pudieron cargar los tickets. Verifica conexión.");
+    console.error("Error al renderizar tickets:", error);
   }
-});
+}
 
-// 🔧 Inicialización institucional
+// 🔧 Botón institucional de validación manual
+document.querySelector("#btn-validar-manual").addEventListener("click", validarTicketManual);
+
+// 🔧 Render inicial al cargar
 document.addEventListener("DOMContentLoaded", () => {
   renderChoferes();
-  cargarComprobantes();
-  renderGraficos();
-  prepararExportaciones();
+  renderTickets();
 });
