@@ -1,9 +1,7 @@
 // 🔧 Navegación institucional Wioo PRO
-
 const sidebar = document.getElementById('sidebar');
 const overlay = document.getElementById('overlay');
 
-// 👉 Abrir/Cerrar menú lateral
 export function toggleSidebar() {
   sidebar.classList.toggle('show');
   overlay.classList.toggle('active');
@@ -14,7 +12,6 @@ export function closeSidebar() {
   overlay.classList.remove('active');
 }
 
-// 👉 Mostrar sección activa
 export function showSection(id) {
   document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
   document.getElementById(id).classList.add('active');
@@ -22,12 +19,12 @@ export function showSection(id) {
 }
 
 // 🔧 Renderizado y botones funcionales para choferes
-
 import {
   traerChoferes,
   registrarChofer,
   editarChofer,
-  eliminarChofer
+  eliminarChofer,
+  traerTicketsPorChofer
 } from "./api.js";
 
 export async function renderChoferes() {
@@ -69,22 +66,16 @@ function activarBotonesChoferes(listaChoferes) {
     const chofer = listaChoferes[index];
     const { codigo, nombre, ruta } = chofer;
 
-
-    // ✏️ Editar
     fila.querySelector(".editar").addEventListener("click", async () => {
       const nuevoNombre = prompt("Nuevo nombre:", nombre);
       const nuevaRuta = prompt("Nueva ruta:", ruta);
       if (nuevoNombre && nuevaRuta) {
-        await editarChofer(codigo, {
-          nombre: nuevoNombre,
-          ruta: nuevaRuta
-        });
+        await editarChofer(codigo, { nombre: nuevoNombre, ruta: nuevaRuta });
         alert("✏️ Chofer editado");
         renderChoferes();
       }
     });
 
-    // 🔒 Inhabilitar / ✅ Activar
     fila.querySelector(".inhabilitar, .activar").addEventListener("click", async () => {
       const nuevoEstado = !chofer.activo;
       await editarChofer(codigo, { activo: nuevoEstado });
@@ -92,7 +83,6 @@ function activarBotonesChoferes(listaChoferes) {
       renderChoferes();
     });
 
-    // 🗑️ Eliminar
     fila.querySelector(".eliminar").addEventListener("click", async () => {
       const confirmar = confirm("¿Eliminar este chofer definitivamente?");
       if (confirmar) {
@@ -102,13 +92,11 @@ function activarBotonesChoferes(listaChoferes) {
       }
     });
   });
-      }
+}
 
 // 🔧 Registro de nuevo chofer real (formulario)
-
 document.querySelector('form').addEventListener('submit', async function(e) {
   e.preventDefault();
-
   const nombre = this.querySelector('input[placeholder*="Luis"]').value.trim();
   const ruta = this.querySelector('input[placeholder*="Ruta"]').value.trim();
   const codigo = this.querySelector('input[placeholder*="CHF"]').value.trim();
@@ -122,7 +110,7 @@ document.querySelector('form').addEventListener('submit', async function(e) {
     codigo: codigo,
     nombre: nombre,
     ruta: ruta,
-    activo: true  // ← Se registra como activo por defecto
+    activo: true
   };
 
   try {
@@ -136,43 +124,29 @@ document.querySelector('form').addEventListener('submit', async function(e) {
   }
 });
 
+// 🔧 Comprobantes y activación institucional
 import { createClient } from '@supabase/supabase-js';
 
 const supabase = createClient(
   "https://sjrmzkomzlqpsfvjdnle.supabase.co",
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNqcm16a29temxxcHNmdmpkbmxlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTI4MDU0NTMsImV4cCI6MjA2ODM4MTQ1M30.lX1F-w3ar2LEunf6OTfHoWkDOGFn4KdFTxEuCm34Wmw"
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
 );
-async function cargarComprobantes(filtro = "") {
-  let query = supabase
-    .from('pago_manual')
-    .select('*')
-    .order('fecha', { ascending: false });
 
+async function cargarComprobantes(filtro = "") {
+  let query = supabase.from('pago_manual').select('*').order('fecha', { ascending: false });
   if (filtro) query = query.eq('estado', filtro);
 
   const { data, error } = await query;
   const tbody = document.getElementById('tabla-comprobantes');
-  tbody.innerHTML = "";
-
-  data.forEach(item => {
-    // ... render como ya lo tienes
-  });
-}
-
-  const tbody = document.getElementById('tabla-comprobantes');
   tbody.innerHTML = '';
 
   data.forEach(item => {
-    const tr = document.createElement('tr');
-
-    const estado = item.estado === 'aprobado'
-      ? '🟢 Aprobado'
-      : '🕒 Pendiente';
-
+    const estado = item.estado === 'aprobado' ? '🟢 Aprobado' : '🕒 Pendiente';
     const boton = item.estado === 'aprobado'
       ? '<button disabled style="opacity:0.5;">✔️ Activado</button>'
       : `<button onclick="activarComprobante('${item.id}')">✅ Activar</button>`;
 
+    const tr = document.createElement('tr');
     tr.innerHTML = `
       <td>${item.telefono}</td>
       <td>${item.banco}</td>
@@ -183,40 +157,36 @@ async function cargarComprobantes(filtro = "") {
       <td>${item.fecha}</td>
       <td>${boton}</td>
     `;
-
     tbody.appendChild(tr);
   });
 }
-
-    function filtrarComprobantes() {
-  const estado = document.getElementById("filtro-estado").value;
-  cargarComprobantes(estado);
-    }
+cargarComprobantes();
 
 window.activarComprobante = async function(id) {
-  await supabase
-    .from('pago_manual')
-    .update({ estado: 'aprobado' })
-    .eq('id', id);
-
-  cargarComprobantes(); // recarga visual
+  try {
+    await supabase.from("pago_manual").update({ estado: "aprobado" }).eq("id", id);
+    await fetch("http://192.168.88.1/extender-wifi?comprobante=" + id);
+    alert(`✅ WiFi activado para comprobante #${id}`);
+    cargarComprobantes();
+  } catch (error) {
+    alert("⛔ Falló la activación del WiFi. Verifica conexión.");
+    console.error(error);
+  }
 };
 
-cargarComprobantes(); // inicialización
+function filtrarComprobantes() {
+  const estado = document.getElementById("filtro-estado").value;
+  cargarComprobantes(estado);
+}
 
-// 🔧 Gráficas institucionales y exportación
-
+// 📊 Gráficas institucionales
 import Chart from "https://cdn.jsdelivr.net/npm/chart.js";
 
-// 👉 Método de pago
 new Chart(document.getElementById('graficoPagos'), {
   type: 'pie',
   data: {
     labels: ['Pago móvil', 'Transferencia', 'Efectivo'],
-    datasets: [{
-      data: [92, 60, 62],
-      backgroundColor: ['#7344D0', '#FFB347', '#88CC88']
-    }]
+    datasets: [{ data: [92, 60, 62], backgroundColor: ['#7344D0', '#FFB347', '#88CC88'] }]
   },
   options: {
     plugins: {
@@ -226,19 +196,13 @@ new Chart(document.getElementById('graficoPagos'), {
   }
 });
 
-// 👉 Uso de rutas por día
 new Chart(document.getElementById('graficoRutas'), {
   type: 'bar',
   data: {
     labels: ['Ruta 3', 'Ruta 9', 'Ruta 14', 'Ruta 7'],
-    datasets: [{
-      label: 'Tickets por ruta',
-      data: [24, 41, 55, 32],
-      backgroundColor: '#7344D0'
-    }]
+    datasets: [{ label: 'Tickets por ruta', data: [24, 41, 55, 32], backgroundColor: '#7344D0' }]
   },
   options: {
-    responsive: true,
     plugins: {
       legend: { display: false },
       title: { display: true, text: 'Rutas activas' }
@@ -246,19 +210,13 @@ new Chart(document.getElementById('graficoRutas'), {
   }
 });
 
-// 👉 Actividad por empresa
 new Chart(document.getElementById('graficoEmpresas'), {
   type: 'bar',
   data: {
     labels: ['Expresos Occidente', 'Expresos Los Llanos'],
-    datasets: [{
-      label: 'Validaciones semanales',
-      data: [83, 52],
-      backgroundColor: '#b87fff'
-    }]
+    datasets: [{ label: 'Validaciones semanales', data: [83, 52], backgroundColor: '#b87fff' }]
   },
   options: {
-    responsive: true,
     plugins: {
       legend: { display: false },
       title: { display: true, text: 'Actividad por empresa' }
@@ -266,7 +224,7 @@ new Chart(document.getElementById('graficoEmpresas'), {
   }
 });
 
-// 🔁 Botones exportación
+// 📦 Exportación institucional
 document.querySelector('button.nav-link[onclick*="descargarPDF"]')?.addEventListener('click', () => {
   const { jsPDF } = window.jspdf;
   const doc = new jsPDF();
@@ -274,6 +232,7 @@ document.querySelector('button.nav-link[onclick*="descargarPDF"]')?.addEventList
   doc.text("Total tickets: 214", 20, 30);
   doc.text("Tickets usados: 189", 20, 40);
   doc.text("Validaciones: 37", 20, 50);
+  doc.save
   doc.save("resumen-wioo.pdf");
 });
 
@@ -307,8 +266,7 @@ document.querySelector('button.nav-link[onclick*="descargarJSON"]')?.addEventLis
   link.click();
 });
 
-import { traerTicketsPorChofer } from "./api.js";
-
+// 📋 Detalle de tickets por chofer
 document.getElementById("select-chofer").addEventListener("change", async () => {
   const codigo = document.getElementById("select-chofer").value;
   const resumen = document.getElementById("resumen-chofer");
