@@ -140,6 +140,19 @@
       </thead>
       <tbody id="tabla-comprobantes"></tbody>
     </table>
+    <!-- Estado visual de la conexión -->
+<span id="estado-wifi-{{id_comprobante}}" style="display:block; margin-bottom:8px; font-weight:bold; color:#555;">
+  Estado: 🔄 Pendiente
+</span>
+
+<!-- Botones de acción directa -->
+<button onclick="activarWifi('{{id_comprobante}}')" style="background:#4CAF50; color:white; padding:10px 16px; border:none; border-radius:6px; margin-right:8px; cursor:pointer;">
+  🚀 Activar WiFi
+</button>
+
+<button onclick="desactivarWifi('{{id_comprobante}}')" style="background:#f44336; color:white; padding:10px 16px; border:none; border-radius:6px; cursor:pointer;">
+  ⛔ Desactivar WiFi
+</button>
   </div>
 </section>
 
