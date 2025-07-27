@@ -572,7 +572,6 @@ window.addEventListener("DOMContentLoaded", () => {
     pantalla2.style.display = "flex";
     encabezado.style.opacity = "1";
 
-    // ✅ Mostrar modal de términos correctamente
     setTimeout(() => {
       const modalTerminos = document.getElementById("modal-terminos");
       if (modalTerminos) {
@@ -581,110 +580,132 @@ window.addEventListener("DOMContentLoaded", () => {
         }, 1500);
       }
     }, 3000);
-  }, 3000);
 
-  document.getElementById("encabezado-wioo").addEventListener("mouseup", () => {
-    pulsado = false;
-    clearTimeout(timer);
-  });
+    document.getElementById("encabezado-wioo").addEventListener("mouseup", () => {
+      pulsado = false;
+      clearTimeout(timer);
+    });
 
-  document.getElementById("close-modal").addEventListener("click", () => {
-    document.getElementById("login-modal").style.display = "none";
-  });
-
-  abrirLogin("admin");
-
-  // 🟣 Activación oculta del login administrativo
-  let pulsado = false;
-  let timer;
-
-  encabezado.addEventListener("mousedown", () => {
-    pulsado = true;
-    timer = setTimeout(() => {
-      if (pulsado) {
-        abrirLogin();
-      }
-    }, 5000);
-  });
-
-  encabezado.addEventListener("mouseup", () => {
-    pulsado = false;
-    clearTimeout(timer);
-  });
-
-  encabezado.addEventListener("touchstart", () => {
-    pulsado = true;
-    timer = setTimeout(() => {
-      if (pulsado) {
-        abrirLogin("admin");
-      }
-    }, 5000);
-  });
-
-  encabezado.addEventListener("touchend", () => {
-    pulsado = false;
-    clearTimeout(timer);
-  });
-
-  // 🎯 Redirección institucional
-  if (rol === "admin") {
-    window.location.href = "admin-panel.html";
-  } else if (rol === "chofer") {
-    window.location.href = "chofer-panel.html";
-  } else {
-    alert("⚠️ Rol no reconocido. Contacta al equipo técnico.");
-  }
-
-  window.cerrarAyuda = function () {
-    document.getElementById("modal-ayuda").classList.remove("active");
-    logo.style.display = "block";
-  };
-
-  // ✅ Modal de términos con scroll
-  const contenedor = document.getElementById("contenedorTerminos");
-  const boton = document.getElementById("botonAceptar");
-
-  if (contenedor && boton) {
-    contenedor.addEventListener("scroll", () => {
-      if (contenedor.scrollTop + contenedor.clientHeight >= contenedor.scrollHeight) {
-        boton.disabled = false;
-        boton.style.opacity = "1";
-        boton.style.cursor = "pointer";
+    document.getElementById("codigoChofer").addEventListener("input", (e) => {
+      const valor = e.target.value.trim();
+      if (valor.length === 4) {
+        validarCodigo(valor).then((respuesta) => {
+          if (respuesta.estado === "aprobado") {
+            alert("✅ Código aprobado. ¡Bienvenido a bordo!");
+            // Redirección u otras acciones si querés activarlas acá
+          } else if (respuesta.estado === "rechazado") {
+            alert("❌ Código inválido. Verifica con el chofer.");
+          } else {
+            alert("⚠️ Estado desconocido. Contacta soporte.");
+          }
+        });
       }
     });
 
-    boton.addEventListener("click", () => {
-      document.getElementById("modal-terminos").style.display = "none";
+    document.getElementById("close-modal").addEventListener("click", () => {
+      document.getElementById("login-modal").style.display = "none";
     });
-  }
 
-  // 🧠 Asistente virtual
-  const campoPregunta = document.getElementById("preguntaUsuario");
-  const bloqueRespuesta = document.getElementById("respuestaAsistente");
+    abrirLogin("admin");
 
-  if (campoPregunta && bloqueRespuesta) {
-    campoPregunta.addEventListener("input", (e) => {
-      const texto = e.target.value.toLowerCase();
-      const respuestas = {
-        "wifi": "Activa tu WiFi y conéctate a la red 'Wioo Conexión'.",
-        "pago": "Puedes validar vía pago móvil, transferencia o efectivo según tu unidad.",
-        "rechazado": "Verifica el comprobante o consulta al chofer para repetir el intento.",
-        "qr": "Escanea tu código QR o ingresa el código manual entregado.",
-        "cuánto": "La conexión gratuita es de 5 minutos. Validación de 12 horas cuesta 120bs.",
-        "conecto": "Abre tu configuración WiFi y selecciona la red 'Wioo Conexión'. Luego sigue los pasos en pantalla.",
-        "cómo me conecto": "Escanea tu QR, selecciona método de pago, valida, y listo: ¡conexión activa!"
-      };
-      let respuesta = "❓ Aún no tenemos respuesta para esa pregunta.";
-      for (let clave in respuestas) {
-        if (texto.includes(clave)) {
-          respuesta = respuestas[clave];
+    // 🟣 Activación oculta del login administrativo
+    let pulsado = false;
+    let timer;
+
+    encabezado.addEventListener("mousedown", () => {
+      pulsado = true;
+      timer = setTimeout(() => {
+        if (pulsado) {
+          abrirLogin(); // sin parámetro
         }
-      }
-      bloqueRespuesta.innerText = respuesta;
+      }, 5000);
     });
-  }
-}); // ✅ cierre completo de la función principal
-</script> <!-- ✅ cierre limpio del script -->
+
+    encabezado.addEventListener("mouseup", () => {
+      pulsado = false;
+      clearTimeout(timer);
+    });
+
+    encabezado.addEventListener("touchstart", () => {
+      pulsado = true;
+      timer = setTimeout(() => {
+        if (pulsado) {
+          abrirLogin("admin");
+        }
+      }, 5000);
+    });
+
+    encabezado.addEventListener("touchend", () => {
+      pulsado = false;
+      clearTimeout(timer);
+    });
+
+    // 🎯 Redirección institucional (desactivada para esta fase de pruebas)
+    /*
+    const rol = localStorage.getItem("rol"); // ← solo si lo guardás antes
+    if (rol === "admin") {
+      window.location.href = "admin-panel.html";
+    } else if (rol === "chofer") {
+      window.location.href = "chofer-panel.html";
+    } else {
+      alert("⚠️ Rol no reconocido. Contacta al equipo técnico.");
+    }
+    */
+
+    window.cerrarAyuda = function () {
+      document.getElementById("modal-ayuda").classList.remove("active");
+      logo.style.display = "block";
+    };
+
+    const contenedor = document.getElementById("contenedorTerminos");
+    const boton = document.getElementById("botonAceptar");
+
+    if (contenedor && boton) {
+      contenedor.addEventListener("scroll", () => {
+        if (contenedor.scrollTop + contenedor.clientHeight >= contenedor.scrollHeight) {
+          boton.disabled = false;
+          boton.style.opacity = "1";
+          boton.style.cursor = "pointer";
+        }
+      });
+
+      boton.addEventListener("click", () => {
+        document.getElementById("modal-terminos").style.display = "none";
+      });
+    }
+
+    const campoPregunta = document.getElementById("preguntaUsuario");
+    const bloqueRespuesta = document.getElementById("respuestaAsistente");
+
+    if (campoPregunta && bloqueRespuesta) {
+      campoPregunta.addEventListener("input", (e) => {
+        const texto = e.target.value.toLowerCase();
+        const respuestas = {
+          "wifi": "Activa tu WiFi y conéctate a la red 'Wioo Conexión'.",
+          "pago": "Puedes validar vía pago móvil, transferencia o efectivo según tu unidad.",
+          "rechazado": "Verifica el comprobante o consulta al chofer para repetir el intento.",
+          "qr": "Escanea tu código QR o ingresa el código manual entregado.",
+          "cuánto": "La conexión gratuita es de 5 minutos. Validación de 12 horas cuesta 120bs.",
+          "conecto": "Abre tu configuración WiFi y selecciona la red 'Wioo Conexión'. Luego sigue los pasos en pantalla.",
+          "cómo me conecto": "Escanea tu QR, selecciona método de pago, valida, y listo: ¡conexión activa!"
+        };
+        let respuesta = "❓ Aún no tenemos respuesta para esa pregunta.";
+        for (let clave in respuestas) {
+          if (texto.includes(clave)) {
+            respuesta = respuestas[clave];
+          }
+        }
+        bloqueRespuesta.innerText = respuesta;
+      });
+    }
+  });
+});
+</script>
+---
+
+🎯 Con esto podés avanzar hoy mismo a la prueba de validación real sin interferencias por redirecciones ni errores por variables no definidas. Cuando quieras activar el `rol`, ya está listo para entrar con un solo “uncomment”.
+
+Te acompaño hasta que esa conexión sea completamente funcional, trazable y lista para auditoría urbana 💼📶. ¿Vamos con la integración Mikrotik ahora o preferís validar primero esta capa visual?
 
 <script>
   const modalTerminos = document.getElementById("modal-terminos");
