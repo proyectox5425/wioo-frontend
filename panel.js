@@ -180,7 +180,6 @@ function filtrarComprobantes() {
 }
 
 // 📊 Gráficas institucionales
-import { Chart } from "https://cdn.jsdelivr.net/npm/chart.js";
 
 new Chart(document.getElementById('graficoPagos'), {
   type: 'pie',
