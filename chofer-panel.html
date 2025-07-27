@@ -170,8 +170,7 @@
   const tablaDia = document.getElementById("tabla-dia").querySelector("tbody");
 
   const url = "https://sjrmzkomzlqpsfvjdnle.supabase.co/rest/v1/codigos_activos";
-  const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."; // ← tu clave real
-
+  const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNqcm16a29temxxcHNmdmpkbmxlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTI4MDU0NTMsImV4cCI6MjA2ODM4MTQ1M30.lX1F-w3ar2LEunf6OTfHoWkDOGFn4KdFTxEuCm34Wmw";
   document.getElementById("generar").addEventListener("click", async () => {
     const codigo = `CH-${Math.floor(1000 + Math.random() * 9000)}`;
     cod.textContent = codigo;
