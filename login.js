@@ -1,7 +1,6 @@
 // login.js - acceso institucional completo con Supabase y activador visual oculto
 
-import { createClient } from "@supabase/supabase-js";
-
+import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
 // 🔗 Conexión real al proyecto Supabase
 const supabase = createClient(
   "https://sirxmzomlazpsfyjdnle.supabase.co",
