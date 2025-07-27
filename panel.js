@@ -2,32 +2,52 @@
 const sidebar = document.getElementById('sidebar');
 const overlay = document.getElementById('overlay');
 
-export function toggleSidebar() {
+function toggleSidebar() {
   sidebar.classList.toggle('show');
   overlay.classList.toggle('active');
 }
 
-export function closeSidebar() {
+function closeSidebar() {
   sidebar.classList.remove('show');
   overlay.classList.remove('active');
 }
 
-export function showSection(id) {
+function showSection(id) {
   document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
   document.getElementById(id).classList.add('active');
   closeSidebar();
 }
 
-// 🔧 Renderizado y botones funcionales para choferes
-import {
-  traerChoferes,
-  registrarChofer,
-  editarChofer,
-  eliminarChofer,
-  traerTicketsPorChofer
-} from "./api.js";
+// 🔧 Supabase institucional
+const SUPABASE_URL = "https://sjrmzkomzlqpsfvjdnle.supabase.co";
+const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...";
 
-export async function renderChoferes() {
+const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+// 🔧 Funciones API para choferes
+async function traerChoferes() {
+  const { data, error } = await supabase.from("choferes").select("*");
+  if (error) throw error;
+  return data;
+}
+
+async function registrarChofer(chofer) {
+  const { error } = await supabase.from("choferes").insert([chofer]);
+  if (error) throw error;
+}
+
+async function editarChofer(codigo, campos) {
+  const { error } = await supabase.from("choferes").update(campos).eq("codigo", codigo);
+  if (error) throw error;
+}
+
+async function eliminarChofer(codigo) {
+  const { error } = await supabase.from("choferes").delete().eq("codigo", codigo);
+  if (error) throw error;
+}
+
+// 🔧 Renderizado institucional de choferes
+async function renderChoferes() {
   try {
     const datos = await traerChoferes();
     const cuerpo = document.querySelector("#choferes-table-body");
@@ -94,7 +114,7 @@ function activarBotonesChoferes(listaChoferes) {
   });
 }
 
-// 🔧 Registro de nuevo chofer real (formulario)
+// 🔧 Registro institucional desde formulario
 document.querySelector('form').addEventListener('submit', async function(e) {
   e.preventDefault();
   const nombre = this.querySelector('input[placeholder*="Luis"]').value.trim();
@@ -115,52 +135,55 @@ document.querySelector('form').addEventListener('submit', async function(e) {
 
   try {
     await registrarChofer(nuevoChofer);
-    alert("✅ Chofer registrado exitosamente en el sistema urbano");
+    alert("✅ Chofer registrado exitosamente");
     this.reset();
     renderChoferes();
   } catch (error) {
     console.error("Error al registrar chofer:", error);
-    alert("⛔ No se pudo registrar. Verifica conexión y permisos.");
+    alert("⛔ Fallo de registro. Verifica conexión y permisos.");
   }
 });
 
-// 🔧 Comprobantes y activación institucional
-import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
-
-const supabase = createClient(
-  "https://sjrmzkomzlqpsfvjdnle.supabase.co",
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
-);
-
+// 🔧 Comprobantes institucionales
 async function cargarComprobantes(filtro = "") {
-  let query = supabase.from('pago_manual').select('*').order('fecha', { ascending: false });
-  if (filtro) query = query.eq('estado', filtro);
+  let query = supabase.from("pago_manual").select("*").order("fecha", { ascending: false });
+  if (filtro) query = query.eq("estado", filtro);
 
   const { data, error } = await query;
-  const tbody = document.getElementById('tabla-comprobantes');
-  tbody.innerHTML = '';
+  const tabla = document.getElementById("tabla-comprobantes");
 
-  data.forEach(item => {
-    const estado = item.estado === 'aprobado' ? '🟢 Aprobado' : '🕒 Pendiente';
-    const boton = item.estado === 'aprobado'
+  if (error) {
+    console.error("❌ Error al consultar comprobantes:", error);
+    return;
+  }
+
+  if (!tabla || !Array.isArray(data)) {
+    console.warn("⚠️ Tabla no encontrada o datos inválidos");
+    return;
+  }
+
+  tabla.innerHTML = "";
+
+  data.forEach((item) => {
+    const estado = item.estado === "aprobado" ? "🟢 Aprobado" : "🕒 Pendiente";
+    const boton = item.estado === "aprobado"
       ? '<button disabled style="opacity:0.5;">✔️ Activado</button>'
       : `<button onclick="activarComprobante('${item.id}')">✅ Activar</button>`;
 
-    const tr = document.createElement('tr');
-    tr.innerHTML = `
-      <td>${item.telefono}</td>
-      <td>${item.banco}</td>
-      <td>${item.referencia}</td>
-      <td>$${item.monto}</td>
-      <td>${item.unidad}</td>
+    const fila = document.createElement("tr");
+    fila.innerHTML = `
+      <td>${item.telefono || "—"}</td>
+      <td>${item.banco || "—"}</td>
+      <td>${item.referencia || "—"}</td>
+      <td>${item.monto || "—"}</td>
+      <td>${item.unidad || "—"}</td>
       <td>${estado}</td>
-      <td>${item.fecha}</td>
+      <td>${item.fecha || "—"}</td>
       <td>${boton}</td>
     `;
-    tbody.appendChild(tr);
+    tabla.appendChild(fila);
   });
 }
-cargarComprobantes();
 
 window.activarComprobante = async function(id) {
   try {
@@ -169,102 +192,119 @@ window.activarComprobante = async function(id) {
     alert(`✅ WiFi activado para comprobante #${id}`);
     cargarComprobantes();
   } catch (error) {
-    alert("⛔ Falló la activación del WiFi. Verifica conexión.");
+    alert("⛔ Error al activar WiFi. Verifica conexión.");
     console.error(error);
   }
 };
 
+// 🔧 Filtro visual por estado
 function filtrarComprobantes() {
   const estado = document.getElementById("filtro-estado").value;
   cargarComprobantes(estado);
 }
 
-// 📊 Gráficas institucionales
-
-new Chart(document.getElementById('graficoPagos'), {
-  type: 'pie',
-  data: {
-    labels: ['Pago móvil', 'Transferencia', 'Efectivo'],
-    datasets: [{ data: [92, 60, 62], backgroundColor: ['#7344D0', '#FFB347', '#88CC88'] }]
-  },
-  options: {
-    plugins: {
-      legend: { display: true },
-      title: { display: true, text: 'Métodos de pago' }
+// 🔧 Gráficas institucionales
+function renderGraficos() {
+  const pagosCanvas = document.getElementById("graficoPagos");
+  if (window.graficoPagosInstance) window.graficoPagosInstance.destroy();
+  window.graficoPagosInstance = new Chart(pagosCanvas, {
+    type: "pie",
+    data: {
+      labels: ["Pago móvil", "Transferencia", "Efectivo"],
+      datasets: [{ data: [92, 60, 62], backgroundColor: ["#7344D0", "#FFB347", "#88CC88"] }]
+    },
+    options: {
+      plugins: {
+        legend: { position: "top" },
+        title: { display: true, text: "Métodos de pago" }
+      }
     }
-  }
-});
+  });
 
-new Chart(document.getElementById('graficoRutas'), {
-  type: 'bar',
-  data: {
-    labels: ['Ruta 3', 'Ruta 9', 'Ruta 14', 'Ruta 7'],
-    datasets: [{ label: 'Tickets por ruta', data: [24, 41, 55, 32], backgroundColor: '#7344D0' }]
-  },
-  options: {
-    plugins: {
-      legend: { display: false },
-      title: { display: true, text: 'Rutas activas' }
+  new Chart(document.getElementById("graficoRutas"), {
+    type: "bar",
+    data: {
+      labels: ["Ruta 3", "Ruta 9", "Ruta 14", "Ruta 7"],
+      datasets: [{ label: "Tickets por ruta", data: [24, 41, 55, 32], backgroundColor: "#7344D0" }]
+    },
+    options: {
+      plugins: {
+        legend: { display: false },
+        title: { display: true, text: "Rutas activas" }
+      }
     }
-  }
-});
+  });
 
-new Chart(document.getElementById('graficoEmpresas'), {
-  type: 'bar',
-  data: {
-    labels: ['Expresos Occidente', 'Expresos Los Llanos'],
-    datasets: [{ label: 'Validaciones semanales', data: [83, 52], backgroundColor: '#b87fff' }]
-  },
-  options: {
-    plugins: {
-      legend: { display: false },
-      title: { display: true, text: 'Actividad por empresa' }
+  new Chart(document.getElementById("graficoEmpresas"), {
+    type: "bar",
+    data: {
+      labels: ["Expresos Occidente", "Expresos Los Llanos"],
+      datasets: [{ label: "Validaciones semanales", data: [83, 52], backgroundColor: "#b87fff" }]
+    },
+    options: {
+      plugins: {
+        legend: { display: false },
+        title: { display: true, text: "Actividad por empresa" }
+      }
     }
-  }
-});
+  });
+}
 
-// 📦 Exportación institucional
-document.querySelector('button.nav-link[onclick*="descargarPDF"]')?.addEventListener('click', () => {
-  const { jsPDF } = window.jspdf;
-  const doc = new jsPDF();
-  doc.text("Resumen institucional Wioo", 20, 20);
-  doc.text("Total tickets: 214", 20, 30);
-  doc.text("Tickets usados: 189", 20, 40);
-  doc.text("Validaciones: 37", 20, 50);
-  doc.save("resumen-wioo.pdf");
-});
+// 🔧 Exportaciones institucionales
+function prepararExportaciones() {
+  document.querySelector('button.nav-link[onclick*="descargarPDF"]')?.addEventListener("click", () => {
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF();
+    doc.text("Resumen institucional Wioo", 20, 20);
+    doc.text("Total tickets: 214", 20, 30);
+    doc.text("Tickets usados: 189", 20, 40);
+    doc.text("Validaciones: 37", 20, 50);
+    doc.save("resumen-wioo.pdf");
+  });
 
-document.querySelector('button.nav-link[onclick*="descargarCSV"]')?.addEventListener('click', () => {
-  const data = [
-    ["Empresa", "Tickets", "Choferes", "Activos"],
-    ["Expresos Occidente", 122, 14, "Sí"],
-    ["Expresos Los Llanos", 92, 11, "Sí"]
-  ];
-  let csv = data.map(r => r.join(",")).join("\n");
-  let blob = new Blob([csv], { type: "text/csv" });
-  let link = document.createElement("a");
-  link.href = URL.createObjectURL(blob);
-  link.download = "resumen-wioo.csv";
-  link.click();
-});
+  document.querySelector('button.nav-link[onclick*="descargarCSV"]')?.addEventListener("click", () => {
+    const data = [
+      ["Empresa", "Tickets", "Choferes", "Activos"],
+      ["Expresos Occidente", 122, 14, "Sí"],
+      ["Expresos Los Llanos", 92, 11, "Sí"]
+    ];
+    const csv = data.map(r => r.join(",")).join("\n");
+    const blob = new Blob([csv], { type: "text/csv" });
+    const link = document.createElement("a");
+    link.href = URL.createObjectURL(blob);
+    link.download = "resumen-wioo.csv";
+    link.click();
+  });
 
-document.querySelector('button.nav-link[onclick*="descargarJSON"]')?.addEventListener('click', () => {
-  const datos = {
-    tickets: 214,
-    usados: 189,
-    empresas: {
-      occidente: { validaciones: 122 },
-      llanos: { validaciones: 92 }
-    }
-  };
-  let blob = new Blob([JSON.stringify(datos, null, 2)], { type: "application/json" });
-  let link = document.createElement("a");
-  link.href = URL.createObjectURL(blob);
-  link.download = "resumen-wioo.json";
-  link.click();
-});
+  document.querySelector('button.nav-link[onclick*="descargarJSON"]')?.addEventListener("click", () => {
+    const datos = {
+      tickets: 214,
+      usados: 189,
+      empresas: {
+        occidente: { validaciones: 122 },
+        llanos: { validaciones: 92 }
+      }
+    };
+    const blob = new Blob([JSON.stringify(datos, null, 2)], { type: "application/json" });
+    const link = document.createElement("a");
+    link.href = URL.createObjectURL(blob);
+    link.download = "resumen-wioo.json";
+    link.click();
+  });
+      }
 
-// 📋 Detalle de tickets por chofer
+// 🔧 Detalle de tickets por chofer
+async function traerTicketsPorChofer(codigoChofer) {
+  const { data, error } = await supabase
+    .from("tickets_wifi")
+    .select("*")
+    .eq("codigo_chofer", codigoChofer)
+    .order("creado_en", { ascending: false });
+
+  if (error) throw error;
+  return data;
+}
+
 document.getElementById("select-chofer").addEventListener("change", async () => {
   const codigo = document.getElementById("select-chofer").value;
   const resumen = document.getElementById("resumen-chofer");
@@ -292,7 +332,7 @@ document.getElementById("select-chofer").addEventListener("change", async () => 
       const fila = `<tr>
         <td>${new Date(t.creado_en).toLocaleDateString()}</td>
         <td>${new Date(t.creado_en).toLocaleTimeString()}</td>
-        <td>${t.estado}</td>
+        <td>${t.estado || "—"}</td>
       </tr>`;
       tabla.innerHTML += fila;
     });
@@ -304,23 +344,10 @@ document.getElementById("select-chofer").addEventListener("change", async () => 
   }
 });
 
-const ctx = document.getElementById("graficoPagos").getContext("2d");
-
-new Chart(ctx, {
-  type: "bar", // o "pie", "line", etc.
-  data: {
-    labels: ["Pago móvil", "Transferencia", "Efectivo"],
-    datasets: [{
-      label: "Distribución de pagos",
-      data: [12, 5, 8],
-      backgroundColor: ["#7344D0", "#d2a6ff", "#c0c0ff"]
-    }]
-  },
-  options: {
-    responsive: true,
-    plugins: {
-      legend: { position: "top" },
-      title: { display: true, text: "Pagos registrados hoy" }
-    }
-  }
+// 🔧 Inicialización institucional
+document.addEventListener("DOMContentLoaded", () => {
+  renderChoferes();
+  cargarComprobantes();
+  renderGraficos();
+  prepararExportaciones();
 });
