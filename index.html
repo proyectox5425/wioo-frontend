@@ -426,6 +426,9 @@
 
       <div id="qr-reader" style="width: 280px; margin: 20px auto; display: none;"></div>
 
+      <input type="text" id="input-codigo" maxlength="4" placeholder="Ingresar código de 4 dígitos" />
+<button id="boton-validar">Verificar</button>
+      
       <div class="zona-pago">
         <div class="botones-pago-vertical">
           <button class="boton-vertical" onclick="window.location.href='pantalla-3.1.html'">📱 Pago Móvil</button>
@@ -828,31 +831,33 @@ Te acompaño hasta que esa conexión sea completamente funcional, trazable y lis
 <script type="module" src="api.js"></script>
 <script type="module" src="login.js"></script>
       <script type="module">
-import { validarCodigo } from './api.js';
+import { validarCodigo } from "./api.js";
 
-document.addEventListener("DOMContentLoaded", () => {
-  const input = document.getElementById("codigoInput");
+document.getElementById("boton-validar").addEventListener("click", async () => {
+  const input = document.getElementById("input-codigo").value.trim();
 
-  input.addEventListener("input", async () => {
-    const valor = input.value.trim();
-    if (valor.length === 4) {
-      alert("🎯 Código detectado: " + valor);
+  if (input.length !== 4 || isNaN(input)) {
+    alert("⚠️ Ingresá un código válido de 4 dígitos.");
+    return;
+  }
 
-      try {
-        const datos = await validarCodigo(valor);
-        alert("🔁 Datos recibidos: " + JSON.stringify(datos));
+  try {
+    const datos = await validarCodigo(input);
+    alert("🔁 Respuesta real desde Supabase: " + JSON.stringify(datos));
 
-        if (datos && datos.exito === true) {
-          alert("✅ Validación exitosa. Redirigiendo...");
-          window.location.href = "validado.html";
-        } else {
-          alert("❌ Código incorrecto o sin respuesta");
-        }
-      } catch (error) {
-        alert("🔥 Error en validación: " + error.message);
-      }
+    if (datos.estado === "aprobado") {
+      alert("✅ Código aprobado");
+      localStorage.setItem("choferId", datos.choferId);
+      localStorage.setItem("unidadId", datos.unidadId);
+      window.location.href = "pantalla-4.1.html";
+    } else {
+      alert("❌ Código rechazado");
+      window.location.href = "pantalla-4.2.html";
     }
-  });
+  } catch (error) {
+    alert("🔥 Error al validar: " + error.message);
+    console.error("Error validación:", error);
+  }
 });
       </script>
 </body>
