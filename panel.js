@@ -253,6 +253,64 @@ document.addEventListener("DOMContentLoaded", () => {
       console.error("Error al renderizar tickets:", error);
     }
             }
+
+      async function renderComprobantes() {
+  const { data, error } = await supabase
+    .from('comprobantes')
+    .select('*')
+    .order('fecha', { ascending: false });
+
+  if (error) {
+    console.error('Error al cargar comprobantes:', error);
+    return;
+  }
+
+  const tbody = document.getElementById('tabla-comprobantes');
+  tbody.innerHTML = ''; // Limpia antes de insertar
+
+  data.forEach(comprobante => {
+    const row = document.createElement('tr');
+
+    row.innerHTML = `
+      <td>${comprobante.fecha}</td>
+      <td>${comprobante.id}</td>
+      <td>${comprobante.validacion}</td>
+      <td>
+        <span id="estado-wifi-${comprobante.id}">
+          ${comprobante.estado_wifi ? '🟢 Activo' : '🔴 Inactivo'}
+        </span>
+      </td>
+      <td>
+        <button onclick="activarWifi('${comprobante.id}')">🚀 Activar WiFi</button>
+        <button onclick="desactivarWifi('${comprobante.id}')">⛔ Desactivar WiFi</button>
+      </td>
+    `;
+
+    tbody.appendChild(row);
+  });
+      }
+
+    async function activarWifi(id) {
+  const { error } = await supabase
+    .from('comprobantes')
+    .update({ estado_wifi: true })
+    .eq('id', id);
+
+  if (!error) {
+    document.getElementById(`estado-wifi-${id}`).textContent = '🟢 Activo';
+  }
+}
+
+async function desactivarWifi(id) {
+  const { error } = await supabase
+    .from('comprobantes')
+    .update({ estado_wifi: false })
+    .eq('id', id);
+
+  if (!error) {
+    document.getElementById(`estado-wifi-${id}`).textContent = '🔴 Inactivo';
+  }
+}
       // 🔧 Render inicial
   renderChoferes();
   renderTickets();
