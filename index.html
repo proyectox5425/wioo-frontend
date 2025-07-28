@@ -848,6 +848,29 @@ document.getElementById("codigoChofer").addEventListener("input", async (e) => {
       });
     });
   }
+  
+  document.getElementById("codigoChofer").addEventListener("input", async (e) => {
+  const valor = e.target.value.trim();
+
+  if (valor.length === 4) {
+    // Aquí el sistema pregunta si el código es válido
+    const res = await fetch("/api/validar-codigo", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ codigo: valor })
+    });
+
+    const datos = await res.json();
+
+    if (datos.estado === "aprobado") {
+      alert("✅ Código aprobado");
+      window.location.href = "pantalla-4.1.html"; // pantalla de conexión activa
+    } else {
+      alert("❌ Código inválido");
+      window.location.href = "pantalla-4.2.html"; // pantalla de rechazo
+    }
+  }
+});
 </script>
       <script src="https://unpkg.com/html5-qrcode"></script>
 <script type="module" src="api.js"></script>
