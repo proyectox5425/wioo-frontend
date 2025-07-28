@@ -768,13 +768,7 @@ Te acompaño hasta que esa conexión sea completamente funcional, trazable y lis
     { fps: 10, qrbox: 250 },
     async (decodedText) => {
       try {
-        const res = await fetch("/api/validar-codigo", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ codigo: decodedText })
-        });
-        const datos = await res.json();
-
+        const datos = await validarCodigo(decodedText);
         if (datos.estado === "aprobado") {
           alert("✅ Código QR validado");
           html5QrCode.stop();
