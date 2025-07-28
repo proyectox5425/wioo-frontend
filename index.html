@@ -378,6 +378,25 @@
   from { opacity: 0; transform: scale(0.95); }
   to   { opacity: 1; transform: scale(1); }
     }
+
+    @media (min-width: 768px) {
+  .logo-inicial.animar-logo {
+    width: 380px;
+  }
+
+  .interface-wrapper {
+    max-width: 480px;
+    padding: 40px 30px;
+  }
+
+  .mensaje-bienvenida {
+    font-size: 28px;
+  }
+
+  .encabezado-pago-unico {
+    font-size: 24px;
+  }
+    }
   </style>
 </head>
 <body>
@@ -586,21 +605,6 @@ window.addEventListener("DOMContentLoaded", () => {
       clearTimeout(timer);
     });
 
-    document.getElementById("codigoChofer").addEventListener("input", (e) => {
-      const valor = e.target.value.trim();
-      if (valor.length === 4) {
-        validarCodigo(valor).then((respuesta) => {
-          if (respuesta.estado === "aprobado") {
-            alert("✅ Código aprobado. ¡Bienvenido a bordo!");
-            // Redirección u otras acciones si querés activarlas acá
-          } else if (respuesta.estado === "rechazado") {
-            alert("❌ Código inválido. Verifica con el chofer.");
-          } else {
-            alert("⚠️ Estado desconocido. Contacta soporte.");
-          }
-        });
-      }
-    });
 
     document.getElementById("close-modal").addEventListener("click", () => {
       document.getElementById("login-modal").style.display = "none";
@@ -753,54 +757,71 @@ Te acompaño hasta que esa conexión sea completamente funcional, trazable y lis
   });
 
   // Validación de código manual
-  const inputCodigo = document.getElementById("codigoChofer");
-  inputCodigo.setAttribute("inputmode", "numeric");
-  inputCodigo.addEventListener("input", async (e) => {
-    const valor = e.target.value.trim();
-    if (/^\d{4}$/.test(valor)) {
-      const res = await fetch("/api/validar-codigo", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ codigo: valor })
-      });
-      const datos = await res.json();
-      if (datos.estado === "aprobado") {
-        alert("✅ Código aprobado. ¡Bienvenido!");
-        localStorage.setItem("choferId", datos.choferId);
-        localStorage.setItem("unidadId", datos.unidadId);
-      } else {
-        alert("❌ Código inválido.");
-      }
+document.getElementById("codigoChofer").addEventListener("input", async (e) => {
+  const valor = e.target.value.trim();
+  if (/^\d{4}$/.test(valor)) {
+    const res = await fetch("/api/validar-codigo", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ codigo: valor })
+    });
+    const datos = await res.json();
+    if (datos.estado === "aprobado") {
+      alert("✅ Código aprobado. ¡Bienvenido!");
+      localStorage.setItem("choferId", datos.choferId);
+      localStorage.setItem("unidadId", datos.unidadId);
+      window.location.href = "pantalla-4.1.html";
+    } else {
+      alert("❌ Código inválido.");
+      window.location.href = "pantalla-4.2.html";
     }
-  });
+  }
+});
 
   // Activar lector QR
   window.escanearQR = () => {
-    const qr = document.getElementById("qr-reader");
-    qr.style.display = "block";
-    const html5QrCode = new Html5Qrcode("qr-reader");
-    html5QrCode.start(
-      { facingMode: "environment" },
-      { fps: 10, qrbox: 250 },
-      async (decodedText) => {
+  const qr = document.getElementById("qr-reader");
+  qr.style.display = "block";
+
+  const html5QrCode = new Html5Qrcode("qr-reader");
+  html5QrCode.start(
+    { facingMode: "environment" },
+    { fps: 10, qrbox: 250 },
+    async (decodedText) => {
+      try {
         const res = await fetch("/api/validar-codigo", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ codigo: decodedText })
         });
         const datos = await res.json();
+
         if (datos.estado === "aprobado") {
           alert("✅ Código QR validado");
           html5QrCode.stop();
           localStorage.setItem("choferId", datos.choferId);
           localStorage.setItem("unidadId", datos.unidadId);
+          window.location.href = "pantalla-4.1.html";
         } else {
           alert("❌ Código QR rechazado");
           html5QrCode.stop();
+          window.location.href = "pantalla-4.2.html";
         }
+      } catch (error) {
+        alert("⚠️ Falló la validación del código. Intenta nuevamente.");
+        console.error("Error en validación de QR:", error);
+        html5QrCode.stop();
       }
-    );
-  };
+    },
+    (errorMessage) => {
+      alert("📵 No se pudo activar la cámara. Verifica permisos del navegador o ajustes de seguridad.");
+      console.error("Error al iniciar escáner QR:", errorMessage);
+    }
+  ).catch((err) => {
+    alert("❌ Error grave con el lector QR. Intenta recargar la página.");
+    console.error("Error al iniciar Html5Qrcode:", err);
+  });
+};
 
   // Registro de términos aceptados
   const contenedor = document.getElementById("contenedorTerminos");
