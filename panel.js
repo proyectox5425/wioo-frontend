@@ -21,7 +21,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // 🔧 Supabase institucional
   const SUPABASE_URL = "https://sjrmzkomzlqpsfvjdnle.supabase.co";
-  const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNqcm16a29temxxcHNmdmpkbmxlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTI4MDU0NTMsImV4cCI6MjA2ODM4MTQ1M30.lX1F-w3ar2LEunf6OTfHoWkDOGFn4KdFTxEuCm34Wmw";
+  const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...";
 
   if (!window.supabase || !window.supabase.createClient) {
     console.error("❌ Supabase no está cargado.");
@@ -31,7 +31,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-  // 🔧 Funciones API institucionales
+  // 🔧 API: Choferes y Tickets por Chofer
   async function traerChoferes() {
     const { data, error } = await supabase.from("choferes").select("*");
     if (error) throw error;
@@ -131,7 +131,48 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // 🔧 Registro desde formulario institucional
+  // 🔧 Registro institucional desde formulario
+  document.querySelector('form').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    const nombre = this.querySelector('input[placeholder*="Luis"]').value.trim();
+    const ruta = this.querySelector('input[placeholder*="Ruta"]').value.trim();
+    const codigo = this.querySelector('input[placeholder*="CHF"]').value.trim();
+
+    if (!nombre || !ruta || !codigo) {
+      alert("⚠️ Todos los campos son obligatorios");
+      return;
+    }
+
+    const nuevoChofer = {
+      codigo: codigo,
+      nombre: nombre,
+      ruta: ruta,
+      activo: true
+    };
+
+    try {
+      await registrarChofer(nuevoChofer);
+      alert("✅ Chofer registrado exitosamente");
+      this.reset();
+      renderChoferes();
+    } catch (error) {
+      console.error("Error al registrar chofer:", error);
+      alert("⛔ Fallo de registro. Verifica conexión Chofer inhabilitado");
+        renderChoferes();
+      });
+
+      fila.querySelector(".eliminar").addEventListener("click", async () => {
+        const confirmar = confirm("¿Eliminar este chofer definitivamente?");
+        if (confirmar) {
+          await eliminarChofer(codigo);
+          alert("🗑️ Chofer eliminado");
+          renderChoferes();
+        }
+      });
+    });
+  }
+
+  // 🔧 Registro institucional desde formulario
   document.querySelector('form').addEventListener('submit', async function(e) {
     e.preventDefault();
     const nombre = this.querySelector('input[placeholder*="Luis"]').value.trim();
@@ -160,8 +201,7 @@ document.addEventListener("DOMContentLoaded", () => {
       alert("⛔ Fallo de registro. Verifica conexión y permisos.");
     }
   });
-
-  // 🔧 Traer todos los tickets
+// 🔧 Tickets institucionales
   async function traerTickets() {
     const { data, error } = await supabase
       .from("tickets_wifi")
@@ -171,7 +211,7 @@ document.addEventListener("DOMContentLoaded", () => {
     return data;
   }
 
-  // 🔧 Validar código manual por panel administrativo
+  // 🔧 Validación manual desde panel admin
   async function validarTicketManual() {
     const input = document.querySelector("#codigo-manual");
     const codigoIngresado = input.value.trim();
@@ -209,7 +249,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   document.querySelector("#btn-validar-manual").addEventListener("click", validarTicketManual);
 
-  // 🔧 Activar WiFi desde QR del chofer
+  // 🔧 Activación desde QR del chofer
   async function activarWifiDesdeChofer(codigoTicket, codigoChofer) {
     try {
       const { error } = await supabase
@@ -227,13 +267,8 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  // 🔧 Render institucional de tickets comprobantes
+  // 🔧 Render visual institucional de tickets
   async function renderTickets() {
-    try {
-      const lista = await traerTickets();
-      const tabla = document.querySelector("#tickets-table-body");
-      tabla.innerHTML
-      async function renderTickets() {
     try {
       const lista = await traerTickets();
       const tabla = document.querySelector("#tickets-table-body");
@@ -252,66 +287,70 @@ document.addEventListener("DOMContentLoaded", () => {
     } catch (error) {
       console.error("Error al renderizar tickets:", error);
     }
-            }
-
-      async function renderComprobantes() {
-  const { data, error } = await supabase
-    .from('comprobantes')
-    .select('*')
-    .order('fecha', { ascending: false });
-
-  if (error) {
-    console.error('Error al cargar comprobantes:', error);
-    return;
   }
 
-  const tbody = document.getElementById('tabla-comprobantes');
-  tbody.innerHTML = ''; // Limpia antes de insertar
+  // 🔧 Render institucional de comprobantes con activación WiFi directa
+  async function renderComprobantes() {
+    const { data, error } = await supabase
+      .from("comprobantes")
+      .select("*")
+      .order("fecha", { ascending: false });
 
-  data.forEach(comprobante => {
-    const row = document.createElement('tr');
+    if (error) {
+      console.error("Error al cargar comprobantes:", error);
+      return;
+    }
 
-    row.innerHTML = `
-      <td>${comprobante.fecha}</td>
-      <td>${comprobante.id}</td>
-      <td>${comprobante.validacion}</td>
-      <td>
-        <span id="estado-wifi-${comprobante.id}">
-          ${comprobante.estado_wifi ? '🟢 Activo' : '🔴 Inactivo'}
-        </span>
-      </td>
-      <td>
-        <button onclick="activarWifi('${comprobante.id}')">🚀 Activar WiFi</button>
-        <button onclick="desactivarWifi('${comprobante.id}')">⛔ Desactivar WiFi</button>
-      </td>
-    `;
+    const tbody = document.getElementById("tabla-comprobantes");
+    tbody.innerHTML = "";
 
-    tbody.appendChild(row);
-  });
-      }
-
-    async function activarWifi(id) {
-  const { error } = await supabase
-    .from('comprobantes')
-    .update({ estado_wifi: true })
-    .eq('id', id);
-
-  if (!error) {
-    document.getElementById(`estado-wifi-${id}`).textContent = '🟢 Activo';
+    data.forEach(comprobante => {
+      const row = document.createElement("tr");
+      row.innerHTML = `
+        <td>${comprobante.telefono || '—'}</td>
+        <td>${comprobante.banco || '—'}</td>
+        <td>${comprobante.referencia || '—'}</td>
+        <td>${comprobante.monto || '—'}</td>
+        <td>${comprobante.unidad || '—'}</td>
+        <td>${comprobante.estado || 'pendiente'}</td>
+        <td>${new Date(comprobante.fecha).toLocaleString()}</td>
+        <td>
+          <span id="estado-wifi-${comprobante.id}" style="display:block; margin-bottom:6px;">
+            ${comprobante.estado_wifi ? '🟢 Activo' : '🔴 Inactivo'}
+          </span>
+          <button onclick="activarWifi('${comprobante.id}')">🚀 Activar WiFi</button>
+          <button onclick="desactivarWifi('${comprobante.id}')">⛔ Desactivar WiFi</button>
+        </td>
+      `;
+      tbody.appendChild(row);
+    });
   }
-}
 
-async function desactivarWifi(id) {
-  const { error } = await supabase
-    .from('comprobantes')
-    .update({ estado_wifi: false })
-    .eq('id', id);
+  // 🔧 Activación directa desde comprobantes
+  async function activarWifi(id) {
+    const { error } = await supabase
+      .from("comprobantes")
+      .update({ estado_wifi: true })
+      .eq("id", id);
 
-  if (!error) {
-    document.getElementById(`estado-wifi-${id}`).textContent = '🔴 Inactivo';
+    if (!error) {
+      document.getElementById(`estado-wifi-${id}`).textContent = '🟢 Activo';
+    }
   }
-}
-      // 🔧 Render inicial
+
+  async function desactivarWifi(id) {
+    const { error } = await supabase
+      .from("comprobantes")
+      .update({ estado_wifi: false })
+      .eq("id", id);
+
+    if (!error) {
+      document.getElementById(`estado-wifi-${id}`).textContent = '🔴 Inactivo';
+    }
+  }
+
+  // 🔧 Render inicial al cargar el panel
   renderChoferes();
   renderTickets();
+  renderComprobantes();
 });
