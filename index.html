@@ -828,24 +828,32 @@ Te acompaño hasta que esa conexión sea completamente funcional, trazable y lis
 <script type="module" src="api.js"></script>
 <script type="module" src="login.js"></script>
       <script type="module">
-  import { validarCodigo } from "./api.js";
+import { validarCodigo } from './api.js';
 
-  // Luego aquí pegás el bloque de validación por 4 dígitos 👇
-  document.getElementById("codigoChofer").addEventListener("input", async (e) => {
-    const valor = e.target.value.trim();
-    if (/^\d{4}$/.test(valor)) {
-      const datos = await validarCodigo(valor);
-      if (datos.estado === "aprobado") {
-        alert("✅ Código aprobado");
-        localStorage.setItem("choferId", datos.choferId);
-        localStorage.setItem("unidadId", datos.unidadId);
-        window.location.href = "pantalla-4.1.html";
-      } else {
-        alert("❌ Código inválido");
-        window.location.href = "pantalla-4.2.html";
+document.addEventListener("DOMContentLoaded", () => {
+  const input = document.getElementById("codigoInput");
+
+  input.addEventListener("input", async () => {
+    const valor = input.value.trim();
+    if (valor.length === 4) {
+      alert("🎯 Código detectado: " + valor);
+
+      try {
+        const datos = await validarCodigo(valor);
+        alert("🔁 Datos recibidos: " + JSON.stringify(datos));
+
+        if (datos && datos.exito === true) {
+          alert("✅ Validación exitosa. Redirigiendo...");
+          window.location.href = "validado.html";
+        } else {
+          alert("❌ Código incorrecto o sin respuesta");
+        }
+      } catch (error) {
+        alert("🔥 Error en validación: " + error.message);
       }
     }
   });
+});
       </script>
 </body>
 </html>
