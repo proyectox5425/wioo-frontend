@@ -156,6 +156,31 @@
   </div>
 </section>
 
+    <!-- Panel Institucional de Tickets -->
+<section id="tickets" class="section">
+  <div class="interface-wrapper">
+    <div class="mini-encabezado">🎫 Tickets generados y validación manual</div>
+
+    <h3 style="color:#d2a6ff;">Validación manual institucional</h3>
+    <label>
+      <span>Ingresa código de ticket:</span><br/>
+      <input type="text" id="codigo-manual" placeholder="Ej: WIO-001223" style="width:100%; padding:10px; border-radius:6px; margin-top:5px;">
+    </label>
+    <br/>
+    <button id="btn-validar-manual" style="margin-top:10px; background-color:#7344D0; color:white; padding:10px 20px; border:none; border-radius:6px;">
+      ✅ Validar ticket manual
+    </button>
+
+    <h3 style="color:#d2a6ff; margin-top:40px;">Tickets institucionales auditados</h3>
+    <table class="tabla-usuarios">
+      <thead>
+        <tr><th>Código</th><th>Validado por</th><th>Estado</th><th>Creación</th></tr>
+      </thead>
+      <tbody id="tickets-table-body"></tbody>
+    </table>
+  </div>
+</section>
+
 <!-- Panel de Anuncios -->
 <section id="anuncios" class="section">
   <div class="interface-wrapper">
