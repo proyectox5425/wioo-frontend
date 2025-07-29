@@ -3,10 +3,10 @@
 const BASE_URL = "https://wioo-backend.onrender.com"; // ✅ URL real del backend Render
 const token = localStorage.getItem("tokenWioo") || ""; // 🔒 Token institucional para rutas protegidas
 
-// 🔍 Validar código QR o manual
+// 🔍 Validar código QR o manual contra Supabase
 export async function validarCodigo(codigo) {
   try {
-    const res = await fetch(`${BASE_URL}/validar`, {
+    const res = await fetch(`${BASE_URL}/validar-codigo`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ codigo }),
