@@ -429,8 +429,8 @@
     maxlength="4" 
     placeholder="4728" 
     style="margin-left: 6px; font-size: 18px; width: 100px; text-align: center;" 
-  />
-</div>
+  </div>
+  <button type="button" class="boton-qr" onclick="escanearQR()">📷 Escanear QR</button>
 <button id="boton-validar">Verificar</button>
       
       <div class="zona-pago">
@@ -834,7 +834,7 @@ Te acompaño hasta que esa conexión sea completamente funcional, trazable y lis
       <script src="https://unpkg.com/html5-qrcode"></script>
 <script type="module" src="api.js"></script>
 <script type="module" src="login.js"></script>
-      <script type="module">
+<script type="module">
 import { validarCodigo } from "./api.js";
 
 document.getElementById("boton-validar").addEventListener("click", async () => {
@@ -863,6 +863,6 @@ document.getElementById("boton-validar").addEventListener("click", async () => {
     console.error("Error validación:", error);
   }
 });
-      </script>
+</script>
 </body>
 </html>
