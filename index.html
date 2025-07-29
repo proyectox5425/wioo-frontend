@@ -426,7 +426,17 @@
 
       <div id="qr-reader" style="width: 280px; margin: 20px auto; display: none;"></div>
 
-      <input type="text" id="input-codigo" maxlength="4" placeholder="Ingresar código de 4 dígitos" />
+      <!-- Campo institucional con prefijo CH- fijo -->
+<div class="grupo-campo">
+  <span style="font-weight: bold; font-size: 20px;">CH-</span>
+  <input 
+    type="text" 
+    id="input-codigo" 
+    maxlength="4" 
+    placeholder="4728" 
+    style="margin-left: 6px; font-size: 18px; width: 100px; text-align: center;" 
+  />
+</div>
 <button id="boton-validar">Verificar</button>
       
       <div class="zona-pago">
@@ -835,20 +845,20 @@ import { validarCodigo } from "./api.js";
 
 document.getElementById("boton-validar").addEventListener("click", async () => {
   const input = document.getElementById("input-codigo").value.trim();
+  const codigo = `CH-${input}`;
 
-  if (input.length !== 4 || isNaN(input)) {
-    alert("⚠️ Ingresá un código válido de 4 dígitos.");
+  if (!/^CH-\d{4}$/.test(codigo)) {
+    alert("⚠️ Ingresá los 4 números. El formato es CH-XXXX.");
     return;
   }
 
   try {
-    const datos = await validarCodigo(input);
-    alert("🔁 Respuesta real desde Supabase: " + JSON.stringify(datos));
+    const datos = await validarCodigo(codigo);
 
     if (datos.estado === "aprobado") {
-      alert("✅ Código aprobado");
-      localStorage.setItem("choferId", datos.choferId);
-      localStorage.setItem("unidadId", datos.unidadId);
+      localStorage.setItem("choferId", datos.chofer);
+      localStorage.setItem("unidadId", datos.unidad);
+      localStorage.setItem("compania", datos.compania);
       window.location.href = "pantalla-4.1.html";
     } else {
       alert("❌ Código rechazado");
