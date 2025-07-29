@@ -203,6 +203,26 @@
         <td class="estado-activo">activo</td>
       </tr>`;
       tablaDia.innerHTML += fila;
+      // Registro adicional en backend Render
+try {
+  const resRender = await fetch("https://wioo-backend.onrender.com/codigo-chofer", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+      codigo,
+      unidad: "RUTA 7",
+      creado_en: new Date().toISOString()
+    })
+  });
+
+  if (!resRender.ok) {
+    console.warn("⚠️ El backend Render no respondió correctamente");
+  }
+} catch (e) {
+  console.error("❌ Error en conexión con backend Render:", e);
+  }
     } else {
       console.error("🔴 Error al registrar código");
     }
