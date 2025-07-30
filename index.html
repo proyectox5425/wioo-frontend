@@ -764,7 +764,7 @@ Te acompaño hasta que esa conexión sea completamente funcional, trazable y lis
 
 
   // Activar lector QR
-  window.escanearQR = () => {
+window.escanearQR = () => {
   const qr = document.getElementById("qr-reader");
   qr.style.display = "block";
 
@@ -773,32 +773,25 @@ Te acompaño hasta que esa conexión sea completamente funcional, trazable y lis
     { facingMode: "environment" },
     { fps: 10, qrbox: 250 },
     async (decodedText) => {
-      try {
-        const datos = await validarCodigo(decodedText);
-        if (datos.estado === "aprobado") {
-          alert("✅ Código QR validado");
-          html5QrCode.stop();
-          localStorage.setItem("choferId", datos.choferId);
-          localStorage.setItem("unidadId", datos.unidadId);
-          window.location.href = "pantalla-4.1.html";
-        } else {
-          alert("❌ Código QR rechazado");
-          html5QrCode.stop();
-          window.location.href = "pantalla-4.2.html";
-        }
-      } catch (error) {
-        alert("⚠️ Falló la validación del código. Intenta nuevamente.");
-        console.error("Error en validación de QR:", error);
+      const generadoQR = localStorage.getItem("codigo_qr_actual");
+
+      if (decodedText === generadoQR) {
+        alert("✅ QR válido. Servicio extendido.");
         html5QrCode.stop();
+        window.location.href = "pantalla-4.1.html";
+      } else {
+        alert("❌ QR inválido. Se mantendrán los minutos gratis.");
+        html5QrCode.stop();
+        window.location.href = "pantalla-4.2.html";
       }
     },
     (errorMessage) => {
-      alert("📵 No se pudo activar la cámara. Verifica permisos del navegador o ajustes de seguridad.");
-      console.error("Error al iniciar escáner QR:", errorMessage);
+      alert("📵 No se pudo activar la cámara. Verifica permisos del navegador.");
+      console.error("Error QR:", errorMessage);
     }
   ).catch((err) => {
-    alert("❌ Error grave con el lector QR. Intenta recargar la página.");
-    console.error("Error al iniciar Html5Qrcode:", err);
+    alert("❌ Error grave al iniciar escáner.");
+    console.error("Html5Qrcode error:", err);
   });
 };
 
