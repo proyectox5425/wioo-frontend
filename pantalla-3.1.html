@@ -370,6 +370,9 @@
         } else {
           alert("⚠️ Respuesta desconocida del sistema. Contacta soporte.");
         }
+        let simulados = JSON.parse(localStorage.getItem("comprobantesSimulados") || "[]");
+      simulados.push(datos);
+      localStorage.setItem("comprobantesSimulados", JSON.stringify(simulados));
       })
       .catch(() => {
         alert("⛔ No se pudo enviar el comprobante. Verifica tu conexión.");
