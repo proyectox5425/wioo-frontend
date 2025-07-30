@@ -203,6 +203,9 @@
         <td class="estado-activo">activo</td>
       </tr>`;
       tablaDia.innerHTML += fila;
+
+       localStorage.setItem("codigo_efectivo_actual", codigo);
+      
       // Registro adicional en backend Render
 try {
   const resRender = await fetch("https://wioo-backend.onrender.com/codigo-chofer", {
