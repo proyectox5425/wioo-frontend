@@ -11,7 +11,15 @@ export async function validarCodigo(codigo) {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ codigo }),
     });
-    return await res.json();
+
+    const texto = await res.text();
+    console.log("📡 Respuesta cruda:", texto);
+
+    if (!res.ok) {
+      return { estado: "error", mensaje: "Backend no respondió correctamente." };
+    }
+
+    return JSON.parse(texto);
   } catch (error) {
     console.error("Error al validar código:", error);
     return { estado: "error", mensaje: "No se pudo validar el código." };
