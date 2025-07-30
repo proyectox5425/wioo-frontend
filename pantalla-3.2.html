@@ -323,16 +323,21 @@
     };
 
     cargarComprobante(datos).then((respuesta) => {
-      if (respuesta.estado === "aprobado") {
-        localStorage.setItem("datosPagoWioo", JSON.stringify(datos));
-        window.location.href = "pantalla-4.1.html";
-      } else if (respuesta.estado === "rechazado") {
-        localStorage.setItem("datosPagoWioo", JSON.stringify(datos));
-        window.location.href = "pantalla-4.2.html";
-      } else {
-        alert("⚠️ Respuesta desconocida del sistema. Contacta soporte.");
-      }
-    });
+  if (respuesta.estado === "aprobado") {
+    localStorage.setItem("datosPagoWioo", JSON.stringify(datos));
+    window.location.href = "pantalla-4.1.html";
+  } else if (respuesta.estado === "rechazado") {
+    localStorage.setItem("datosPagoWioo", JSON.stringify(datos));
+    window.location.href = "pantalla-4.2.html";
+  } else {
+    alert("⚠️ Respuesta desconocida del sistema. Contacta soporte.");
+  }
+
+  // 🧾 Guardar comprobante en simulados
+  let simulados = JSON.parse(localStorage.getItem("comprobantesSimulados") || "[]");
+  simulados.push(datos);
+  localStorage.setItem("comprobantesSimulados", JSON.stringify(simulados));
+});
 
   } else {
     alert("Por favor completa todos los campos correctamente.");
