@@ -151,6 +151,17 @@ document.addEventListener("DOMContentLoaded", () => {
     };
 
     try {
+      const existente = await supabase
+  .from("choferes")
+  .select("codigo")
+  .eq("codigo", nuevoChofer.codigo)
+  .single();
+
+if (existente.data) {
+  alert("⚠️ Ya existe un chofer con ese código");
+  return;
+ }
+      
       await registrarChofer(nuevoChofer);
       alert("✅ Chofer registrado exitosamente");
       this.reset();
@@ -162,36 +173,6 @@ document.addEventListener("DOMContentLoaded", () => {
 }
 });
 
-
-// 🔧 Registro institucional desde formulario
-document.querySelector('form').addEventListener('submit', async function(e) {
-  e.preventDefault();
-  const nombre = this.querySelector('input[placeholder*="Luis"]').value.trim();
-  const ruta = this.querySelector('input[placeholder*="Ruta"]').value.trim();
-  const codigo = this.querySelector('input[placeholder*="CHF"]').value.trim();
-
-  if (!nombre || !ruta || !codigo) {
-    alert("⚠️ Todos los campos son obligatorios");
-    return;
-  }
-
-  const nuevoChofer = {
-    codigo: codigo,
-    nombre: nombre,
-    ruta: ruta,
-    activo: true
-  };
-
-  try {
-    await registrarChofer(nuevoChofer);
-    alert("✅ Chofer registrado exitosamente");
-    this.reset();
-    renderChoferes();
-  } catch (error) {
-    console.error("Error al registrar chofer:", error);
-    alert("⛔ Fallo de registro. Verifica conexión y permisos.");
-  }
-});
 
 // 🔧 Tickets institucionales
 async function traerTickets() {
@@ -323,23 +304,29 @@ async function renderComprobantes() {
 // 🔧 Activación directa desde comprobantes
 async function activarWifi(id) {
   const { error } = await supabase
-    .from("comprobantes")
+    .from("pago_manual")  // 🟢 Tabla real de comprobantes
     .update({ estado_wifi: true })
     .eq("id", id);
 
   if (!error) {
     document.getElementById(`estado-wifi-${id}`).textContent = '🟢 Activo';
+  } else {
+    console.error("Error al activar WiFi:", error);
+    alert("⛔ No se pudo activar el WiFi");
   }
 }
 
 async function desactivarWifi(id) {
   const { error } = await supabase
-    .from("comprobantes")
+    .from("pago_manual")  // 🟢 Consistente con `renderComprobantes()`
     .update({ estado_wifi: false })
     .eq("id", id);
 
   if (!error) {
     document.getElementById(`estado-wifi-${id}`).textContent = '🔴 Inactivo';
+  } else {
+    console.error("Error al desactivar WiFi:", error);
+    alert("⛔ No se pudo desactivar el WiFi");
   }
 }
 
