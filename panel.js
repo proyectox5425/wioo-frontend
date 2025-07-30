@@ -156,22 +156,12 @@ document.addEventListener("DOMContentLoaded", () => {
       this.reset();
       renderChoferes();
     } catch (error) {
-      console.error("Error al registrar chofer:", error);
-      alert("⛔ Fallo de registro. Verifica conexión Chofer inhabilitado");
-        renderChoferes();
-      }
-     });
+  console.error("Error al registrar chofer:", error);
+  alert("⛔ Fallo de registro. Verifica conexión o permisos");
+  renderChoferes();
+}
+});
 
-      fila.querySelector(".eliminar").addEventListener("click", async () => {
-        const confirmar = confirm("¿Eliminar este chofer definitivamente?");
-        if (confirmar) {
-          await eliminarChofer(codigo);
-          alert("🗑️ Chofer eliminado");
-          renderChoferes();
-        }
-      });
-    });
-  }
 
 // 🔧 Registro institucional desde formulario
 document.querySelector('form').addEventListener('submit', async function(e) {
@@ -294,9 +284,9 @@ async function renderTickets() {
 // 🔧 Render institucional de comprobantes con activación WiFi directa
 async function renderComprobantes() {
   const { data, error } = await supabase
-    .from("comprobantes")
+    .from("pago_manual")  // ✅ Tabla correcta
     .select("*")
-    .order("fecha", { ascending: false });
+    .order("fecha_hora", { ascending: false });  // ✅ Campo correcto
 
   if (error) {
     console.error("Error al cargar comprobantes:", error);
@@ -307,6 +297,8 @@ async function renderComprobantes() {
   tbody.innerHTML = "";
 
   data.forEach(comprobante => {
+    const estadoWifi = comprobante.estado_wifi ? '🟢 Activo' : '🔴 Inactivo';  // ✅ Activación visual
+
     const row = document.createElement("tr");
     row.innerHTML = `
       <td>${comprobante.telefono || '—'}</td>
@@ -315,10 +307,10 @@ async function renderComprobantes() {
       <td>${comprobante.monto || '—'}</td>
       <td>${comprobante.unidad || '—'}</td>
       <td>${comprobante.estado || 'pendiente'}</td>
-      <td>${new Date(comprobante.fecha).toLocaleString()}</td>
+      <td>${new Date(comprobante.fecha_hora).toLocaleString()}</td>
       <td>
         <span id="estado-wifi-${comprobante.id}" style="display:block; margin-bottom:6px;">
-          ${comprobante.estado_wifi ? '🟢 Activo' : '🔴 Inactivo'}
+          ${estadoWifi}
         </span>
         <button onclick="activarWifi('${comprobante.id}')">🚀 Activar WiFi</button>
         <button onclick="desactivarWifi('${comprobante.id}')">⛔ Desactivar WiFi</button>
@@ -326,7 +318,7 @@ async function renderComprobantes() {
     `;
     tbody.appendChild(row);
   });
-}
+      }
 
 // 🔧 Activación directa desde comprobantes
 async function activarWifi(id) {
