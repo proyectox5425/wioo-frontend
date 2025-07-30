@@ -173,6 +173,79 @@ if (existente.data) {
 }
 });
 
+  // ==========================
+// 🧾 Comprobantes simulados
+// ==========================
+const comprobantesSimulados = [
+  {
+    id: "1",
+    telefono: "0414-1234567",
+    banco: "BNC",
+    referencia: "RF123456",
+    monto: "5",
+    unidad: "bus 21",
+    estado: "pendiente",
+    estado_wifi: false,
+    fecha_hora: Date.now()
+  },
+  {
+    id: "2",
+    telefono: "0426-7654321",
+    banco: "Provincial",
+    referencia: "RF987654",
+    monto: "10",
+    unidad: "bus 22",
+    estado: "aprobado",
+    estado_wifi: true,
+    fecha_hora: Date.now()
+  }
+];
+
+function renderComprobantesSimulados() {
+  const tbody = document.getElementById("tabla-comprobantes");
+  tbody.innerHTML = "";
+
+  comprobantesSimulados.forEach(comprobante => {
+    const estadoWifi = comprobante.estado_wifi ? '🟢 Activo' : '🔴 Inactivo';
+
+    const row = document.createElement("tr");
+    row.innerHTML = `
+      <td>${comprobante.telefono}</td>
+      <td>${comprobante.banco}</td>
+      <td>${comprobante.referencia}</td>
+      <td>${comprobante.monto}</td>
+      <td>${comprobante.unidad}</td>
+      <td>${comprobante.estado}</td>
+      <td>${new Date(comprobante.fecha_hora).toLocaleString()}</td>
+      <td>
+        <span id="estado-wifi-${comprobante.id}" style="display:block; margin-bottom:6px;">
+          ${estadoWifi}
+        </span>
+        <button onclick="activarWifiLocal('${comprobante.id}')">🚀 Activar WiFi</button>
+        <button onclick="desactivarWifiLocal('${comprobante.id}')">⛔ Desactivar WiFi</button>
+      </td>
+    `;
+    tbody.appendChild(row);
+  });
+}
+
+function activarWifiLocal(id) {
+  const comprobante = comprobantesSimulados.find(c => c.id === id);
+  if (comprobante) {
+    comprobante.estado_wifi = true;
+    document.getElementById(`estado-wifi-${id}`).textContent = '🟢 Activo';
+  }
+}
+
+function desactivarWifiLocal(id) {
+  const comprobante = comprobantesSimulados.find(c => c.id === id);
+  if (comprobante) {
+    comprobante.estado_wifi = false;
+    document.getElementById(`estado-wifi-${id}`).textContent = '🔴 Inactivo';
+  }
+}
+
+window.addEventListener("DOMContentLoaded", renderComprobantesSimulados);
 
 // 🔧 Tickets institucionales
 async function traerTickets() {
