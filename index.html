@@ -420,17 +420,15 @@
 
       <div id="qr-reader" style="width: 280px; margin: 20px auto; display: none;"></div>
 
-      <!-- Campo institucional con prefijo CH- fijo -->
-<div class="grupo-campo">
-  <span style="font-weight: bold; font-size: 20px;">CH-</span>
+      <div class="grupo-campo">
   <input 
     type="text" 
     id="input-codigo" 
     maxlength="4" 
     placeholder="4728"
-    style="margin-left: 6px; font-size: 18px; width: 100px; text-align: center;" 
+    style="font-size: 18px; width: 140px; text-align: center;" 
   />
-</div>
+      </div>
   <button type="button" class="boton-qr" onclick="escanearQR()">📷 Escanear QR</button>
 <button id="boton-validar">Verificar</button>
       
@@ -839,14 +837,12 @@ Te acompaño hasta que esa conexión sea completamente funcional, trazable y lis
 import { validarCodigo } from "./api.js";
 
 document.getElementById("boton-validar").addEventListener("click", async () => {
-  const input = document.getElementById("input-codigo").value.trim();
-  const codigo = `CH-${input}`;
+  const codigo = document.getElementById("input-codigo").value.trim();
 
-  if (!/^CH-\d{4}$/.test(codigo)) {
-    alert("⚠️ Ingresá los 4 números. El formato es CH-XXXX.");
-    return;
+if (!/^\d{4}$/.test(codigo)) {
+  alert("⚠️ Ingresá los 4 dígitos del código.");
+  return;
   }
-
   try {
     const datos = await validarCodigo(codigo);
 
