@@ -177,6 +177,8 @@
 
     qr.innerHTML = `<img src="https://api.qrserver.com/v1/create-qr-code/?data=${codigo}&size=120x120" alt="QR" style="width:120px;">`;
 
+    localStorage.setItem("codigo_qr_actual", codigo);
+    
     const registro = {
       codigo,
       unidad: "RUTA 7",
