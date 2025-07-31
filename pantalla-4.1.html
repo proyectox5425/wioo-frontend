@@ -75,6 +75,23 @@ document.getElementById("metodo").innerText = datos.metodo || "–";
 document.getElementById("banco").innerText = datos.banco || "–";
 document.getElementById("referencia").innerText = datos.referencia || "–";
 document.getElementById("tiempo").innerText = datos.tiempo || "–";
+
+    // 🔐 Enviar notificación al Mikrotik para extender conexión
+fetch("http://192.168.88.1/extender-conexion", {
+  method: "POST",
+  headers: { "Content-Type": "application/json" },
+  body: JSON.stringify({
+    ip: localStorage.getItem("ipUsuario"), // IP asignada por el Mikrotik
+    unidad: datos.unidad || "–",
+    chofer: datos.chofer || "–",
+    metodo: datos.metodo || "–",
+    referencia: datos.referencia || "–",
+    tiempo: datos.tiempo || "12h"
+  })
+})
+.then(() => console.log("✅ Extensión enviada al Mikrotik"))
+.catch(err => console.error("❌ Error al extender conexión:", err));
+    
     localStorage.removeItem("datosPagoWioo");
     setTimeout(() => {
       window.close(); // Si no funciona, puedes redirigir
