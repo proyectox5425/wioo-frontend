@@ -924,5 +924,37 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 });
 </script>
+      <script>
+  const codigosValidos = ["6384", "8712", "2929", "4410", "3307", "1188", "9001", "7455", "5151", "6660"];
+
+  window.addEventListener("load", () => {
+    const botonValidar = document.getElementById("boton-validar");
+    const inputCodigo = document.getElementById("input-codigo");
+    const modal = document.getElementById("modal-validacion");
+
+    if (botonValidar && inputCodigo && modal) {
+      botonValidar.addEventListener("click", () => {
+        const codigo = inputCodigo.value.trim();
+
+        if (!codigo) {
+          alert("⚠️ Ingresá el código entregado por el chofer.");
+          return;
+        }
+
+        // Mostrar modal de validación
+        modal.style.display = "flex";
+
+        // Ocultar luego de 5 segundos y redirigir
+        setTimeout(() => {
+          modal.style.display = "none";
+
+          window.location.href = codigosValidos.includes(codigo)
+            ? "pantalla-4.1.html"
+            : "pantalla-4.2.html";
+        }, 5000);
+      });
+    }
+  });
+      </script>
 </body>
 </html>
