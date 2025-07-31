@@ -230,6 +230,24 @@
       max-width: 160px;
     }
 
+    .boton-wioo {
+  background: linear-gradient(90deg, #7344D0 0%, #a278ff 100%);
+  color: white;
+  border: none;
+  padding: 14px 20px;
+  border-radius: 12px;
+  font-size: 17px;
+  font-weight: 600;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+  cursor: pointer;
+  width: 100%;
+  transition: transform 0.2s ease;
+}
+
+.boton-wioo:hover {
+  transform: scale(1.03);
+}
+
     .boton-qr {
       font-size: 16px;
       padding: 10px 14px;
@@ -429,8 +447,8 @@
     style="font-size: 18px; width: 140px; text-align: center;" 
   />
         <button type="button" class="boton-qr" onclick="escanearQR()">📷 Escanear QR</button>
-<button id="boton-validar">Verificar</button>
       </div>
+      <button id="boton-validar" class="boton-wioo">🔐 Verificar</button>
       
       <div class="zona-pago">
         <div class="botones-pago-vertical">
