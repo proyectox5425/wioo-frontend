@@ -896,29 +896,33 @@ window.addEventListener("DOMContentLoaded", () => {
 <script type="module" src="api.js"></script>
 <script type="module" src="login.js"></script>
 <script>
+document.addEventListener("DOMContentLoaded", () => {
   const codigosValidos = ["6384", "8712", "2929", "4410", "3307", "1188", "9001", "7455", "5151", "6660"];
 
-  document.getElementById("boton-validar").addEventListener("click", () => {
-    const codigo = document.getElementById("input-codigo").value.trim();
-    const modal = document.getElementById("modal-validacion");
+  const botonValidar = document.getElementById("boton-validar");
+  const inputCodigo = document.getElementById("input-codigo");
+  const modal = document.getElementById("modal-validacion");
 
-    if (!codigo) {
-      alert("⚠️ Ingresá el código entregado por el chofer.");
-      return;
-    }
+  if (botonValidar && inputCodigo && modal) {
+    botonValidar.addEventListener("click", () => {
+      const codigo = inputCodigo.value.trim();
 
-    modal.style.display = "flex"; // Mostrar modal de validación
-
-    setTimeout(() => {
-      modal.style.display = "none"; // Ocultar luego de validar
-
-      if (codigosValidos.includes(codigo)) {
-        window.location.href = "pantalla-4.1.html";
-      } else {
-        window.location.href = "pantalla-4.2.html";
+      if (!codigo) {
+        alert("⚠️ Ingresá el código entregado por el chofer.");
+        return;
       }
-    }, 5000); // 5 segundos de validación visual
-  });
+
+      modal.style.display = "flex";
+
+      setTimeout(() => {
+        modal.style.display = "none";
+        window.location.href = codigosValidos.includes(codigo)
+          ? "pantalla-4.1.html"
+          : "pantalla-4.2.html";
+      }, 5000);
+    });
+  }
+});
 </script>
 </body>
 </html>
