@@ -415,6 +415,11 @@
     font-size: 24px;
   }
     }
+
+    @keyframes parpadeo {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.3; }
+    }
   </style>
 </head>
 <body>
@@ -602,6 +607,38 @@
     </div>
   </div>
 
+      <div id="modal-validacion" style="
+  position: fixed;
+  top: 0; left: 0;
+  width: 100vw; height: 100vh;
+  background-color: rgba(0,0,0,0.6);
+  backdrop-filter: blur(4px);
+  display: none;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+  animation: fadeModal 0.4s ease-out;
+">
+  <img src="logo-wioo.png" alt="Logo Wioo" style="
+    height: 80px;
+    margin-bottom: 30px;
+    animation: parpadeo 1s infinite;
+  ">
+  <h2 style="
+    color: white;
+    font-size: 26px;
+    font-family: 'Poppins', sans-serif;
+    animation: parpadeo 1s infinite;
+  ">🔐 Validando código</h2>
+  <p style="
+    color: #d2a6ff;
+    font-size: 18px;
+    font-weight: 500;
+    font-family: 'Poppins', sans-serif;
+    animation: parpadeo 1.2s infinite;
+  ">Por favor espere...</p>
+      </div>
 <script>
 window.addEventListener("DOMContentLoaded", () => {
   const logo = document.getElementById("logo");
@@ -777,38 +814,57 @@ window.addEventListener("DOMContentLoaded", () => {
 
 
   // Activar lector QR
-window.escanearQR = () => {
-  const qr = document.getElementById("qr-reader");
-  qr.style.display = "block";
+<script>
+  const codigosValidos = ["6384", "8712", "2929", "4410", "3307", "1188", "9001", "7455", "5151", "6660"];
+  let html5QrCodeActivo = null;
 
-  const html5QrCode = new Html5Qrcode("qr-reader");
-  html5QrCode.start(
-    { facingMode: "environment" },
-    { fps: 10, qrbox: 250 },
-    async (decodedText) => {
-      const generadoQR = localStorage.getItem("codigo_qr_actual");
+  window.escanearQR = () => {
+    const qr = document.getElementById("qr-reader");
+    qr.style.display = "block";
 
-      if (decodedText === generadoQR) {
-        alert("✅ QR válido. Servicio extendido.");
-        html5QrCode.stop();
-        window.location.href = "pantalla-4.1.html";
-      } else {
-        alert("❌ QR inválido. Se mantendrán los minutos gratis.");
-        html5QrCode.stop();
-        window.location.href = "pantalla-4.2.html";
-      }
-    },
-    (errorMessage) => {
-      alert("📵 No se pudo activar la cámara. Verifica permisos del navegador.");
-      console.error("Error QR:", errorMessage);
+    if (html5QrCodeActivo) {
+      html5QrCodeActivo.stop().then(() => {
+        html5QrCodeActivo.clear();
+        iniciarEscaner();
+      }).catch((err) => {
+        console.error("❌ Error al detener escáner previo:", err);
+        iniciarEscaner(); // Intenta de todos modos
+      });
+    } else {
+      iniciarEscaner();
     }
-  ).catch((err) => {
-    alert("❌ Error grave al iniciar escáner.");
-    console.error("Html5Qrcode error:", err);
-  });
-};
 
-  // Registro de términos aceptados
+    function iniciarEscaner() {
+      html5QrCodeActivo = new Html5Qrcode("qr-reader");
+
+      html5QrCodeActivo.start(
+        { facingMode: "environment" },
+        { fps: 10, qrbox: 250 },
+        (decodedText) => {
+          const codigoEscaneado = decodedText.replace("CH-", "").trim();
+
+          if (codigosValidos.includes(codigoEscaneado)) {
+            alert("✅ QR válido. Servicio extendido.");
+            html5QrCodeActivo.stop();
+            window.location.href = "pantalla-4.1.html";
+          } else {
+            alert("❌ QR inválido. Se mantendrán los minutos gratis.");
+            html5QrCodeActivo.stop();
+            window.location.href = "pantalla-4.2.html";
+          }
+        },
+        (errorMessage) => {
+          console.warn("⏳ Esperando QR...");
+        }
+      ).catch((err) => {
+        alert("📵 No se pudo activar la cámara. Verificá los permisos del navegador.");
+        console.error("Error QR:", err);
+      });
+    }
+  };
+  
+</script>
+ // Registro de términos aceptados
   const contenedor = document.getElementById("contenedorTerminos");
   if (contenedor && botonAceptar) {
     contenedor.addEventListener("scroll", () => {
@@ -832,31 +888,35 @@ window.escanearQR = () => {
         body: JSON.stringify(payload)
       });
     });
-  }
-  
-  
+  } 
 </script>
       <script src="https://unpkg.com/html5-qrcode"></script>
 <script type="module" src="api.js"></script>
 <script type="module" src="login.js"></script>
 <script>
-document.getElementById("boton-validar").addEventListener("click", () => {
-  const codigo = document.getElementById("input-codigo").value.trim();
-  const generado = localStorage.getItem("codigo_efectivo_actual");
+  const codigosValidos = ["6384", "8712", "2929", "4410", "3307", "1188", "9001", "7455", "5151", "6660"];
 
-  if (!codigo) {
-    alert("⚠️ Ingresá el código entregado por el chofer.");
-    return;
-  }
+  document.getElementById("boton-validar").addEventListener("click", () => {
+    const codigo = document.getElementById("input-codigo").value.trim();
+    const modal = document.getElementById("modal-validacion");
 
-  if (codigo === generado) {
-    alert("✅ Código válido. Servicio extendido.");
-    window.location.href = "pantalla-4.1.html";
-  } else {
-    alert("❌ Código inválido. Se mantendrán los minutos gratis.");
-    window.location.href = "pantalla-4.2.html";
-  }
-});
+    if (!codigo) {
+      alert("⚠️ Ingresá el código entregado por el chofer.");
+      return;
+    }
+
+    modal.style.display = "flex"; // Mostrar modal de validación
+
+    setTimeout(() => {
+      modal.style.display = "none"; // Ocultar luego de validar
+
+      if (codigosValidos.includes(codigo)) {
+        window.location.href = "pantalla-4.1.html";
+      } else {
+        window.location.href = "pantalla-4.2.html";
+      }
+    }, 5000); // 5 segundos de validación visual
+  });
 </script>
 </body>
 </html>
