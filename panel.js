@@ -433,6 +433,13 @@ async function desactivarWifi(id) {
     const activador = id && comprobante.fecha_hora ? `onclick="activarWifi('${id}')"` : `onclick="activarWifiLocal('${id}')"`;  
     const desactivador = id && comprobante.fecha_hora ? `onclick="desactivarWifi('${id}')"` : `onclick="desactivarWifiLocal('${id}')"`;
 
+    if (comprobante.estado === "aprobado") {
+  row.classList.add("fila-aprobada");
+}
+
+const activarDisabled = comprobante.estado_wifi ? "disabled" : "";
+const desactivarDisabled = !comprobante.estado_wifi ? "disabled" : "";
+    
     const row = document.createElement("tr");
     row.innerHTML = `
       <td>${comprobante.telefono || '—'}</td>
@@ -457,7 +464,7 @@ async function desactivarWifi(id) {
 // 🔧 Render inicial al cargar el panel
 renderChoferes();
 renderTickets();
-//renderComprobantes();
+renderComprobantesMixtos();
   function filtrarComprobantes() {
   renderComprobantesMixtos();
   }
