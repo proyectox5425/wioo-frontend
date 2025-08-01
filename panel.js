@@ -404,35 +404,34 @@ async function desactivarWifi(id) {
 }
 
   async function renderComprobantesMixtos() {
+  const estadoSeleccionado = document.getElementById("filtro-estado").value;
   const tbody = document.getElementById("tabla-comprobantes");
   tbody.innerHTML = "";
 
-  // ✅ Primero comprobantes reales
+  // ✅ Consultar comprobantes reales desde Supabase
   let comprobantesReales = [];
   try {
-    const { data, error } = await supabase
-      .from("pago_manual")
-      .select("*")
-      .order("fecha_hora", { ascending: false });
+    let consulta = supabase.from("pago_manual").select("*").order("fecha_hora", { ascending: false });
+
+    if (estadoSeleccionado) {
+      consulta = consulta.eq("estado", estadoSeleccionado);
+    }
+
+    const { data, error } = await consulta;
     if (error) throw error;
     comprobantesReales = data;
   } catch (error) {
     console.error("Error al cargar comprobantes reales:", error);
   }
 
-  // ✅ Unimos comprobantes simulados
-  const todos = [...comprobantesReales, ...comprobantesSimulados];
+  // ✅ Unimos con simulados si no hay filtro
+  const todos = estadoSeleccionado ? comprobantesReales : [...comprobantesReales, ...comprobantesSimulados];
 
-  // ✅ Render mixto
   todos.forEach(comprobante => {
     const estadoWifi = comprobante.estado_wifi ? '🟢 Activo' : '🔴 Inactivo';
     const id = comprobante.id;
-    const activador = comprobante.id && comprobante.fecha_hora
-      ? `onclick="activarWifi('${id}')"`  // real
-      : `onclick="activarWifiLocal('${id}')"`;  // simulado
-    const desactivador = comprobante.id && comprobante.fecha_hora
-      ? `onclick="desactivarWifi('${id}')"`  // real
-      : `onclick="desactivarWifiLocal('${id}')"`;
+    const activador = id && comprobante.fecha_hora ? `onclick="activarWifi('${id}')"` : `onclick="activarWifiLocal('${id}')"`;  
+    const desactivador = id && comprobante.fecha_hora ? `onclick="desactivarWifi('${id}')"` : `onclick="desactivarWifiLocal('${id}')"`;
 
     const row = document.createElement("tr");
     row.innerHTML = `
@@ -442,7 +441,7 @@ async function desactivarWifi(id) {
       <td>${comprobante.monto || '—'}</td>
       <td>${comprobante.unidad || '—'}</td>
       <td>${comprobante.estado || 'pendiente'}</td>
-      <td>${new Date(comprobante.fecha_hora).toLocaleString()}</td>
+      <td>${comprobante.fecha_hora ? new Date(comprobante.fecha_hora).toLocaleString() : '—'}</td>
       <td>
         <span id="estado-wifi-${id}" style="display:block; margin-bottom:6px;">
           ${estadoWifi}
@@ -453,10 +452,12 @@ async function desactivarWifi(id) {
     `;
     tbody.appendChild(row);
   });
-      }
+    }
 
 // 🔧 Render inicial al cargar el panel
 renderChoferes();
 renderTickets();
 //renderComprobantes();
+  function filtrarComprobantes() {
   renderComprobantesMixtos();
+  }
