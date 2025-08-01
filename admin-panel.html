@@ -353,5 +353,13 @@
 <!-- 🔒 Tu script final: panel.js -->
 <script src="panel.js" defer></script>
 </main>
+    <script>
+  function refreshAdminPanel() {
+    location.reload();
+  }
+
+  // Refresca cada 60 segundos
+  setInterval(refreshAdminPanel, 60000);
+    </script>
 </body>
   </html>
