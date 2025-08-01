@@ -372,24 +372,17 @@
       
     })
       .then((res) => res.json())
-      .then((respuesta) => {
-        if (respuesta.estado === "aprobado") {
-          localStorage.setItem("datosPagoWioo", JSON.stringify(datos));
-          window.location.href = "pantalla-4.1.html";
-        } else if (respuesta.estado === "rechazado") {
-          localStorage.setItem("datosPagoWioo", JSON.stringify(datos));
-          window.location.href = "pantalla-4.2.html";
-        } else {
-          alert("⚠️ Respuesta desconocida del sistema. Contacta soporte.");
-        }
-        let simulados = JSON.parse(localStorage.getItem("comprobantesSimulados") || "[]");
-      simulados.push(datos);
-      localStorage.setItem("comprobantesSimulados", JSON.stringify(simulados));
-      })
-      .catch(() => {
-        alert("⛔ No se pudo enviar el comprobante. Verifica tu conexión.");
-      });
-
+.then((respuesta) => {
+  if (respuesta && respuesta.length > 0) {
+    mensaje.classList.add("visible");
+    alert("✅ Comprobante enviado correctamente");
+    let simulados = JSON.parse(localStorage.getItem("comprobantesSimulados") || "[]");
+    simulados.push(datos);
+    localStorage.setItem("comprobantesSimulados", JSON.stringify(simulados));
+  } else {
+    alert("⚠️ Supabase no respondió como se esperaba.");
+  }
+})
   } else {
     alert("Por favor completa todos los campos correctamente.");
   }
