@@ -366,18 +366,13 @@
       },
       body: JSON.stringify(datos)
     })
-    .then((res) => res.json())
-    .then((respuesta) => {
-      if (respuesta) {
-        mensaje.classList.add("visible");
-        alert("✅ Comprobante enviado correctamente");
-        let simulados = JSON.parse(localStorage.getItem("comprobantesSimulados") || "[]");
-        simulados.push(datos);
-        localStorage.setItem("comprobantesSimulados", JSON.stringify(simulados));
-      } else {
-        alert("⚠️ Supabase no respondió como se esperaba.");
-      }
-    })
+    .then((res) => {
+  alert("📡 Código HTTP Supabase: " + res.status);
+  return res.text();
+})
+.then((respuestaTexto) => {
+  alert("📦 Respuesta completa: " + respuestaTexto);
+});
     .catch((err) => {
       console.error("⛔ Error al enviar comprobante:", err);
       alert("❌ Error técnico al enviar el comprobante.");
