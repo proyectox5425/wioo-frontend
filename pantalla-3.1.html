@@ -354,10 +354,22 @@
       hash_dispositivo: hash
     };
 
-    fetch(`${BACKEND_URL}/api/cargar-comprobante`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(datos)
+    fetch("https://TU_PROYECTO.supabase.co/rest/v1/pago_manual", {
+  method: "POST",
+  headers: {
+    "Content-Type": "application/json",
+    "apikey": "TU_API_KEY",
+    "Authorization": "Bearer TU_API_KEY"
+  },
+  body: JSON.stringify({
+    teléfono: fullTelefono,
+    banco,
+    referencia,
+    monto: 150,
+    método: "pago-movil",
+    estado: "pendiente"
+  })
+      
     })
       .then((res) => res.json())
       .then((respuesta) => {
