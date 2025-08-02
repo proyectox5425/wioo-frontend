@@ -21,7 +21,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // 🔧 Supabase institucional
   const SUPABASE_URL = "https://sjrmzkomzlqpsfvjdnle.supabase.co";
-  const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...";
+  const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNqcm16a29temxxcHNmdmpkbmxlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTI4MDU0NTMsImV4cCI6MjA2ODM4MTQ1M30.lX1F-w3ar2LEunf6OTfHoWkDOGFn4KdFTxEuCm34Wmw";
 
   if (!window.supabase || !window.supabase.createClient) {
     console.error("❌ Supabase no está cargado.");
