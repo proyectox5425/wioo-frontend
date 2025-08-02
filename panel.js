@@ -338,9 +338,9 @@ async function renderTickets() {
 // 🔧 Render institucional de comprobantes con activación WiFi directa
 async function renderComprobantes() {
   const { data, error } = await supabase
-    .from("pago_manual")  // ✅ Tabla correcta
+    .from("pago_manual")
     .select("*")
-    .order("fecha_hora", { ascending: false });  // ✅ Campo correcto
+    .order("fecha_hora", { ascending: false });
 
   if (error) {
     console.error("Error al cargar comprobantes:", error);
@@ -351,96 +351,15 @@ async function renderComprobantes() {
   tbody.innerHTML = "";
 
   data.forEach(comprobante => {
-    const estadoWifi = comprobante.estado_wifi ? '🟢 Activo' : '🔴 Inactivo';  // ✅ Activación visual
-
-    const row = document.createElement("tr");
-    row.innerHTML = `
-      <td>${comprobante.telefono || '—'}</td>
-      <td>${comprobante.banco || '—'}</td>
-      <td>${comprobante.referencia || '—'}</td>
-      <td>${comprobante.monto || '—'}</td>
-      <td>${comprobante.unidad || '—'}</td>
-      <td>${comprobante.estado || 'pendiente'}</td>
-      <td>${new Date(comprobante.fecha_hora).toLocaleString()}</td>
-      <td>
-        <span id="estado-wifi-${comprobante.id}" style="display:block; margin-bottom:6px;">
-          ${estadoWifi}
-        </span>
-        <button onclick="activarWifi('${comprobante.id}')">🚀 Activar WiFi</button>
-        <button onclick="desactivarWifi('${comprobante.id}')">⛔ Desactivar WiFi</button>
-      </td>
-    `;
-    tbody.appendChild(row);
-  });
-      }
-
-// 🔧 Activación directa desde comprobantes
-async function activarWifi(id) {
-  const { error } = await supabase
-    .from("pago_manual")  // 🟢 Tabla real de comprobantes
-    .update({ estado_wifi: true })
-    .eq("id", id);
-
-  if (!error) {
-    document.getElementById(`estado-wifi-${id}`).textContent = '🟢 Activo';
-  } else {
-    console.error("Error al activar WiFi:", error);
-    alert("⛔ No se pudo activar el WiFi");
-  }
-}
-
-async function desactivarWifi(id) {
-  const { error } = await supabase
-    .from("pago_manual")  // 🟢 Consistente con `renderComprobantes()`
-    .update({ estado_wifi: false })
-    .eq("id", id);
-
-  if (!error) {
-    document.getElementById(`estado-wifi-${id}`).textContent = '🔴 Inactivo';
-  } else {
-    console.error("Error al desactivar WiFi:", error);
-    alert("⛔ No se pudo desactivar el WiFi");
-  }
-}
-
-  async function renderComprobantesMixtos() {
-  const estadoSeleccionado = document.getElementById("filtro-estado").value;
-  const tbody = document.getElementById("tabla-comprobantes");
-  tbody.innerHTML = "";
-
-  // ✅ Consultar comprobantes reales desde Supabase
-  let comprobantesReales = [];
-  try {
-    let consulta = supabase.from("pago_manual").select("*").order("fecha_hora", { ascending: false });
-
-    if (estadoSeleccionado) {
-      consulta = consulta.eq("estado", estadoSeleccionado);
-    }
-
-    const { data, error } = await consulta;
-    if (error) throw error;
-    comprobantesReales = data;
-  } catch (error) {
-    console.error("Error al cargar comprobantes reales:", error);
-  }
-
-  // ✅ Unimos con simulados si no hay filtro
-  const todos = estadoSeleccionado ? comprobantesReales : [...comprobantesReales, ...comprobantesSimulados];
-
-  todos.forEach(comprobante => {
     const estadoWifi = comprobante.estado_wifi ? '🟢 Activo' : '🔴 Inactivo';
     const id = comprobante.id;
-    const activador = id && comprobante.fecha_hora ? `onclick="activarWifi('${id}')"` : `onclick="activarWifiLocal('${id}')"`;  
-    const desactivador = id && comprobante.fecha_hora ? `onclick="desactivarWifi('${id}')"` : `onclick="desactivarWifiLocal('${id}')"`;
 
-    if (comprobante.estado === "aprobado") {
-  row.classList.add("fila-aprobada");
-}
+    const activarDisabled = comprobante.estado_wifi ? "disabled" : "";
+    const desactivarDisabled = !comprobante.estado_wifi ? "disabled" : "";
 
-const activarDisabled = comprobante.estado_wifi ? "disabled" : "";
-const desactivarDisabled = !comprobante.estado_wifi ? "disabled" : "";
-    
     const row = document.createElement("tr");
+    row.className = comprobante.estado === "aprobado" ? "fila-aprobada" : "";
+
     row.innerHTML = `
       <td>${comprobante.telefono || '—'}</td>
       <td>${comprobante.banco || '—'}</td>
@@ -453,18 +372,50 @@ const desactivarDisabled = !comprobante.estado_wifi ? "disabled" : "";
         <span id="estado-wifi-${id}" style="display:block; margin-bottom:6px;">
           ${estadoWifi}
         </span>
-        <button ${activador}>🚀 Activar WiFi</button>
-        <button ${desactivador}>⛔ Desactivar WiFi</button>
+        <button onclick="activarWifi('${id}')" ${activarDisabled}>🚀 Activar WiFi</button>
+        <button onclick="desactivarWifi('${id}')" ${desactivarDisabled}>⛔ Desactivar WiFi</button>
       </td>
     `;
     tbody.appendChild(row);
   });
-    }
+}
 
-// 🔧 Render inicial al cargar el panel
+// 🔧 Activación de sesión WiFi
+async function activarWifi(id) {
+  const { error } = await supabase
+    .from("pago_manual")
+    .update({ estado_wifi: true })
+    .eq("id", id);
+
+  if (!error) {
+    document.getElementById(`estado-wifi-${id}`).textContent = '🟢 Activo';
+  } else {
+    console.error("Error al activar WiFi:", error);
+    alert("⛔ No se pudo activar el WiFi");
+  }
+}
+
+// 🔧 Desactivación de sesión WiFi
+async function desactivarWifi(id) {
+  const { error } = await supabase
+    .from("pago_manual")
+    .update({ estado_wifi: false })
+    .eq("id", id);
+
+  if (!error) {
+    document.getElementById(`estado-wifi-${id}`).textContent = '🔴 Inactivo';
+  } else {
+    console.error("Error al desactivar WiFi:", error);
+    alert("⛔ No se pudo desactivar el WiFi");
+  }
+}
+
+// 🔍 Filtro institucional por estado o unidad
+function filtrarComprobantes() {
+  renderComprobantes(); // Puedes expandir con lógica de filtros si querés
+}
+
+// 🔁 Render inicial del panel
+renderComprobantes();
 renderChoferes();
 renderTickets();
-renderComprobantesMixtos();
-  function filtrarComprobantes() {
-  renderComprobantesMixtos();
-  }
