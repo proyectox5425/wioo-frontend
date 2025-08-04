@@ -407,5 +407,48 @@ renderComprobantesAudit();
 renderChoferes();
 renderTickets();
 function filtrarComprobantes() {
-  renderComprobantes();
-}
+  const estadoSeleccionado = document.getElementById("filtro-estado").value;
+
+  supabase
+    .from("pago_manual")
+    .select("*")
+    .order("fecha_hora", { ascending: false })
+    .then(({ data, error }) => {
+      if (error) {
+        alert("⛔ Error Supabase: " + error.message);
+        return;
+      }
+
+      const tbody = document.getElementById("tabla-comprobantes");
+      tbody.innerHTML = "";
+
+      const lista = estadoSeleccionado
+        ? data.filter(c => c.estado === estadoSeleccionado)
+        : data;
+
+      lista.forEach(comprobante => {
+        const id = comprobante.id || "—";
+        const estadoWifi = comprobante.estado_wifi ? '🟢 Activo' : '🔴 Inactivo';
+        const activarDisabled = comprobante.estado_wifi ? "disabled" : "";
+        const desactivarDisabled = !comprobante.estado_wifi ? "disabled" : "";
+
+        const row = document.createElement("tr");
+        row.className = comprobante.estado === "aprobado" ? "fila-aprobada" : "";
+        row.innerHTML = `
+          <td>${comprobante.telefono || '—'}</td>
+          <td>${comprobante.banco || '—'}</td>
+          <td>${comprobante.referencia || '—'}</td>
+          <td>${comprobante.monto || '—'}</td>
+          <td>${comprobante.unidad || '—'}</td>
+          <td>${comprobante.estado || '—'}</td>
+          <td>${comprobante.fecha_hora ? new Date(comprobante.fecha_hora).toLocaleString() : '—'}</td>
+          <td>
+            <span id="estado-wifi-${id}" style="display:block; margin-bottom:6px;">${estadoWifi}</span>
+            <button onclick="activarWifi('${id}')" ${activarDisabled}>🚀 Activar WiFi</button>
+            <button onclick="desactivarWifi('${id}')" ${desactivarDisabled}>⛔ Desactivar WiFi</button>
+          </td>
+        `;
+        tbody.appendChild(row);
+      });
+    });
+  }
