@@ -306,6 +306,72 @@ async function renderComprobantes() {
   });
 }
 
+  async function renderComprobantesAudit() {
+  const { data, error } = await supabase
+    .from("pago_manual")
+    .select("*")
+    .order("fecha_hora", { ascending: false });
+
+  alert("🔍 Audit: respuesta Supabase recibida");
+
+  if (error) {
+    alert("⛔ Error Supabase: " + error.message);
+    console.error("Error al leer comprobantes:", error);
+    return;
+  }
+
+  alert("📦 Comprobantes recibidos: " + (data?.length || 0));
+
+  const tbody = document.getElementById("tabla-comprobantes");
+  if (!tbody) {
+    alert("⚠️ No se encontró la tabla 'tabla-comprobantes'");
+    return;
+  }
+
+  tbody.innerHTML = "";
+
+  data.forEach(comprobante => {
+    try {
+      const id = comprobante.id || "—";
+      const telefono = comprobante.telefono || "—";
+      const banco = comprobante.banco || "—";
+      const referencia = comprobante.referencia || "—";
+      const monto = comprobante.monto || "—";
+      const unidad = comprobante.unidad || "—";
+      const estado = comprobante.estado || "pendiente";
+      const estadoWifi = comprobante.estado_wifi ? '🟢 Activo' : '🔴 Inactivo';
+
+      const activarDisabled = comprobante.estado_wifi ? "disabled" : "";
+      const desactivarDisabled = !comprobante.estado_wifi ? "disabled" : "";
+
+      const row = document.createElement("tr");
+      row.className = estado === "aprobado" ? "fila-aprobada" : "";
+
+      row.innerHTML = `
+        <td>${telefono}</td>
+        <td>${banco}</td>
+        <td>${referencia}</td>
+        <td>${monto}</td>
+        <td>${unidad}</td>
+        <td>${estado}</td>
+        <td>${comprobante.fecha_hora || '—'}</td>
+        <td>
+          <span id="estado-wifi-${id}" style="display:block; margin-bottom:6px;">
+            ${estadoWifi}
+          </span>
+          <button onclick="activarWifi('${id}')" ${activarDisabled}>🚀 Activar WiFi</button>
+          <button onclick="desactivarWifi('${id}')" ${desactivarDisabled}>⛔ Desactivar WiFi</button>
+        </td>
+      `;
+
+      tbody.appendChild(row);
+    } catch (e) {
+      console.error("⛔ Error al pintar fila:", e);
+      alert("❌ Error al procesar comprobante: " + JSON.stringify(comprobante));
+    }
+  });
+               }
+
 // 🔧 Activación de sesión WiFi
 async function activarWifi(id) {
   const { error } = await supabase
@@ -342,6 +408,6 @@ function filtrarComprobantes() {
 }
 
 // 🔁 Render inicial del panel
-renderComprobantes();
+renderComprobantesAudit();
 renderChoferes();
 renderTickets();
