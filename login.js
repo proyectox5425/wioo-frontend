@@ -4,7 +4,7 @@ import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js
 // 🔗 Conexión real al proyecto Supabase
 const supabase = createClient(
   "https://sirxmzomlazpsfyjdnle.supabase.co",
-  "eyJhBGiOiJIUzI1NiIsInR5cCI6IkpXVCJ9..." // ← tu clave permanece intacta
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNqcm16a29temxxcHNmdmpkbmxlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTI4MDU0NTMsImV4cCI6MjA2ODM4MTQ1M30.lX1F-w3ar2LEunf6OTfHoWkDOGFn4KdFTxEuCm34Wmw"
 );
 
 // 🔐 Función principal de validación con trazabilidad urbana
