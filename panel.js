@@ -402,11 +402,6 @@ async function desactivarWifi(id) {
   }
 }
 
-// 🔁 Render inicial del panel
-document.getElementById("filtro-estado").value = "pendiente";
-filtrarComprobantes();
-renderChoferes();
-renderTickets();
 function filtrarComprobantes() {
   const estadoSeleccionado = document.getElementById("filtro-estado").value;
 
@@ -453,3 +448,9 @@ function filtrarComprobantes() {
       });
     });
   }
+  
+  // 🔁 Render inicial del panel
+  document.getElementById("filtro-estado").value = "pendiente";
+filtrarComprobantes();
+renderChoferes();
+renderTickets();
