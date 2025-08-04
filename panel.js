@@ -370,7 +370,7 @@ async function renderComprobantes() {
       alert("❌ Error al procesar comprobante: " + JSON.stringify(comprobante));
     }
   });
-               }
+}
 
 // 🔧 Activación de sesión WiFi
 async function activarWifi(id) {
