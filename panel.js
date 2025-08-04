@@ -402,12 +402,10 @@ async function desactivarWifi(id) {
   }
 }
 
-// 🔍 Filtro institucional por estado o unidad
-function filtrarComprobantes() {
-  renderComprobantes(); // Puedes expandir con lógica de filtros si querés
-}
-
 // 🔁 Render inicial del panel
 renderComprobantesAudit();
 renderChoferes();
 renderTickets();
+function filtrarComprobantes() {
+  renderComprobantes();
+}
