@@ -454,3 +454,4 @@ function filtrarComprobantes() {
 filtrarComprobantes();
 renderChoferes();
 renderTickets();
+showSection("comprobantes"); 
