@@ -421,6 +421,7 @@ function filtrarComprobantes() {
       const lista = estadoSeleccionado
         ? data.filter(c => c.estado === estadoSeleccionado)
         : data;
+      alert("📦 Se van a pintar " + lista.length + " comprobantes");
 
       lista.forEach(comprobante => {
         const id = comprobante.id || "—";
