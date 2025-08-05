@@ -236,6 +236,18 @@
     </tbody>
   </table>
       </section>
+
+      <section id="comprobantes">
+  <h2 style="color:#7344D0;">📥 Comprobantes cargados por pasajeros</h2>
+  <table style="width:100%; border-collapse:collapse; background:white;">
+    <thead>
+      <tr style="background:#7344D0; color:white;">
+        <th>Cédula</th><th>Teléfono</th><th>Banco</th><th>Referencia</th><th>Unidad</th><th>Monto</th><th>Hora</th><th>Acción</th>
+      </tr>
+    </thead>
+    <tbody id="tabla-comprobantes"></tbody>
+  </table>
+      </section>
     </main>
   </div>
 
@@ -247,6 +259,78 @@
       });
     }
     window.onload = () => mostrarSeccion('resumen');
+  </script>
+
+  <script type="module">
+  import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm'
+  const supabase = createClient(
+    "https://sjrmzkomzlqpsfvjdnle.supabase.co",
+    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNqcm16a29temxxcHNmdmpkbmxlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTI4MDU0NTMsImV4cCI6MjA2ODM4MTQ1M30.lX1F-w3ar2LEunf6OTfHoWkDOGFn4KdFTxEuCm34Wmw"
+  )
+
+  async function renderComprobantes() {
+    const { data, error } = await supabase
+      .from('pago_manual')
+      .select('*')
+      .eq('estado', 'pendiente')
+      .order('fecha_hora', { ascending: false })
+
+    if (error) {
+      console.error('⛔ Error Supabase:', error)
+      return
+    }
+
+    const tabla = document.getElementById('tabla-comprobantes')
+    tabla.innerHTML = ''
+
+    data.forEach(c => {
+      const fila = document.createElement('tr')
+      fila.innerHTML = `
+        <td>${c.cedula}</td>
+        <td>${c.telefono}</td>
+        <td>${c.banco}</td>
+        <td>${c.referencia}</td>
+        <td>${c.unidad}</td>
+        <td>${c.monto}</td>
+        <td>${new Date(c.fecha_hora).toLocaleTimeString()}</td>
+        <td>
+          <button onclick="validarComprobante('${c.id}')" style="background:#4CAF50; color:white;">✅ Validar</button>
+          <button onclick="rechazarComprobante('${c.id}')" style="background:#f44336; color:white;">❌ Rechazar</button>
+        </td>
+      `
+      tabla.appendChild(fila)
+    })
+  }
+
+  window.validarComprobante = async (id) => {
+    await supabase.from('pago_manual')
+      .update({
+        estado: 'aprobado',
+        fecha_validacion: new Date().toISOString()
+      })
+      .eq('id', id)
+
+    // Aquí se puede activar la conexión Mikrotik si ya está integrado
+    alert("✅ Comprobante aprobado. El pasajero será redirigido a pantalla 4.1.")
+
+    renderComprobantes()
+  }
+
+  window.rechazarComprobante = async (id) => {
+    await supabase.from('pago_manual')
+      .update({
+        estado: 'rechazado',
+        motivo_rechazo: 'No se registró pago',
+        fecha_validacion: new Date().toISOString()
+      })
+      .eq('id', id)
+
+    alert("❌ Comprobante rechazado. El pasajero seguirá en modo gratuito y será desconectado tras 10min.")
+
+    renderComprobantes()
+  }
+
+  renderComprobantes()
   </script>
 </body>
   </html>
