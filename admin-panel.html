@@ -2,364 +2,251 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
-  <title>Admin Panel Wioo</title>
+  <title>Panel Wioo</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <!-- Estilos base -->
   <style>
-    body { font-family: 'Segoe UI', sans-serif; background: #f8f9fc; margin:0; padding:0; }
-    main { padding: 20px; max-width: 1400px; margin: auto; }
-    h3 { font-weight: 500; }
-    .nav-link { background-color: #7344D0; color: white; padding: 6px 12px; border: none; border-radius: 6px; cursor: pointer; }
-    .card-container { display: flex; gap: 20px; flex-wrap: wrap; margin: 20px 0; }
-    .card { background: white; border-radius: 8px; padding: 20px; flex: 1; text-align: center; box-shadow: 0 0 5px rgba(0,0,0,0.1); min-width: 150px; }
-    .section { margin-bottom: 60px; }
-    .interface-wrapper { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 0 5px rgba(0,0,0,0.05); }
-    .mini-encabezado { font-weight: bold; font-size: 1.1em; margin-bottom: 10px; color: #7344D0; }
-    table.tabla-usuarios { width: 100%; border-collapse: collapse; margin-top: 10px; }
-    table th, table td { padding: 10px; border: 1px solid #e0e0e0; text-align: center; }
-    .activo { font-weight: bold; color: green; }
-    .inactivo { color: red; }
+    body { margin:0; font-family:'Segoe UI', sans-serif; background:#f8f9fc; }
+    .nav-link {
+      display:block;
+      background:white;
+      color:#7344D0;
+      padding:10px 12px;
+      border-radius:6px;
+      margin-bottom:10px;
+      font-weight:bold;
+      cursor:pointer;
+      text-align:left;
+      border:none;
+    }
+    .card-container {
+      display:flex;
+      gap:20px;
+      flex-wrap:wrap;
+      margin-top:20px;
+    }
+    .card {
+      background:white;
+      border-radius:8px;
+      padding:20px;
+      text-align:center;
+      box-shadow:0 0 5px rgba(0,0,0,0.1);
+      min-width:180px;
+      flex:1;
+    }
+    section { display:none; }
   </style>
 </head>
 <body>
-  <main>
-    <!-- Panel de Validaciones recientes -->
-<h3 style="color:#d2a6ff; margin-top:40px;">Validaciones recientes</h3>
-<table class="tabla-usuarios">
-  <thead>
-    <tr><th>Unidad</th><th>Chofer</th><th>Hora</th><th>Tickets</th><th>Pago</th></tr>
-  </thead>
-  <tbody>
-    <tr><td>BUS-001</td><td>CHF-1023</td><td>14:10</td><td>8</td><td>Pago móvil</td></tr>
-    <tr><td>BUS-007</td><td>CHF-1050</td><td>13:55</td><td>3</td><td>Efectivo</td></tr>
-    <tr><td>BUS-013</td><td>CHF-9901</td><td>13:25</td><td>5</td><td>Transferencia</td></tr>
-    <tr><td>BUS-017</td><td>CHF-9864</td><td>12:45</td><td>2</td><td>Pago móvil</td></tr>
-  </tbody>
-</table>
+  <div style="display:flex;">
+    <!-- Menú lateral -->
+    <aside style="width:220px; background:#7344D0; color:white; padding:20px; height:100vh;">
+      <h2 style="margin-bottom:20px;">🔧 Panel Wioo</h2>
+      <button onclick="mostrarSeccion('resumen')" class="nav-link">📊 Resumen Diario</button>
+      <button onclick="mostrarSeccion('unidades')" class="nav-link">🚍 Unidades</button>
+      <button onclick="mostrarSeccion('choferes')" class="nav-link">🧑‍💼 Choferes</button>
+      <button onclick="mostrarSeccion('comprobantes')" class="nav-link">📥 Comprobantes</button>
+      <button onclick="mostrarSeccion('tickets')" class="nav-link">🎫 Tickets</button>
+      <button onclick="mostrarSeccion('anuncios')" class="nav-link">📺 Anuncios</button>
+      <button onclick="mostrarSeccion('estadisticas')" class="nav-link">📈 Estadísticas</button>
+      <button onclick="mostrarSeccion('gestion')" class="nav-link">⚙️ Gestión Técnica</button>
+    </aside>
 
-<!-- Panel Estado de Unidades -->
-<section id="unidades" class="section">
-  <div class="interface-wrapper">
-    <div class="mini-encabezado">🚍 Unidades Operativas</div>
-    <h3 style="color:#d2a6ff;">Estado por autobús</h3>
-    <table class="tabla-usuarios">
-      <thead>
-        <tr><th>Unidad</th><th>Chofer</th><th>Estado</th><th>Tickets generados</th><th>Tickets usados</th><th>Conexión</th><th>Acciones</th></tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td>BUS-001</td><td>CHF-1023</td><td class="activo">🟢 En ruta</td><td>12</td><td>10</td><td>🟢 Online</td>
-          <td>
-            <button class="nav-link">🔄 Reiniciar</button>
-            <button class="nav-link">🔧 Mantenimiento</button>
-            <button class="nav-link">🔒 Inhabilitar</button>
-          </td>
-        </tr>
-        <tr>
-          <td>BUS-007</td><td>CHF-1050</td><td>🟡 En terminal</td><td>4</td><td>4</td><td>🟢 Online</td>
-          <td><button class="nav-link">🔒 Inhabilitar</button></td>
-        </tr>
-        <tr>
-          <td>BUS-011</td><td>CHF-1168</td><td>🔧 En mantenimiento</td><td>—</td><td>—</td><td>🔴 Offline</td>
-          <td><button class="nav-link">✅ Activar</button></td>
-        </tr>
-      </tbody>
-    </table>
+    <!-- Panel central -->
+    <main style="flex:1; padding:30px;">
+      <!-- 📊 Resumen del día -->
+      <section id="resumen">
+        <h2 style="color:#7344D0;">📊 Resumen del Día</h2>
+        <div class="card-container">
+          <div class="card"><h3>Total de tickets</h3><p>—</p></div>
+          <div class="card"><h3>Conexiones activas</h3><p>—</p></div>
+          <div class="card"><h3>Comprobantes aprobados</h3><p>—</p></div>
+        </div>
+      </section>
 
-    <h3 style="color:#d2a6ff; margin-top:40px;">Horarios asignados</h3>
-    <table class="tabla-usuarios">
-      <thead><tr><th>Unidad</th><th>Salida</th><th>Destino</th><th>Hora salida</th><th>Hora llegada</th></tr></thead>
-      <tbody>
-        <tr><td>BUS-001</td><td>Terminal Norte</td><td>Valencia</td><td>13:30</td><td>15:15</td></tr>
-        <tr><td>BUS-007</td><td>Terminal Sur</td><td>Maracay</td><td>12:40</td><td>14:00</td></tr>
-      </tbody>
+      <section id="unidades">
+  <h2 style="color:#7344D0;">🚍 Estado de Unidades</h2>
+
+  <!-- Tabla operativa -->
+  <table style="width:100%; border-collapse:collapse; background:white; margin-top:20px;">
+    <thead>
+      <tr style="background:#7344D0; color:white;">
+        <th>Unidad</th><th>Chofer</th><th>Estado</th><th>Tickets generados</th><th>Tickets usados</th><th>Conexión</th><th>Acciones</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>BUS-001</td><td>CHF-1023</td><td>🟢 En ruta</td><td>12</td><td>10</td><td>🟢 Online</td>
+        <td>
+          <button class="nav-link">🔄 Reiniciar</button>
+          <button class="nav-link">🔧 Mantenimiento</button>
+          <button class="nav-link">🔒 Inhabilitar</button>
+        </td>
+      </tr>
+      <tr>
+        <td>BUS-007</td><td>CHF-1050</td><td>🟡 En terminal</td><td>4</td><td>4</td><td>🟢 Online</td>
+        <td><button class="nav-link">🔒 Inhabilitar</button></td>
+      </tr>
+      <tr>
+        <td>BUS-011</td><td>CHF-1168</td><td>🔧 En mantenimiento</td><td>—</td><td>—</td><td>🔴 Offline</td>
+        <td><button class="nav-link">✅ Activar</button></td>
+      </tr>
+    </tbody>
   </table>
-  <!-- Panel de Choferes -->
-<section id="choferes" class="section">
-  <div class="interface-wrapper">
-    <div class="mini-encabezado">🧑‍💼 Gestión de Choferes</div>
 
-    <h3 style="color:#d2a6ff;">Choferes registrados</h3>
-    <table class="tabla-usuarios">
-      <thead><tr><th>Nombre</th><th>Código</th><th>Ruta</th><th>Estado</th><th>Acciones</th></tr></thead>
-      <tbody id="choferes-table-body"></tbody>
-    </table>
+  <!-- Horarios asignados -->
+  <h3 style="color:#7344D0; margin-top:40px;">🕓 Horarios Asignados</h3>
+  <table style="width:100%; border-collapse:collapse; background:white; margin-top:10px;">
+    <thead>
+      <tr style="background:#7344D0; color:white;">
+        <th>Unidad</th><th>Salida</th><th>Destino</th><th>Hora salida</th><th>Hora llegada</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td>BUS-001</td><td>Terminal Norte</td><td>Valencia</td><td>13:30</td><td>15:15</td></tr>
+      <tr><td>BUS-007</td><td>Terminal Sur</td><td>Maracay</td><td>12:40</td><td>14:00</td></tr>
+    </tbody>
+  </table>
+      </section>
 
-    <h3 style="color:#d2a6ff; margin-top:40px;">Registrar nuevo chofer</h3>
-    <form onsubmit="return false;">
-      <label><span>Nombre:</span><br/>
-        <input type="text" placeholder="Ej: Luis Martínez" style="width:100%; padding:8px; border-radius:6px; margin:5px 0; border:none;" />
-      </label>
+      <section id="choferes">
+  <h2 style="color:#7344D0;">🧑‍✈️ Choferes por Empresa</h2>
 
-      <label><span>Ruta asignada:</span><br/>
-        <input type="text" placeholder="Ej: Ruta 12" style="width:100%; padding:8px; border-radius:6px; margin:5px 0; border:none;" />
-      </label>
+  <!-- Empresa: TransMiranda -->
+  <h3 style="margin-top:30px;">🚚 TransMiranda</h3>
+  <table style="width:100%; border-collapse:collapse; background:white;">
+    <thead>
+      <tr style="background:#7344D0; color:white;">
+        <th>Chofer</th><th>Unidad Asignada</th><th>Estado</th><th>Licencia</th><th>Último Servicio</th><th>Acciones</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>CHF-1023</td><td>BUS-001</td><td>🟢 Activo</td><td>Tipo D</td><td>2025-08-02</td>
+        <td>
+          <button class="nav-link">📋 Ver perfil</button>
+          <button class="nav-link">🔒 Inhabilitar</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
 
-      <label><span>Código del chofer:</span><br/>
-        <input type="text" placeholder="Ej: CHF-1075" style="width:100%; padding:8px; border-radius:6px; margin:5px 0; border:none;" />
-      </label>
+  <!-- Empresa: UniónBus -->
+  <h3 style="margin-top:30px;">🚛 UniónBus</h3>
+  <table style="width:100%; border-collapse:collapse; background:white;">
+    <thead>
+      <tr style="background:#7344D0; color:white;">
+        <th>Chofer</th><th>Unidad Asignada</th><th>Estado</th><th>Licencia</th><th>Último Servicio</th><th>Acciones</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>CHF-1050</td><td>BUS-007</td><td>🟡 Disponible</td><td>Tipo C</td><td>2025-07-30</td>
+        <td>
+          <button class="nav-link">📋 Ver perfil</button>
+          <button class="nav-link">🔧 Asignar ruta</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+      </section>
 
-      <button disabled style="margin-top:10px; background-color:#7344D0; color:white; padding:10px 20px; border-radius:6px; border:none; cursor:not-allowed; opacity:0.5;">
-        Registrar (deshabilitado)
-      </button>
-    </form>
+      <section id="rutas">
+  <h2 style="color:#7344D0;">🧭 Rutas Asignadas</h2>
 
-    <h3 style="color:#d2a6ff; margin-top:40px;">Revisión de tickets por chofer</h3>
-    <label>
-      <span>Selecciona un chofer:</span><br/>
-      <select id="select-chofer" style="width:100%; padding:10px; border-radius:6px; margin-top:5px;">
-        <option value="">— Elige —</option>
-        <option value="CHF-1023">CHF-1023</option>
-        <option value="CHF-1050">CHF-1050</option>
-      </select>
-    </label>
+  <!-- Empresa: TransMiranda -->
+  <h3 style="margin-top:30px;">🚚 TransMiranda</h3>
+  <table style="width:100%; border-collapse:collapse; background:white;">
+    <thead>
+      <tr style="background:#7344D0; color:white;">
+        <th>Unidad</th><th>Salida</th><th>Destino</th><th>Hora Salida</th><th>Hora Llegada</th><th>Acciones</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>BUS-001</td><td>Terminal Norte</td><td>Valencia</td><td>13:30</td><td>15:15</td>
+        <td>
+          <button class="nav-link">📝 Editar</button>
+          <button class="nav-link">🔄 Reasignar</button>
+          <button class="nav-link">❌ Cancelar</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
 
-    <div id="resumen-chofer" style="display:none; margin-top:15px;">
-      <p><strong>Total de tickets:</strong> <span id="total-tickets"></span></p>
-      <table class="tabla-usuarios" style="margin-top:10px;">
-        <thead><tr><th>Fecha</th><th>Hora</th><th>Monto</th></tr></thead>
-        <tbody id="tabla-detalle-tickets"></tbody>
-      </table>
-    </div>
+  <!-- Empresa: UniónBus -->
+  <h3 style="margin-top:30px;">🚛 UniónBus</h3>
+  <table style="width:100%; border-collapse:collapse; background:white;">
+    <thead>
+      <tr style="background:#7344D0; color:white;">
+        <th>Unidad</th><th>Salida</th><th>Destino</th><th>Hora Salida</th><th>Hora Llegada</th><th>Acciones</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>BUS-007</td><td>Terminal Sur</td><td>Maracay</td><td>12:40</td><td>14:00</td>
+        <td>
+          <button class="nav-link">📝 Editar</button>
+          <button class="nav-link">🔄 Reasignar</button>
+          <button class="nav-link">❌ Cancelar</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+      </section>
+
+      <section id="terminales">
+  <h2 style="color:#7344D0;">🏢 Terminales por Empresa</h2>
+
+  <!-- Empresa: TransMiranda -->
+  <h3 style="margin-top:30px;">🚚 TransMiranda</h3>
+  <table style="width:100%; border-collapse:collapse; background:white;">
+    <thead>
+      <tr style="background:#7344D0; color:white;">
+        <th>Nombre</th><th>Ubicación</th><th>Capacidad</th><th>Estado</th><th>Última Inspección</th><th>Acciones</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Terminal Norte</td><td>Guarenas</td><td>12 buses</td><td>🟢 Operativo</td><td>2025-08-01</td>
+        <td>
+          <button class="nav-link">🔍 Inspección</button>
+          <button class="nav-link">📝 Editar</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- Empresa: UniónBus -->
+  <h3 style="margin-top:30px;">🚛 UniónBus</h3>
+  <table style="width:100%; border-collapse:collapse; background:white;">
+    <thead>
+      <tr style="background:#7344D0; color:white;">
+        <th>Nombre</th><th>Ubicación</th><th>Capacidad</th><th>Estado</th><th>Última Inspección</th><th>Acciones</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Terminal Sur</td><td>Maracay</td><td>8 buses</td><td>🟡 En revisión</td><td>2025-07-28</td>
+        <td>
+          <button class="nav-link">🔍 Inspección</button>
+          <button class="nav-link">🔧 Programar revisión</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+      </section>
+    </main>
   </div>
-</section>
 
-<!-- Panel de Comprobantes -->
-<section id="comprobantes" class="section">
-  <div class="interface-wrapper">
-    <div class="mini-encabezado">📥 Comprobantes cargados</div>
-
-    <h3 style="color:#d2a6ff;">Pagos manuales registrados</h3>
-    <select id="filtro-estado" onchange="renderComprobantesFlexibles()" style="margin-bottom:12px;">
-      <option value="">— Todos —</option>
-      <option value="pendiente">🕒 Pendientes</option>
-      <option value="aprobado">🟢 Aprobados</option>
-    </select>
-    <table class="tabla-usuarios">
-      <thead>
-        <tr><th>Teléfono</th><th>Banco</th><th>Referencia</th><th>Monto</th><th>Unidad</th><th>Estado</th><th>Fecha</th><th>Acción</th></tr>
-      </thead>
-      <tbody id="tabla-comprobantes"></tbody>
-    </table>
-    <!-- Estado visual de la conexión -->
-<span id="estado-wifi-{{id_comprobante}}" style="display:block; margin-bottom:8px; font-weight:bold; color:#555;">
-  Estado: 🔄 Pendiente
-</span>
-
-<!-- Botones de acción directa -->
-<button onclick="activarWifi('{{id_comprobante}}')" style="background:#4CAF50; color:white; padding:10px 16px; border:none; border-radius:6px; margin-right:8px; cursor:pointer;">
-  🚀 Activar WiFi
-</button>
-
-<button onclick="desactivarWifi('{{id_comprobante}}')" style="background:#f44336; color:white; padding:10px 16px; border:none; border-radius:6px; cursor:pointer;">
-  ⛔ Desactivar WiFi
-</button>
-  </div>
-</section>
-
-    <!-- Panel Institucional de Tickets -->
-<section id="tickets" class="section">
-  <div class="interface-wrapper">
-    <div class="mini-encabezado">🎫 Tickets generados y validación manual</div>
-
-    <h3 style="color:#d2a6ff;">Validación manual institucional</h3>
-    <label>
-      <span>Ingresa código de ticket:</span><br/>
-      <input type="text" id="codigo-manual" placeholder="Ej: WIO-001223" style="width:100%; padding:10px; border-radius:6px; margin-top:5px;">
-    </label>
-    <br/>
-    <button id="btn-validar-manual" style="margin-top:10px; background-color:#7344D0; color:white; padding:10px 20px; border:none; border-radius:6px;">
-      ✅ Validar ticket manual
-    </button>
-
-    <h3 style="color:#d2a6ff; margin-top:40px;">Tickets institucionales auditados</h3>
-    <table class="tabla-usuarios">
-      <thead>
-        <tr><th>Código</th><th>Validado por</th><th>Estado</th><th>Creación</th></tr>
-      </thead>
-      <tbody id="tickets-table-body"></tbody>
-    </table>
-  </div>
-</section>
-
-<!-- Panel de Anuncios -->
-<section id="anuncios" class="section">
-  <div class="interface-wrapper">
-    <div class="mini-encabezado">📺 Gestión de Anuncios Institucionales</div>
-
-    <h3 style="color:#d2a6ff;">Campañas activas</h3>
-    <table class="tabla-usuarios">
-      <thead><tr><th>Título</th><th>Duración</th><th>Destino</th><th>Segmentación</th><th>Frecuencia</th><th>Acciones</th></tr></thead>
-      <tbody id="tabla-anuncios-activos"></tbody>
-    </table>
-
-    <h3 style="color:#d2a6ff; margin-top:40px;">Registrar nuevo anuncio</h3>
-    <form onsubmit="return false;">
-      <label><span>Título del anuncio:</span><br/>
-        <input type="text" placeholder="Ej: Conectividad Wioo segura" style="width:100%; padding:8px; border-radius:6px; margin:5px 0; border:none;" />
-      </label>
-
-      <label><span>Duración (segundos):</span><br/>
-        <input type="number" placeholder="Ej: 30" style="width:100%; padding:8px; border-radius:6px; margin:5px 0; border:none;" />
-      </label>
-
-      <label><span>Segmentación:</span><br/>
-        <select style="width:100%; padding:8px; border-radius:6px; margin:5px 0;">
-          <option value="">— Seleccionar —</option>
-          <option>Todos</option>
-          <option>Expresos Occidente</option>
-          <option>Expresos Los Llanos</option>
-        </select>
-      </label>
-
-      <label><span>Frecuencia:</span><br/>
-        <select style="width:100%; padding:8px; border-radius:6px; margin:5px 0;">
-          <option value="">— Seleccionar —</option>
-          <option>Inicio de sesión</option>
-          <option>Cada 10 minutos</option>
-          <option>1 sola vez</option>
-        </select>
-      </label>
-
-      <label><span>Contenido visual (URL o texto):</span><br/>
-        <textarea placeholder="Ej: https://wioo.com/banner.jpg o mensaje urbano" style="width:100%; padding:8px; border-radius:6px; margin:5px 0; border:none;"></textarea>
-      </label>
-
-      <button style="margin-top:10px; background-color:#7344D0; color:white; padding:10px 20px; border-radius:6px; border:none;">
-        ➕ Registrar anuncio
-      </button>
-    </form>
-
-    <h3 style="color:#d2a6ff; margin-top:40px;">Activaciones programadas</h3>
-    <table class="tabla-usuarios">
-      <thead><tr><th>Fecha</th><th>Hora</th><th>Anuncio</th><th>Destino</th></tr></thead>
-      <tbody id="tabla-anuncios-programados"></tbody>
-    </table>
-  </div>
-               </section>
-
-    <!-- Panel de Estadísticas -->
-<section id="estadisticas" class="section">
-  <div class="interface-wrapper">
-    <div class="mini-encabezado">📈 Estadísticas Institucionales</div>
-
-    <h3 style="color:#d2a6ff;">Indicadores globales</h3>
-    <div class="card-container">
-      <div class="card"><h3>Total de tickets hoy</h3><p>214</p></div>
-      <div class="card"><h3>Tickets usados</h3><p>189</p></div>
-      <div class="card"><h3>Validaciones por chofer</h3><p>37</p></div>
-      <div class="card"><h3>Conexiones activas</h3><p>21</p></div>
-    </div>
-
-    <h3 style="color:#d2a6ff; margin-top:40px;">Distribución de pagos</h3>
-    <canvas id="graficoPagos" width="400" height="200" style="margin-top:20px;"></canvas>
-
-    <h3 style="color:#d2a6ff; margin-top:40px;">Uso de rutas por día</h3>
-    <canvas id="graficoRutas" width="400" height="200" style="margin-top:20px;"></canvas>
-
-    <h3 style="color:#d2a6ff; margin-top:40px;">Actividad por empresa</h3>
-    <canvas id="graficoEmpresas" width="400" height="200" style="margin-top:20px;"></canvas>
-
-    <h3 style="color:#d2a6ff; margin-top:40px;">Exportación institucional</h3>
-    <p>Descarga los datos consolidados para análisis externo:</p>
-    <button class="nav-link">📄 Descargar PDF</button>
-    <button class="nav-link">📊 Exportar CSV</button>
-    <button class="nav-link">📥 Exportar JSON</button>
-  </div>
-</section>
-
-<!-- Panel de Gestión Técnica -->
-<section id="gestion" class="section">
-  <div class="interface-wrapper">
-    <div class="mini-encabezado">⚙️ Centro de Gestión Institucional</div>
-
-    <h3 style="color:#d2a6ff;">Acciones globales</h3>
-    <table class="tabla-usuarios">
-      <thead><tr><th>Acción</th><th>Descripción</th><th>Ejecutar</th></tr></thead>
-      <tbody>
-        <tr>
-          <td>🔄 Reiniciar sistema</td>
-          <td>Reinicia visualización y estado operativo</td>
-          <td><button class="nav-link">🔁 Reiniciar</button></td>
-        </tr>
-        <tr>
-          <td>🧹 Vaciado de base de datos</td>
-          <td>Elimina registros locales y métricas acumuladas</td>
-          <td><button class="nav-link">🗑️ Vaciar</button></td>
-        </tr>
-        <tr>
-          <td>🧑‍💼 Activar usuario remoto</td>
-          <td>Rehabilita acceso de operador específico</td>
-          <td><button class="nav-link">✅ Activar</button></td>
-        </tr>
-      </tbody>
-    </table>
-
-    <h3 style="color:#d2a6ff; margin-top:40px;">Registro de fallas / mantenimiento</h3>
-    <table class="tabla-usuarios">
-      <thead><tr><th>Unidad</th><th>Fecha</th><th>Tipo</th><th>Resolución</th><th>Estado</th></tr></thead>
-      <tbody>
-        <tr><td>BUS-011</td><td>2025-07-16</td><td>Sin conexión</td><td>Enviado reinicio remoto</td><td>🟢 Resuelto</td></tr>
-        <tr><td>BUS-017</td><td>2025-07-15</td><td>Mikrotik congelado</td><td>Intervención manual</td><td>🔧 En proceso</td></tr>
-      </tbody>
-    </table>
-
-    <h3 style="color:#d2a6ff; margin-top:40px;">Logs operativos</h3>
-    <table class="tabla-usuarios">
-      <thead><tr><th>Fecha</th><th>Usuario</th><th>Evento</th><th>Unidad</th></tr></thead>
-      <tbody>
-        <tr><td>2025-07-16</td><td>AdminWioo</td><td>Activación remota</td><td>BUS-007</td></tr>
-        <tr><td>2025-07-15</td><td>AdminWioo</td><td>Reinicio sistema</td><td>BUS-011</td></tr>
-      </tbody>
-    </table>
-
-    <h3 style="color:#d2a6ff; margin-top:40px;">Configuraciones institucionales</h3>
-    <form onsubmit="return false;">
-      <label>
-        <span>Visualización por defecto:</span><br/>
-        <select style="width:100%; padding:8px; border-radius:6px; margin:5px 0;">
-          <option>Empresa</option>
-          <option>Chofer</option>
-          <option>Unidad</option>
-        </select>
-      </label>
-
-      <label>
-        <span>Mostrar anuncios:</span><br/>
-        <select style="width:100%; padding:8px; border-radius:6px; margin:5px 0;">
-          <option>Sí</option>
-          <option>No</option>
-        </select>
-      </label>
-
-      <label>
-        <span>Frecuencia de rotación (min):</span><br/>
-        <input type="number" value="10" style="width:100%; padding:8px; border-radius:6px;" />
-      </label>
-
-      <button style="margin-top:10px; background-color:#7344D0; color:white; padding:10px 20px; border-radius:6px; border:none;">
-        💾 Guardar configuración
-      </button>
-    </form>
-  </div>
-</section>
-
-<!-- ✅ Supabase: primero -->
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js/dist/supabase.min.js"></script>
-
-<!-- 📊 Librerías visuales -->
-<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-
-<!-- 🔒 Tu script final: panel.js -->
-<script src="panel.js" defer></script>
-</main>
-    <script>
-  function refreshAdminPanel() {
-    location.reload();
-  }
-
-  // Refresca cada 60 segundos
-  setInterval(refreshAdminPanel, 60000);
-    </script>
+  <!-- 🔍 Script de navegación por secciones -->
+  <script>
+    function mostrarSeccion(id) {
+      document.querySelectorAll('section').forEach(s => {
+        s.style.display = s.id === id ? 'block' : 'none';
+      });
+    }
+    window.onload = () => mostrarSeccion('resumen');
+  </script>
 </body>
   </html>
