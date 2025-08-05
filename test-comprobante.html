@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8" />
+  <title>📡 Test de Comprobantes Wioo</title>
+  <style>
+    body { font-family: sans-serif; padding: 20px; background: #f4f4f4; }
+    h2 { color: #663399; }
+    table { border-collapse: collapse; width: 100%; background: white; }
+    th, td { border: 1px solid #ccc; padding: 8px; text-align: left; }
+    tr:nth-child(even) { background: #fafafa; }
+    .mensaje { margin-top: 12px; font-weight: bold; color: #555; }
+  </style>
+</head>
+<body>
+  <h2>📦 Comprobantes desde Supabase</h2>
+  <div class="mensaje" id="mensaje-status">🔄 Consultando base de datos…</div>
+  <table>
+    <thead>
+      <tr>
+        <th>Teléfono</th><th>Banco</th><th>Referencia</th><th>Monto</th>
+        <th>Unidad</th><th>Estado</th><th>Fecha</th><th>WiFi</th>
+      </tr>
+    </thead>
+    <tbody id="tabla-comprobantes"></tbody>
+  </table>
+
+  <script type="module">
+    import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
+
+    const supabase = createClient(
+      "https://sjrmzkomzlqpsfvjdnle.supabase.co",
+      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNqcm16a29temxxcHNmdmpkbmxlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTI4MDU0NTMsImV4cCI6MjA2ODM4MTQ1M30.lX1F-w3ar2LEunf6OTfHoWkDOGFn4KdFTxEuCm34Wmw" // ← tu clave real aquí
+    );
+
+    async function cargarComprobantes() {
+      const status = document.getElementById("mensaje-status");
+      const tabla = document.getElementById("tabla-comprobantes");
+      tabla.innerHTML = "";
+
+      const { data, error } = await supabase
+        .from("pago_manual")
+        .select("*")
+        .order("fecha_hora", { ascending: false });
+
+      if (error) {
+        status.textContent = "⛔ Error al leer comprobantes: " + error.message;
+        return;
+      }
+
+      if (!Array.isArray(data) || data.length === 0) {
+        status.textContent = "📭 No hay comprobantes registrados aún.";
+        return;
+      }
+
+      status.textContent = `📦 Se recibieron ${data.length} comprobantes`;
+
+      data.forEach((c, i) => {
+        const fila = document.createElement("tr");
+        fila.innerHTML = `
+          <td>${c.telefono || "—"}</td>
+          <td>${c.banco || "—"}</td>
+          <td>${c.referencia || "—"}</td>
+          <td>${c.monto || "—"}</td>
+          <td>${c.unidad || "—"}</td>
+          <td>${c.estado || "pendiente"}</td>
+          <td>${c.fecha_hora ? new Date(c.fecha_hora).toLocaleString() : "—"}</td>
+          <td>${c.estado_wifi ? "🟢 Activo" : "🔴 Inactivo"}</td>
+        `;
+        tabla.appendChild(fila);
+      });
+    }
+
+    cargarComprobantes();
+  </script>
+</body>
+  </html>
