@@ -53,6 +53,27 @@ table {
   table-layout: fixed;
   width: 100%;
     }
+
+    /* 📐 Contenedor que permite scroll horizontal en móvil */
+.table-wrapper {
+  overflow-x: auto;
+  max-width: 100%;
+  margin-top: 10px;
+}
+
+/* 🧱 Estilo de tabla responsive */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 700px;
+}
+
+table td, table th {
+  padding: 10px 6px;
+  text-align: left;
+  border-bottom: 1px solid #eee;
+  word-break: break-word;
+  }
   </style>
 </head>
 <body>
@@ -257,7 +278,8 @@ table {
 
       <section id="comprobantes">
   <h2 style="color:#7344D0;">📥 Comprobantes cargados por pasajeros</h2>
-  <table style="width:100%; border-collapse:collapse; background:white;">
+  <div class="table-wrapper">
+  <table style="background:white;">
     <thead>
   <tr style="background:#7344D0; color:white;">
     <th>Cédula</th><th>Teléfono</th><th>Banco</th><th>Referencia</th><th>Unidad</th><th>Monto</th><th>Hora</th><th>IP Pasajero</th><th>Acción</th>
@@ -265,9 +287,10 @@ table {
     </thead>
     <tbody id="tabla-comprobantes"></tbody>
   </table>
+  </div>
       </section>
     </main>
-  </div>
+  
 
   <!-- 🔍 Script de navegación por secciones -->
   <script>
