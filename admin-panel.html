@@ -241,9 +241,9 @@
   <h2 style="color:#7344D0;">📥 Comprobantes cargados por pasajeros</h2>
   <table style="width:100%; border-collapse:collapse; background:white;">
     <thead>
-      <tr style="background:#7344D0; color:white;">
-        <th>Cédula</th><th>Teléfono</th><th>Banco</th><th>Referencia</th><th>Unidad</th><th>Monto</th><th>Hora</th><th>Acción</th>
-      </tr>
+  <tr style="background:#7344D0; color:white;">
+    <th>Cédula</th><th>Teléfono</th><th>Banco</th><th>Referencia</th><th>Unidad</th><th>Monto</th><th>Hora</th><th>IP Pasajero</th><th>Acción</th>
+  </tr>
     </thead>
     <tbody id="tabla-comprobantes"></tbody>
   </table>
@@ -284,52 +284,118 @@
     tabla.innerHTML = ''
 
     data.forEach(c => {
-      const fila = document.createElement('tr')
-      fila.innerHTML = `
-        <td>${c.cedula}</td>
-        <td>${c.telefono}</td>
-        <td>${c.banco}</td>
-        <td>${c.referencia}</td>
-        <td>${c.unidad}</td>
-        <td>${c.monto}</td>
-        <td>${new Date(c.fecha_hora).toLocaleTimeString()}</td>
-        <td>
-          <button onclick="validarComprobante('${c.id}')" style="background:#4CAF50; color:white;">✅ Validar</button>
-          <button onclick="rechazarComprobante('${c.id}')" style="background:#f44336; color:white;">❌ Rechazar</button>
-        </td>
-      `
-      tabla.appendChild(fila)
-    })
+  const fila = document.createElement('tr')
+  fila.innerHTML = `
+    <td>${c.cedula}</td>
+    <td>${c.telefono}</td>
+    <td>${c.banco}</td>
+    <td>${c.referencia}</td>
+    <td>${c.unidad}</td>
+    <td>${c.monto}</td>
+    <td>${new Date(c.fecha_hora).toLocaleTimeString()}</td>
+    <td>${c.ip_pasajero ?? '—'}</td>
+    <td>
+      <button onclick="validarComprobante('${c.id}')" style="background:#4CAF50; color:white;">✅ Validar</button>
+      <button onclick="rechazarComprobante('${c.id}')" style="background:#f44336; color:white;">❌ Rechazar</button>
+    </td>
+  `
+  tabla.appendChild(fila)
+})
   }
 
   window.validarComprobante = async (id) => {
-    await supabase.from('pago_manual')
-      .update({
-        estado: 'aprobado',
-        fecha_validacion: new Date().toISOString()
-      })
-      .eq('id', id)
+  // Buscar comprobante
+  const { data, error } = await supabase
+    .from('pago_manual')
+    .select('ip_pasajero')
+    .eq('id', id)
+    .single()
 
-    // Aquí se puede activar la conexión Mikrotik si ya está integrado
-    alert("✅ Comprobante aprobado. El pasajero será redirigido a pantalla 4.1.")
+  const ipPasajero = data?.ip_pasajero ?? null
 
-    renderComprobantes()
+  if (!ipPasajero) {
+    alert("⛔ Sin IP registrada. No se puede activar Mikrotik.")
+    return
   }
+
+  // Validar en Supabase
+  await supabase
+    .from('pago_manual')
+    .update({
+      estado: 'aprobado',
+      fecha_validacion: new Date().toISOString()
+    })
+    .eq('id', id)
+
+  // Activar Mikrotik (vía panel o backend — ajustar según tu endpoint real)
+  try {
+    const respuesta = await fetch('https://TU_ENDPOINT_MIKROTIK/activar', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        ip: ipPasajero,
+        duracion_minutos: 20 // tiempo de servicio
+      })
+    })
+
+    const json = await respuesta.json()
+    if (json.ok) {
+      alert("✅ Servicio extendido en Mikrotik para " + ipPasajero)
+    } else {
+      alert("⚠️ Validado, pero Mikrotik no respondió correctamente.")
+    }
+  } catch (e) {
+    console.error("🔌 Error Mikrotik:", e)
+    alert("⚠️ Validado, pero no se pudo activar servicio en Mikrotik.")
+  }
+
+  renderComprobantes()
+    }
 
   window.rechazarComprobante = async (id) => {
-    await supabase.from('pago_manual')
-      .update({
-        estado: 'rechazado',
-        motivo_rechazo: 'No se registró pago',
-        fecha_validacion: new Date().toISOString()
+  // Buscar comprobante para obtener la IP
+  const { data, error } = await supabase
+    .from('pago_manual')
+    .select('ip_pasajero')
+    .eq('id', id)
+    .single()
+
+  const ipPasajero = data?.ip_pasajero ?? null
+
+  // Marcar como rechazado
+  await supabase.from('pago_manual')
+    .update({
+      estado: 'rechazado',
+      motivo_rechazo: 'No se registró pago',
+      fecha_validacion: new Date().toISOString()
+    })
+    .eq('id', id)
+
+  // Si hay IP registrada, enviar señal a Mikrotik
+  if (ipPasajero) {
+    try {
+      const respuesta = await fetch('https://TU_ENDPOINT_MIKROTIK/revertir', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ ip: ipPasajero })
       })
-      .eq('id', id)
 
-    alert("❌ Comprobante rechazado. El pasajero seguirá en modo gratuito y será desconectado tras 10min.")
-
-    renderComprobantes()
+      const json = await respuesta.json()
+      if (json.ok) {
+        alert(`⛔ IP ${ipPasajero} removida de acceso en Mikrotik`)
+      } else {
+        alert(`⚠️ Se rechazó el comprobante pero Mikrotik no respondió correctamente.`)
+      }
+    } catch (e) {
+      console.error("🔌 Error Mikrotik:", e)
+      alert(`⚠️ Comprobante rechazado pero no se pudo cortar acceso Mikrotik.`)
+    }
+  } else {
+    alert("❌ Comprobante rechazado. Sin IP registrada para corte automático.")
   }
 
+  renderComprobantes()
+      }
   renderComprobantes()
   </script>
 </body>
