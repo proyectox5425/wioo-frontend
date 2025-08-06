@@ -539,8 +539,8 @@ async function cargarTickets() {
       ? new Date(ticket.creado_en).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
       : "—";
 
-    const estado = Boolean(ticket.activo) ? "🟢 Activo" : "⚪ Usado";
-    const claseEstado = Boolean(ticket.activo) ? "estado-activo" : "estado-usado";
+    const estado = ticket.activo === true || ticket.activo === "true" ? "🟢 Activo" : "⚪ Usado";
+    const claseEstado = estado === "🟢 Activo" ? "estado-activo" : "estado-usado";
 
     const fila = `<tr>
       <td>${ticket.codigo ?? '—'}</td>
