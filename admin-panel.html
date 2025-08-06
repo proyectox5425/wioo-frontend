@@ -514,6 +514,8 @@ table td, table th {
 
 async function cargarTickets() {
   const tabla = document.getElementById("tabla-tickets").querySelector("tbody");
+  if (!tabla) return;
+
   tabla.innerHTML = "<tr><td colspan='4'>⏳ Cargando tickets...</td></tr>";
 
   const { data, error } = await supabase
@@ -522,7 +524,6 @@ async function cargarTickets() {
     .order('creado_en', { ascending: false });
 
   if (error) {
-    console.error("❌ Error al cargar tickets:", error);
     tabla.innerHTML = "<tr><td colspan='4'>⛔ Error al cargar datos</td></tr>";
     return;
   }
