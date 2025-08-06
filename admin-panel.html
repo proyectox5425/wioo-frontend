@@ -297,6 +297,29 @@ table td, table th {
     <tbody id="tabla-comprobantes"></tbody>
   </table>
   </div>
+<h2 style="color:#7344D0;">📥 Comprobantes Pendientes</h2>
+<div class="table-wrapper">
+  <table style="background:white;">
+    <thead>
+      <tr style="background:#7344D0; color:white;">
+        <th>Cédula</th><th>Teléfono</th><th>Banco</th><th>Referencia</th><th>Unidad</th><th>Monto</th><th>Hora</th><th>IP</th><th>Acción</th>
+      </tr>
+    </thead>
+    <tbody id="tabla-comprobantes-pendientes"></tbody>
+  </table>
+</div>
+
+<h2 style="color:#7344D0;">✅ Comprobantes Activos</h2>
+<div class="table-wrapper">
+  <table style="background:white;">
+    <thead>
+      <tr style="background:#7344D0; color:white;">
+        <th>Cédula</th><th>Teléfono</th><th>Banco</th><th>Referencia</th><th>Unidad</th><th>Monto</th><th>Hora</th><th>IP</th>
+      </tr>
+    </thead>
+    <tbody id="tabla-comprobantes-activos"></tbody>
+  </table>
+</div>
       </section>
 
       <section id="tickets" style="display:none; padding:20px;">
@@ -334,38 +357,52 @@ table td, table th {
   )
 
   async function renderComprobantes() {
-    const { data, error } = await supabase
-      .from('pago_manual')
-      .select('*')
-      .eq('estado', 'pendiente')
-      .order('fecha_hora', { ascending: false })
+  const { data, error } = await supabase
+    .from('pago_manual')
+    .select('*')
+    .order('fecha_hora', { ascending: false });
 
-    if (error) {
-      console.error('⛔ Error Supabase:', error)
-      return
+  if (error) {
+    console.error('⛔ Error Supabase:', error);
+    return;
+  }
+
+  const tablaPendientes = document.getElementById('tabla-comprobantes-pendientes');
+  const tablaActivos = document.getElementById('tabla-comprobantes-activos');
+
+  tablaPendientes.innerHTML = '';
+  tablaActivos.innerHTML = '';
+
+  data.forEach(c => {
+    const hora = new Date(c.fecha_hora).toLocaleTimeString();
+    const filaBase = `
+      <td>${c.cedula}</td>
+      <td>${c.telefono}</td>
+      <td>${c.banco}</td>
+      <td>${c.referencia}</td>
+      <td>${c.unidad}</td>
+      <td>${c.monto}</td>
+      <td>${hora}</td>
+      <td>${c.ip_pasajero ?? '—'}</td>
+    `;
+
+    if (c.estado === 'pendiente') {
+      const fila = document.createElement('tr');
+      fila.innerHTML = filaBase + `
+        <td>
+          <button onclick="validarComprobante('${c.id}')" style="background:#4CAF50; color:white;">✅ Validar</button>
+          <button onclick="rechazarComprobante('${c.id}')" style="background:#f44336; color:white;">❌ Rechazar</button>
+        </td>
+      `;
+      tablaPendientes.appendChild(fila);
     }
 
-    const tabla = document.getElementById('tabla-comprobantes')
-    tabla.innerHTML = ''
-
-    data.forEach(c => {
-  const fila = document.createElement('tr')
-  fila.innerHTML = `
-    <td>${c.cedula}</td>
-    <td>${c.telefono}</td>
-    <td>${c.banco}</td>
-    <td>${c.referencia}</td>
-    <td>${c.unidad}</td>
-    <td>${c.monto}</td>
-    <td>${new Date(c.fecha_hora).toLocaleTimeString()}</td>
-    <td>${c.ip_pasajero ?? '—'}</td>
-    <td>
-      <button onclick="validarComprobante('${c.id}')" style="background:#4CAF50; color:white;">✅ Validar</button>
-      <button onclick="rechazarComprobante('${c.id}')" style="background:#f44336; color:white;">❌ Rechazar</button>
-    </td>
-  `
-  tabla.appendChild(fila)
-})
+    if (c.estado === 'aprobado') {
+      const fila = document.createElement('tr');
+      fila.innerHTML = filaBase;
+      tablaActivos.appendChild(fila);
+    }
+  });
   }
 
   window.validarComprobante = async (id) => {
@@ -476,6 +513,9 @@ table td, table th {
     const tablaTickets = document.getElementById("tabla-tickets").querySelector("tbody");
 
 async function cargarTickets() {
+  const tabla = document.getElementById("tabla-tickets").querySelector("tbody");
+  tabla.innerHTML = "<tr><td colspan='4'>⏳ Cargando tickets...</td></tr>";
+
   const { data, error } = await supabase
     .from('codigos_activos')
     .select('*')
@@ -483,22 +523,32 @@ async function cargarTickets() {
 
   if (error) {
     console.error("❌ Error al cargar tickets:", error);
+    tabla.innerHTML = "<tr><td colspan='4'>⛔ Error al cargar datos</td></tr>";
     return;
   }
 
-  tablaTickets.innerHTML = "";
+  if (!data || data.length === 0) {
+    tabla.innerHTML = "<tr><td colspan='4'>📭 No hay tickets generados</td></tr>";
+    return;
+  }
+
+  tabla.innerHTML = "";
 
   data.forEach(ticket => {
-    const hora = new Date(ticket.creado_en).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-    const estado = ticket.activo ? "🟢 Activo" : "⚪ Usado";
+    const hora = ticket.creado_en
+      ? new Date(ticket.creado_en).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+      : "—";
+
+    const estado = Boolean(ticket.activo) ? "🟢 Activo" : "⚪ Usado";
+    const claseEstado = Boolean(ticket.activo) ? "estado-activo" : "estado-usado";
 
     const fila = `<tr>
-      <td>${ticket.codigo}</td>
-      <td>${ticket.unidad}</td>
+      <td>${ticket.codigo ?? '—'}</td>
+      <td>${ticket.unidad ?? '—'}</td>
       <td>${hora}</td>
-      <td class="${ticket.activo ? 'estado-activo' : 'estado-usado'}">${estado}</td>
+      <td class="${claseEstado}">${estado}</td>
     </tr>`;
-    tablaTickets.innerHTML += fila;
+    tabla.innerHTML += fila;
   });
     }
   </script>
