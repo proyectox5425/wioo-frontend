@@ -74,6 +74,15 @@ table td, table th {
   border-bottom: 1px solid #eee;
   word-break: break-word;
   }
+
+    .estado-activo {
+  color: #00ff99;
+  font-weight: bold;
+}
+.estado-usado {
+  color: #cccccc;
+  font-style: italic;
+}
   </style>
 </head>
 <body>
@@ -289,6 +298,21 @@ table td, table th {
   </table>
   </div>
       </section>
+
+      <section id="tickets" style="display:none; padding:20px;">
+  <h2>🎫 Tickets generados</h2>
+  <table id="tabla-tickets">
+    <thead>
+      <tr>
+        <th>Código</th>
+        <th>Unidad</th>
+        <th>Hora</th>
+        <th>Estado</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+      </section>
     </main>
   
 
@@ -438,6 +462,45 @@ table td, table th {
   renderComprobantes()
       }
   renderComprobantes()
+
+  function mostrarSeccion(id) {
+  const secciones = document.querySelectorAll("section");
+  secciones.forEach(sec => sec.style.display = "none");
+
+  const activa = document.getElementById(id);
+  if (activa) {
+    activa.style.display = "block";
+    if (id === "tickets") cargarTickets(); // carga dinámica solo si es tickets
+  }
+    }
+    const tablaTickets = document.getElementById("tabla-tickets").querySelector("tbody");
+
+async function cargarTickets() {
+  const { data, error } = await supabase
+    .from('codigos_activos')
+    .select('*')
+    .order('creado_en', { ascending: false });
+
+  if (error) {
+    console.error("❌ Error al cargar tickets:", error);
+    return;
+  }
+
+  tablaTickets.innerHTML = "";
+
+  data.forEach(ticket => {
+    const hora = new Date(ticket.creado_en).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    const estado = ticket.activo ? "🟢 Activo" : "⚪ Usado";
+
+    const fila = `<tr>
+      <td>${ticket.codigo}</td>
+      <td>${ticket.unidad}</td>
+      <td>${hora}</td>
+      <td class="${ticket.activo ? 'estado-activo' : 'estado-usado'}">${estado}</td>
+    </tr>`;
+    tablaTickets.innerHTML += fila;
+  });
+    }
   </script>
 </body>
   </html>
