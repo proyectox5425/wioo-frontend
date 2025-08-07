@@ -441,18 +441,44 @@
       <div class="encabezado-pago-unico">🔒 ACCESO</div>
 
 
-      <div id="qr-reader" style="width: 280px; margin: 20px auto; display: none;"></div>
+      <div class="grupo-campo-horizontal" style="
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 40px;
+  flex-wrap: wrap;
+  margin-top: 20px;
+">
 
-      <div class="grupo-campo">
-  <input 
-    type="text" 
-    id="input-codigo" 
-    maxlength="4" 
-    placeholder="****"
-    style="font-size: 18px; width: 140px; text-align: center;" 
-  />
-        <button type="button" class="boton-qr" onclick="escanearQR()">📷 Escanear QR</button>
-      </div>
+  <!-- 🔢 Campo de ingreso manual -->
+  <div style="text-align: center;">
+    <input 
+      type="text" 
+      id="input-codigo" 
+      maxlength="4" 
+      placeholder="****"
+      style="font-size: 18px; width: 140px; text-align: center;" 
+    />
+    <br />
+    <button id="boton-validar" class="boton-wioo" style="margin-top: 12px;">🔐 Verificar</button>
+  </div>
+
+  <!-- 📷 Sección QR a la derecha -->
+  <div style="text-align: center;">
+    <button id="activar-qr" style="
+      padding: 10px 20px;
+      font-size: 16px;
+      background-color: #7344D0;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+    ">📷 Escanear código QR</button>
+
+    <div id="qr-reader" style="width: 280px; margin-top: 20px; display: none;"></div>
+  </div>
+ 
       <button id="boton-validar" class="boton-wioo">🔐 Verificar</button>
       
       <div class="zona-pago">
@@ -638,6 +664,13 @@
     font-family: 'Poppins', sans-serif;
     animation: parpadeo 1.2s infinite;
   ">Por favor espere...</p>
+    <p id="mensaje-modal" style="
+  color: white;
+  font-size: 20px;
+  font-weight: 600;
+  margin-top: 20px;
+  text-align: center;
+">🔄 Validando código…</p>  
       </div>
 <script>
 window.addEventListener("DOMContentLoaded", () => {
@@ -814,58 +847,109 @@ window.addEventListener("DOMContentLoaded", () => {
 </script>
 
   // Activar lector QR
-<script>
-  const codigosValidos = ["6384", "8712", "2929", "4410", "3307", "1188", "9001", "7455", "5151", "6660"];
-  let html5QrCodeActivo = null;
+      <script src="https://unpkg.com/html5-qrcode"></script>
+<script type="module">
+  import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
 
-  window.escanearQR = () => {
-    const qr = document.getElementById("qr-reader");
-    qr.style.display = "block";
+  const supabase = createClient(
+    "https://sjrmzkomzlqpsfvjdnle.supabase.co",
+    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+  );
 
-    if (html5QrCodeActivo) {
-      html5QrCodeActivo.stop().then(() => {
-        html5QrCodeActivo.clear();
-        iniciarEscaner();
-      }).catch((err) => {
-        console.error("❌ Error al detener escáner previo:", err);
-        iniciarEscaner(); // Intenta de todos modos
+  const modal = document.getElementById("modal-validacion");
+  const mensajeModal = document.getElementById("mensaje-modal");
+  const activarQR = document.getElementById("activar-qr");
+  const reader = document.getElementById("reader");
+
+  let escaneoActivo = false;
+  let html5QrCode;
+
+  activarQR.addEventListener("click", async () => {
+    if (escaneoActivo) {
+      html5QrCode.stop().then(() => {
+        reader.style.display = "none";
+        activarQR.textContent = "📷 Escanear código QR";
+        escaneoActivo = false;
       });
-    } else {
-      iniciarEscaner();
+      return;
     }
 
-    function iniciarEscaner() {
-      html5QrCodeActivo = new Html5Qrcode("qr-reader");
+    reader.style.display = "block";
+    activarQR.textContent = "⛔️ Detener escaneo";
+    escaneoActivo = true;
 
-      html5QrCodeActivo.start(
-        { facingMode: "environment" },
-        { fps: 10, qrbox: 250 },
-        (decodedText) => {
-          const codigoEscaneado = decodedText.replace("CH-", "").trim();
+    html5QrCode = new Html5Qrcode("reader");
+    html5QrCode.start(
+      { facingMode: "environment" },
+      { fps: 10, qrbox: 250 },
+      async (codigo) => {
+        html5QrCode.stop();
+        reader.style.display = "none";
+        activarQR.textContent = "📷 Escanear código QR";
+        escaneoActivo = false;
 
-          if (codigosValidos.includes(codigoEscaneado)) {
-            alert("✅ QR válido. Servicio extendido.");
-            html5QrCodeActivo.stop();
-            window.location.href = "pantalla-4.1.html";
-          } else {
-            alert("❌ QR inválido. Se mantendrán los minutos gratis.");
-            html5QrCodeActivo.stop();
-            window.location.href = "pantalla-4.2.html";
+        mensajeModal.textContent = "🔄 Validando código QR…";
+        modal.style.display = "flex";
+
+        try {
+          const { data, error } = await supabase
+            .from("codigos_activos")
+            .select("*")
+            .eq("codigo", codigo)
+            .eq("activo", true)
+            .single();
+
+          if (error || !data) {
+            mensajeModal.textContent = "❌ Código inválido o ya usado";
+            setTimeout(() => {
+              modal.style.display = "none";
+              window.location.href = "pantalla-4.2.html";
+            }, 3000);
+            return;
           }
-        },
-        (errorMessage) => {
-          console.warn("⏳ Esperando QR...");
+
+          const payload = {
+            activo: false,
+            unidad: localStorage.getItem("unidadId") || "desconocida",
+            chofer: localStorage.getItem("choferId") || "desconocido",
+            hora_uso: new Date().toISOString()
+          };
+
+          const { error: updateError } = await supabase
+            .from("codigos_activos")
+            .update(payload)
+            .eq("codigo", codigo);
+
+          if (updateError) {
+            mensajeModal.textContent = "⚠️ Error al registrar el código";
+            console.error("Error al actualizar:", updateError);
+            setTimeout(() => {
+              modal.style.display = "none";
+            }, 3000);
+            return;
+          }
+
+          mensajeModal.textContent = "✅ Código válido";
+          setTimeout(() => {
+            modal.style.display = "none";
+            window.location.href = "pantalla-4.1.html";
+          }, 3000);
+        } catch (err) {
+          mensajeModal.textContent = "⚠️ Error de conexión. Intenta nuevamente.";
+          console.error("Error de validación:", err);
+          setTimeout(() => {
+            modal.style.display = "none";
+          }, 3000);
         }
-      ).catch((err) => {
-        alert("📵 No se pudo activar la cámara. Verificá los permisos del navegador.");
-        console.error("Error QR:", err);
-      });
-    }
-  };
-  
+      },
+      (errorMessage) => {
+        console.warn("Error de escaneo:", errorMessage);
+      }
+    );
+  });
 </script>
 
-  <script>
+<script>
  // Registro de términos aceptados
   const contenedor = document.getElementById("contenedorTerminos");
   if (contenedor && botonAceptar) {
@@ -892,67 +976,80 @@ window.addEventListener("DOMContentLoaded", () => {
     });
   } 
 </script>
-      <script src="https://unpkg.com/html5-qrcode"></script>
-<script type="module" src="api.js"></script>
-<script type="module" src="login.js"></script>
-<script>
-document.addEventListener("DOMContentLoaded", () => {
-  const codigosValidos = ["6384", "8712", "2929", "4410", "3307", "1188", "9001", "7455", "5151", "6660"];
+      
+      <script type="module">
+  import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
 
-  const botonValidar = document.getElementById("boton-validar");
+  const supabase = createClient(
+    "https://sjrmzkomzlqpsfvjdnle.supabase.co",
+    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNqcm16a29temxxcHNmdmpkbmxlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTI4MDU0NTMsImV4cCI6MjA2ODM4MTQ1M30.lX1F-w3ar2LEunf6OTfHoWkDOGFn4KdFTxEuCm34Wmw"
+  );
+
   const inputCodigo = document.getElementById("input-codigo");
+  const botonValidar = document.getElementById("boton-validar");
   const modal = document.getElementById("modal-validacion");
+  const mensajeModal = document.getElementById("mensaje-modal");
 
-  if (botonValidar && inputCodigo && modal) {
-    botonValidar.addEventListener("click", () => {
-      const codigo = inputCodigo.value.trim();
+  botonValidar.addEventListener("click", async () => {
+    const codigo = inputCodigo.value.trim();
 
-      if (!codigo) {
-        alert("⚠️ Ingresá el código entregado por el chofer.");
+    if (!codigo) {
+      alert("⚠️ Ingresá el código entregado por el chofer.");
+      return;
+    }
+
+    mensajeModal.textContent = "🔄 Validando código…";
+    modal.style.display = "flex";
+
+    try {
+      const { data, error } = await supabase
+        .from("codigos_activos")
+        .select("*")
+        .eq("codigo", codigo)
+        .eq("activo", true)
+        .single();
+
+      if (error || !data) {
+        mensajeModal.textContent = "❌ Código inválido o ya usado";
+        setTimeout(() => {
+          modal.style.display = "none";
+          window.location.href = "pantalla-4.2.html";
+        }, 3000);
         return;
       }
 
-      modal.style.display = "flex";
+      const payload = {
+        activo: false,
+        unidad: localStorage.getItem("unidadId") || "desconocida",
+        chofer: localStorage.getItem("choferId") || "desconocido",
+        hora_uso: new Date().toISOString()
+      };
 
-      setTimeout(() => {
-        modal.style.display = "none";
-        window.location.href = codigosValidos.includes(codigo)
-          ? "pantalla-4.1.html"
-          : "pantalla-4.2.html";
-      }, 5000);
-    });
-  }
-});
-</script>
-      <script>
-  const codigosValidos = ["6384", "8712", "2929", "4410", "3307", "1188", "9001", "7455", "5151", "6660"];
+      const { error: updateError } = await supabase
+        .from("codigos_activos")
+        .update(payload)
+        .eq("codigo", codigo);
 
-  window.addEventListener("load", () => {
-    const botonValidar = document.getElementById("boton-validar");
-    const inputCodigo = document.getElementById("input-codigo");
-    const modal = document.getElementById("modal-validacion");
-
-    if (botonValidar && inputCodigo && modal) {
-      botonValidar.addEventListener("click", () => {
-        const codigo = inputCodigo.value.trim();
-
-        if (!codigo) {
-          alert("⚠️ Ingresá el código entregado por el chofer.");
-          return;
-        }
-
-        // Mostrar modal de validación
-        modal.style.display = "flex";
-
-        // Ocultar luego de 5 segundos y redirigir
+      if (updateError) {
+        mensajeModal.textContent = "⚠️ Error al registrar el código";
+        console.error("Error al actualizar:", updateError);
         setTimeout(() => {
           modal.style.display = "none";
+        }, 3000);
+        return;
+      }
 
-          window.location.href = codigosValidos.includes(codigo)
-            ? "pantalla-4.1.html"
-            : "pantalla-4.2.html";
-        }, 5000);
-      });
+      mensajeModal.textContent = "✅ Código válido";
+      setTimeout(() => {
+        modal.style.display = "none";
+        window.location.href = "pantalla-4.1.html";
+      }, 3000);
+    } catch (err) {
+      mensajeModal.textContent = "⚠️ Error de conexión. Intenta nuevamente.";
+      console.error("Error de validación:", err);
+      setTimeout(() => {
+        modal.style.display = "none";
+      }, 3000);
     }
   });
       </script>
