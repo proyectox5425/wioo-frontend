@@ -342,22 +342,78 @@ table td, table th {
   <!-- 🔍 Script de navegación por secciones -->
 
   <script type="module">
-  import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm'
-  const supabase = createClient(
-    "https://sjrmzkomzlqpsfvjdnle.supabase.co",
-    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNqcm16a29temxxcHNmdmpkbmxlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTI4MDU0NTMsImV4cCI6MjA2ODM4MTQ1M30.lX1F-w3ar2LEunf6OTfHoWkDOGFn4KdFTxEuCm34Wmw"
-  )
+    import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm'
+const supabase = createClient(
+  "https://sjrmzkomzlqpsfvjdnle.supabase.co",
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNqcm16a29temxxcHNmdmpkbmxlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTI4MDU0NTMsImV4cCI6MjA2ODM4MTQ1M30.lX1F-w3ar2LEunf6OTfHoWkDOGFn4KdFTxEuCm34Wmw"
+);
 
-  async function renderComprobantes() {
+// ✅ Navegación entre secciones
+function mostrarSeccion(id) {
+  const secciones = document.querySelectorAll("section");
+  secciones.forEach(sec => sec.style.display = "none");
+
+  const activa = document.getElementById(id);
+  if (activa) {
+    activa.style.display = "block";
+    if (id === "tickets") cargarTickets();
+    if (id === "comprobantes") renderComprobantes();
+  }
+}
+window.mostrarSeccion = mostrarSeccion;
+window.onload = () => mostrarSeccion('resumen');
+
+
+// ✅ Tickets generados
+async function cargarTickets() {
+  const tabla = document.getElementById("tabla-tickets").querySelector("tbody");
+  if (!tabla) return;
+
+  tabla.innerHTML = "<tr><td colspan='4'>⏳ Cargando tickets...</td></tr>";
+
+  const { data, error } = await supabase
+    .from('codigos_activos')
+    .select('*')
+    .order('creado_en', { ascending: false });
+
+  if (error || !data) {
+    tabla.innerHTML = "<tr><td colspan='4'>⛔ Error al cargar datos</td></tr>";
+    return;
+  }
+
+  if (data.length === 0) {
+    tabla.innerHTML = "<tr><td colspan='4'>📭 No hay tickets generados</td></tr>";
+    return;
+  }
+
+  tabla.innerHTML = "";
+  data.forEach(ticket => {
+    const hora = ticket.creado_en
+      ? new Date(ticket.creado_en).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+      : "—";
+
+    const estado = ticket.activo === true || ticket.activo === "true" ? "🟢 Activo" : "⚪ Usado";
+    const claseEstado = estado === "🟢 Activo" ? "estado-activo" : "estado-usado";
+
+    const fila = `<tr>
+      <td>${ticket.codigo ?? '—'}</td>
+      <td>${ticket.unidad ?? '—'}</td>
+      <td>${hora}</td>
+      <td class="${claseEstado}">${estado}</td>
+    </tr>`;
+    tabla.innerHTML += fila;
+  });
+}
+
+
+// ✅ Comprobantes cargados por pasajeros
+async function renderComprobantes() {
   const { data, error } = await supabase
     .from('pago_manual')
     .select('*')
     .order('fecha_hora', { ascending: false });
 
-  if (error) {
-    console.error('⛔ Error Supabase:', error);
-    return;
-  }
+  if (error || !data) return;
 
   const tablaPendientes = document.getElementById('tabla-comprobantes-pendientes');
   const tablaActivos = document.getElementById('tabla-comprobantes-activos');
@@ -395,157 +451,90 @@ table td, table th {
       tablaActivos.appendChild(fila);
     }
   });
-  }
+}
 
-  window.validarComprobante = async (id) => {
-  // Buscar comprobante
-  const { data, error } = await supabase
+
+// ✅ Validar comprobante
+window.validarComprobante = async (id) => {
+  const { data } = await supabase
     .from('pago_manual')
     .select('ip_pasajero')
     .eq('id', id)
-    .single()
+    .single();
 
-  const ipPasajero = data?.ip_pasajero ?? null
+  const ipPasajero = data?.ip_pasajero ?? null;
+  if (!ipPasajero) return alert("⛔ Sin IP registrada.");
 
-  if (!ipPasajero) {
-    alert("⛔ Sin IP registrada. No se puede activar Mikrotik.")
-    return
-  }
-
-  // Validar en Supabase
   await supabase
     .from('pago_manual')
     .update({
       estado: 'aprobado',
       fecha_validacion: new Date().toISOString()
     })
-    .eq('id', id)
+    .eq('id', id);
 
-  // Activar Mikrotik (vía panel o backend — ajustar según tu endpoint real)
   try {
     const respuesta = await fetch('https://TU_ENDPOINT_MIKROTIK/activar', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        ip: ipPasajero,
-        duracion_minutos: 20 // tiempo de servicio
-      })
-    })
+      body: JSON.stringify({ ip: ipPasajero, duracion_minutos: 20 })
+    });
 
-    const json = await respuesta.json()
+    const json = await respuesta.json();
     if (json.ok) {
-      alert("✅ Servicio extendido en Mikrotik para " + ipPasajero)
+      alert("✅ Servicio extendido en Mikrotik para " + ipPasajero);
     } else {
-      alert("⚠️ Validado, pero Mikrotik no respondió correctamente.")
+      alert("⚠️ Validado, pero Mikrotik no respondió correctamente.");
     }
   } catch (e) {
-    console.error("🔌 Error Mikrotik:", e)
-    alert("⚠️ Validado, pero no se pudo activar servicio en Mikrotik.")
+    alert("⚠️ Validado, pero no se pudo activar servicio en Mikrotik.");
   }
 
-  renderComprobantes()
-    }
+  renderComprobantes();
+};
 
-  window.rechazarComprobante = async (id) => {
-  // Buscar comprobante para obtener la IP
-  const { data, error } = await supabase
+
+// ✅ Rechazar comprobante
+window.rechazarComprobante = async (id) => {
+  const { data } = await supabase
     .from('pago_manual')
     .select('ip_pasajero')
     .eq('id', id)
-    .single()
+    .single();
 
-  const ipPasajero = data?.ip_pasajero ?? null
+  const ipPasajero = data?.ip_pasajero ?? null;
 
-  // Marcar como rechazado
   await supabase.from('pago_manual')
     .update({
       estado: 'rechazado',
       motivo_rechazo: 'No se registró pago',
       fecha_validacion: new Date().toISOString()
     })
-    .eq('id', id)
+    .eq('id', id);
 
-  // Si hay IP registrada, enviar señal a Mikrotik
   if (ipPasajero) {
     try {
       const respuesta = await fetch('https://TU_ENDPOINT_MIKROTIK/revertir', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ ip: ipPasajero })
-      })
+      });
 
-      const json = await respuesta.json()
+      const json = await respuesta.json();
       if (json.ok) {
-        alert(`⛔ IP ${ipPasajero} removida de acceso en Mikrotik`)
+        alert(`⛔ IP ${ipPasajero} removida de acceso en Mikrotik`);
       } else {
-        alert(`⚠️ Se rechazó el comprobante pero Mikrotik no respondió correctamente.`)
+        alert(`⚠️ Se rechazó el comprobante pero Mikrotik no respondió correctamente.`);
       }
     } catch (e) {
-      console.error("🔌 Error Mikrotik:", e)
-      alert(`⚠️ Comprobante rechazado pero no se pudo cortar acceso Mikrotik.`)
+      alert(`⚠️ Comprobante rechazado pero no se pudo cortar acceso Mikrotik.`);
     }
   } else {
-    alert("❌ Comprobante rechazado. Sin IP registrada para corte automático.")
+    alert("❌ Comprobante rechazado. Sin IP registrada.");
   }
 
-  renderComprobantes()
-      }
-  renderComprobantes()
-
-  function mostrarSeccion(id) {
-  const secciones = document.querySelectorAll("section");
-  secciones.forEach(sec => sec.style.display = "none");
-
-  const activa = document.getElementById(id);
-  if (activa) {
-    activa.style.display = "block";
-    if (id === "tickets") cargarTickets(); // carga dinámica solo si es tickets
-  }
+  renderComprobantes();
     }
-    const tablaTickets = document.getElementById("tabla-tickets").querySelector("tbody");
-
-async function cargarTickets() {
-  const tabla = document.getElementById("tabla-tickets").querySelector("tbody");
-  if (!tabla) return;
-
-  tabla.innerHTML = "<tr><td colspan='4'>⏳ Cargando tickets...</td></tr>";
-
-  const { data, error } = await supabase
-    .from('codigos_activos')
-    .select('*')
-    .order('creado_en', { ascending: false });
-
-  if (error) {
-    tabla.innerHTML = "<tr><td colspan='4'>⛔ Error al cargar datos</td></tr>";
-    return;
-  }
-
-  if (!data || data.length === 0) {
-    tabla.innerHTML = "<tr><td colspan='4'>📭 No hay tickets generados</td></tr>";
-    return;
-  }
-
-  tabla.innerHTML = "";
-
-  data.forEach(ticket => {
-    const hora = ticket.creado_en
-      ? new Date(ticket.creado_en).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-      : "—";
-
-    const estado = ticket.activo === true || ticket.activo === "true" ? "🟢 Activo" : "⚪ Usado";
-    const claseEstado = estado === "🟢 Activo" ? "estado-activo" : "estado-usado";
-
-    const fila = `<tr>
-      <td>${ticket.codigo ?? '—'}</td>
-      <td>${ticket.unidad ?? '—'}</td>
-      <td>${hora}</td>
-      <td class="${claseEstado}">${estado}</td>
-    </tr>`;
-    tabla.innerHTML += fila;
-  });
-    }
-    window.onload = () => mostrarSeccion('resumen');
-    window.mostrarSeccion = mostrarSeccion;
   </script>
 </body>
   </html>
