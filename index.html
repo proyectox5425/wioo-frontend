@@ -414,6 +414,17 @@
       .mensaje-bienvenida {
         font-size: 28px;
       }
+
+      #reader {
+  opacity: 0;
+  transform: scale(0.95);
+  transition: opacity 0.4s ease, transform 0.4s ease;
+}
+
+#reader.visible {
+  opacity: 1;
+  transform: scale(1);
+        }
     }
   </style>
 </head>
@@ -435,42 +446,20 @@
     <div class="interface-wrapper">
       <div class="encabezado-pago-unico">🔒 ACCESO</div>
 
-      <div class="grupo-campo-horizontal" style="
-        display: flex;
-        justify-content: center;
-        align-items: flex-start;
-        gap: 40px;
-        flex-wrap: wrap;
-        margin-top: 20px;
-      ">
-        <!-- 🔢 Campo de ingreso manual -->
-        <div style="text-align: center;">
-          <input 
-            type="text" 
-            id="input-codigo" 
-            maxlength="4" 
-            placeholder="****"
-            style="font-size: 18px; width: 140px; text-align: center;" 
-          />
-          <br />
-          <button id="boton-validar" class="boton-wioo" style="margin-top: 12px;">🔐 Verificar</button>
-        </div>
+      <div class="grupo-campo" style="display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; margin-top: 20px;">
+  <input 
+    type="text" 
+    id="input-codigo" 
+    maxlength="4" 
+    placeholder="****"
+    style="font-size: 18px; width: 140px; text-align: center;" 
+  />
 
-        <!-- 📷 Sección QR a la derecha -->
-        <div style="text-align: center;">
-          <button id="activar-qr" style="
-            padding: 10px 20px;
-            font-size: 16px;
-            background-color: #7344D0;
-            color: white;
-            border: none;
-            border-radius: 6px;
-            cursor: pointer;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.3);
-          ">📷 Escanear código QR</button>
+  <button id="activar-qr" class="boton-qr">📷 Escanear QR</button>
 
-          <div id="reader" style="width: 280px; margin-top: 20px; display: none;"></div>
-        </div>
+  <button id="boton-validar" class="boton-wioo" style="margin-top: 12px; width: 100%;">🔐 Verificar</button>
+
+  <div id="reader" style="width: 280px; margin-top: 20px; display: none;"></div>
       </div>
 
       <div class="zona-pago">
@@ -693,88 +682,91 @@
 
   // 🎯 Activación QR
   activarQR.addEventListener("click", async () => {
-    if (escaneoActivo) {
-      html5QrCode.stop().then(() => {
-        reader.style.display = "none";
-        activarQR.textContent = "📷 Escanear código QR";
-        escaneoActivo = false;
-      });
-      return;
-    }
+  if (escaneoActivo) {
+    html5QrCode.stop().then(() => {
+      reader.classList.remove("visible");
+      setTimeout(() => reader.style.display = "none", 500);
+      activarQR.textContent = "📷 Escanear código QR";
+      escaneoActivo = false;
+    });
+    return;
+  }
 
-    reader.style.display = "block";
-    activarQR.textContent = "⛔️ Detener escaneo";
-    escaneoActivo = true;
+  reader.style.display = "block";
+  setTimeout(() => reader.classList.add("visible"), 0);
+  activarQR.textContent = "⛔️ Detener escaneo";
+  escaneoActivo = true;
 
-    html5QrCode = new Html5Qrcode("reader");
-    html5QrCode.start(
-      { facingMode: "environment" },
-      { fps: 10, qrbox: 250 },
-      async (codigo) => {
-        html5QrCode.stop();
-        reader.style.display = "none";
-        activarQR.textContent = "📷 Escanear código QR";
-        escaneoActivo = false;
+  html5QrCode = new Html5Qrcode("reader");
+  html5QrCode.start(
+    { facingMode: "environment" },
+    { fps: 10, qrbox: 250 },
+    async (codigo) => {
+      html5QrCode.stop();
+      reader.classList.remove("visible");
+      setTimeout(() => reader.style.display = "none", 500);
+      activarQR.textContent = "📷 Escanear código QR";
+      escaneoActivo = false;
 
-        mensajeModal.textContent = "🔄 Validando código QR…";
-        modal.style.display = "flex";
+      mensajeModal.textContent = "🔄 Validando código QR…";
+      modal.style.display = "flex";
 
-        try {
-          const { data, error } = await supabase
-            .from("codigos_activos")
-            .select("*")
-            .eq("codigo", codigo)
-            .eq("activo", true)
-            .single();
+      try {
+        const { data, error } = await supabase
+          .from("codigos_activos")
+          .select("*")
+          .eq("codigo", codigo)
+          .eq("activo", true)
+          .single();
 
-          if (error || !data) {
-            mensajeModal.textContent = "❌ Código inválido o ya usado";
-            setTimeout(() => {
-              modal.style.display = "none";
-              window.location.href = "pantalla-4.2.html";
-            }, 3000);
-            return;
-          }
-
-          const payload = {
-            activo: false,
-            unidad: localStorage.getItem("unidadId") || "desconocida",
-            chofer: localStorage.getItem("choferId") || "desconocido",
-            hora_uso: new Date().toISOString()
-          };
-
-          const { error: updateError } = await supabase
-            .from("codigos_activos")
-            .update(payload)
-            .eq("codigo", codigo);
-
-          if (updateError) {
-            mensajeModal.textContent = "⚠️ Error al registrar el código";
-            console.error("Error al actualizar:", updateError);
-            setTimeout(() => {
-              modal.style.display = "none";
-            }, 3000);
-            return;
-          }
-
-          mensajeModal.textContent = "✅ Código válido";
+        if (error || !data) {
+          mensajeModal.textContent = "❌ Código inválido o ya usado";
           setTimeout(() => {
             modal.style.display = "none";
-            window.location.href = "pantalla-4.1.html";
+            window.location.href = "pantalla-4.2.html";
           }, 3000);
-        } catch (err) {
-          mensajeModal.textContent = "⚠️ Error de conexión. Intenta nuevamente.";
-          console.error("Error de validación:", err);
-          setTimeout(() => {
-            modal.style.display = "none";
-          }, 3000);
+          return;
         }
-      },
-      (errorMessage) => {
-        console.warn("Error de escaneo:", errorMessage);
+
+        const payload = {
+          activo: false,
+          unidad: localStorage.getItem("unidadId") || "desconocida",
+          chofer: localStorage.getItem("choferId") || "desconocido",
+          hora_uso: new Date().toISOString()
+        };
+
+        const { error: updateError } = await supabase
+          .from("codigos_activos")
+          .update(payload)
+          .eq("codigo", codigo);
+
+        if (updateError) {
+          mensajeModal.textContent = "⚠️ Error al registrar el código";
+          console.error("Error al actualizar:", updateError);
+          setTimeout(() => {
+            modal.style.display = "none";
+          }, 3000);
+          return;
+        }
+
+        mensajeModal.textContent = "✅ Código válido";
+        setTimeout(() => {
+          modal.style.display = "none";
+          window.location.href = "pantalla-4.1.html";
+        }, 3000);
+      } catch (err) {
+        mensajeModal.textContent = "⚠️ Error de conexión. Intenta nuevamente.";
+        console.error("Error de validación:", err);
+        setTimeout(() => {
+          modal.style.display = "none";
+        }, 3000);
       }
-    );
-  });
+    },
+    (errorMessage) => {
+      console.warn("Error de escaneo:", errorMessage);
+    }
+  );
+});
 
   // 🔐 Validación manual
   botonValidar.addEventListener("click", async () => {
