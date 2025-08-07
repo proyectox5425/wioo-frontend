@@ -142,9 +142,9 @@
     }
 
     #login-modal.activo {
-  display: flex !important;
-  visibility: visible;
-  opacity: 1;
+      display: flex !important;
+      visibility: visible;
+      opacity: 1;
     }
 
     #login-box {
@@ -184,18 +184,18 @@
     }
 
     #preguntaUsuario:focus {
-  outline: none;
-  border: 2px solid #25D366;
-  background-color: #f0f0f0;
+      outline: none;
+      border: 2px solid #25D366;
+      background-color: #f0f0f0;
     }
 
     .texto-oferta {
-  margin-top: 30px;
-  text-align: center;
-  color: white;
-  font-size: 18px;
-  font-weight: 600;
-  font-family: 'Segoe UI', sans-serif;
+      margin-top: 30px;
+      text-align: center;
+      color: white;
+      font-size: 18px;
+      font-weight: 600;
+      font-family: 'Segoe UI', sans-serif;
     }
 
     .interface-wrapper {
@@ -231,22 +231,22 @@
     }
 
     .boton-wioo {
-  background: linear-gradient(90deg, #7344D0 0%, #a278ff 100%);
-  color: white;
-  border: none;
-  padding: 14px 20px;
-  border-radius: 12px;
-  font-size: 17px;
-  font-weight: 600;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.25);
-  cursor: pointer;
-  width: 100%;
-  transition: transform 0.2s ease;
-}
+      background: linear-gradient(90deg, #7344D0 0%, #a278ff 100%);
+      color: white;
+      border: none;
+      padding: 14px 20px;
+      border-radius: 12px;
+      font-size: 17px;
+      font-weight: 600;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+      cursor: pointer;
+      width: 100%;
+      transition: transform 0.2s ease;
+    }
 
-.boton-wioo:hover {
-  transform: scale(1.03);
-}
+    .boton-wioo:hover {
+      transform: scale(1.03);
+    }
 
     .boton-qr {
       font-size: 12px;
@@ -312,7 +312,6 @@
       box-shadow: 0 2px 6px rgba(0,0,0,0.3);
     }
 
-    /* Modal flotante de ayuda */
     .modal-ayuda {
       display: none;
       position: fixed;
@@ -362,30 +361,30 @@
     }
 
     .botones-pago-vertical {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-  margin-top: 10px;
-}
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      margin-top: 10px;
+    }
 
-.boton-vertical {
-  width: 100%;
-  padding: 14px 20px;
-  font-size: 18px;
-  font-weight: 600;
-  color: white;
-  background-color: #7344D0;
-  border: none;
-  border-radius: 10px;
-  cursor: pointer;
-  text-align: center;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.2);
-  transition: background 0.3s ease;
-}
+    .boton-vertical {
+      width: 100%;
+      padding: 14px 20px;
+      font-size: 18px;
+      font-weight: 600;
+      color: white;
+      background-color: #7344D0;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      text-align: center;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+      transition: background 0.3s ease;
+    }
 
-.boton-vertical:hover {
-  background-color: #5e35b1;
-      }
+    .boton-vertical:hover {
+      background-color: #5e35b1;
+    }
 
     @keyframes fadeIn {
       from { opacity: 0; transform: scale(0.95); }
@@ -393,32 +392,28 @@
     }
 
     @keyframes fadeModal {
-  from { opacity: 0; transform: scale(0.95); }
-  to   { opacity: 1; transform: scale(1); }
-    }
-
-    @media (min-width: 768px) {
-  .logo-inicial.animar-logo {
-    width: 380px;
-  }
-
-  .interface-wrapper {
-    max-width: 480px;
-    padding: 40px 30px;
-  }
-
-  .mensaje-bienvenida {
-    font-size: 28px;
-  }
-
-  .encabezado-pago-unico {
-    font-size: 24px;
-  }
+      from { opacity: 0; transform: scale(0.95); }
+      to   { opacity: 1; transform: scale(1); }
     }
 
     @keyframes parpadeo {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.3; }
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.3; }
+    }
+
+    @media (min-width: 768px) {
+      .logo-inicial.animar-logo {
+        width: 380px;
+      }
+
+      .interface-wrapper {
+        max-width: 480px;
+        padding: 40px 30px;
+      }
+
+      .mensaje-bienvenida {
+        font-size: 28px;
+      }
     }
   </style>
 </head>
@@ -440,47 +435,44 @@
     <div class="interface-wrapper">
       <div class="encabezado-pago-unico">🔒 ACCESO</div>
 
-
       <div class="grupo-campo-horizontal" style="
-  display: flex;
-  justify-content: center;
-  align-items: flex-start;
-  gap: 40px;
-  flex-wrap: wrap;
-  margin-top: 20px;
-">
+        display: flex;
+        justify-content: center;
+        align-items: flex-start;
+        gap: 40px;
+        flex-wrap: wrap;
+        margin-top: 20px;
+      ">
+        <!-- 🔢 Campo de ingreso manual -->
+        <div style="text-align: center;">
+          <input 
+            type="text" 
+            id="input-codigo" 
+            maxlength="4" 
+            placeholder="****"
+            style="font-size: 18px; width: 140px; text-align: center;" 
+          />
+          <br />
+          <button id="boton-validar" class="boton-wioo" style="margin-top: 12px;">🔐 Verificar</button>
+        </div>
 
-  <!-- 🔢 Campo de ingreso manual -->
-  <div style="text-align: center;">
-    <input 
-      type="text" 
-      id="input-codigo" 
-      maxlength="4" 
-      placeholder="****"
-      style="font-size: 18px; width: 140px; text-align: center;" 
-    />
-    <br />
-    <button id="boton-validar" class="boton-wioo" style="margin-top: 12px;">🔐 Verificar</button>
-  </div>
+        <!-- 📷 Sección QR a la derecha -->
+        <div style="text-align: center;">
+          <button id="activar-qr" style="
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: #7344D0;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+          ">📷 Escanear código QR</button>
 
-  <!-- 📷 Sección QR a la derecha -->
-  <div style="text-align: center;">
-    <button id="activar-qr" style="
-      padding: 10px 20px;
-      font-size: 16px;
-      background-color: #7344D0;
-      color: white;
-      border: none;
-      border-radius: 6px;
-      cursor: pointer;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.3);
-    ">📷 Escanear código QR</button>
+          <div id="reader" style="width: 280px; margin-top: 20px; display: none;"></div>
+        </div>
+      </div>
 
-    <div id="qr-reader" style="width: 280px; margin-top: 20px; display: none;"></div>
-  </div>
- 
-      <button id="boton-validar" class="boton-wioo">🔐 Verificar</button>
-      
       <div class="zona-pago">
         <div class="botones-pago-vertical">
           <button class="boton-vertical" onclick="window.location.href='pantalla-3.1.html'">📱 Pago Móvil</button>
@@ -502,9 +494,8 @@
     <div id="login-box">
       <h3 id="login-title">Acceso</h3>
       <input type="email" id="user" placeholder="Correo institucional" />
-<input type="password" id="pass" placeholder="Contraseña" />
-<button id="botonLogin">Ingresar</button>
-      
+      <input type="password" id="pass" placeholder="Contraseña" />
+      <button id="botonLogin">Ingresar</button>
     </div>
   </div>
 
@@ -512,60 +503,62 @@
     <div class="modal-contenido">
       <button class="cerrar-modal" onclick="cerrarAyuda()">✖</button>
 
-<h2 style="color:#d2a6ff; text-align:center;">🆘 Centro de Asistencia Wioo</h2>
+      <h2 style="color:#d2a6ff; text-align:center;">🆘 Centro de Asistencia Wioo</h2>
 
-<!-- 🖼️ Guía visual urbana -->
-<div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap:20px; margin:20px 0; text-align:center;">
-  <div>
-    <img src="wioo-qrescaneo.jpeg" alt="QR Wioo" style="width:100%; border-radius:8px; box-shadow:0 0 6px #ccc;">
-    <p>📲 Ubica tu QR Wioo y escanea</p>
-  </div>
-  <div>
-    <img src="wioo-metodospago.jpeg" alt="Métodos de pago" style="width:100%; border-radius:8px; box-shadow:0 0 6px #ccc;">
-    <p>💳 Selecciona tu método de pago</p>
-  </div>
-  <div>
-    <img src="wioo-cargando-datos.jpeg" alt="Carga de datos" style="width:100%; border-radius:8px; box-shadow:0 0 6px #ccc;">
-    <p>📑 Ingresa tu referencia bancaria</p>
-  </div>
-  <div>
-    <img src="wioo-conexion-activa.jpeg" alt="Conexión activa" style="width:100%; border-radius:8px; box-shadow:0 0 6px #ccc;">
-    <p>💚 ¡Conexión activa!</p>
-  </div>
-</div>
+      <!-- 🖼️ Guía visual urbana -->
+      <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap:20px; margin:20px 0; text-align:center;">
+        <div>
+          <img src="wioo-qrescaneo.jpeg" alt="QR Wioo" style="width:100%; border-radius:8px; box-shadow:0 0 6px #ccc;">
+          <p>📲 Ubica tu QR Wioo y escanea</p>
+        </div>
+        <div>
+          <img src="wioo-metodospago.jpeg" alt="Métodos de pago" style="width:100%; border-radius:8px; box-shadow:0 0 6px #ccc;">
+          <p>💳 Selecciona tu método de pago</p>
+        </div>
+        <div>
+          <img src="wioo-cargando-datos.jpeg" alt="Carga de datos" style="width:100%; border-radius:8px; box-shadow:0 0 6px #ccc;">
+          <p>📑 Ingresa tu referencia bancaria</p>
+        </div>
+        <div>
+          <img src="wioo-conexion-activa.jpeg" alt="Conexión activa" style="width:100%; border-radius:8px; box-shadow:0 0 6px #ccc;">
+          <p>💚 ¡Conexión activa!</p>
+        </div>
+      </div>
 
-<!-- 💬 Asistente virtual -->
-<h3 style="color:#d2a6ff;">💡 ¿Tienes dudas?</h3>
-<input type="text" id="preguntaUsuario" placeholder="Escribe tu pregunta aquí..." style="
-  width:100%;
-  padding:10px;
-  font-size:16px;
-  border-radius:6px;
-  border:1px solid #7344D0;
-  margin-bottom:10px;
-">
-<div id="respuestaAsistente" style="
-  font-size:15px;
-  color:#f8f8f8;
-  background:rgba(255,255,255,0.1);
-  padding:10px;
-  border-radius:8px;
-  box-shadow:0 0 6px #7344D050;
-"></div>
+      <!-- 💬 Asistente virtual -->
+      <h3 style="color:#d2a6ff;">💡 ¿Tienes dudas?</h3>
+      <input type="text" id="preguntaUsuario" placeholder="Escribe tu pregunta aquí..." style="
+        width:100%;
+        padding:10px;
+        font-size:16px;
+        border-radius:6px;
+        border:1px solid #7344D0;
+        margin-bottom:10px;
+      ">
+      <div id="respuestaAsistente" style="
+        font-size:15px;
+        color:#f8f8f8;
+        background:rgba(255,255,255,0.1);
+        padding:10px;
+        border-radius:8px;
+        box-shadow:0 0 6px #7344D050;
+      "></div>
 
-<!-- 📲 Botón WhatsApp -->
-<div style="margin-top:20px; text-align:center;">
-  <p>¿Necesitas asistencia directa?</p>
-  <a href="https://wa.me/58772241042?text=Hola,%20necesito%20ayuda%20con%20mi%20validación%20Wioo" target="_blank" style="
-    background-color:#25D366;
-    color:white;
-    font-weight:600;
-    padding:10px 16px;
-    border-radius:8px;
-    text-decoration:none;
-    display:inline-block;
-  ">💬 Escribir al equipo Wioo</a>
-</div>
+      <!-- 📲 Botón WhatsApp -->
+      <div style="margin-top:20px; text-align:center;">
+        <p>¿Necesitas asistencia directa?</p>
+        <a href="https://wa.me/58772241042?text=Hola,%20necesito%20ayuda%20con%20mi%20validación%20Wioo" target="_blank" style="
+          background-color:#25D366;
+          color:white;
+          font-weight:600;
+          padding:10px 16px;
+          border-radius:8px;
+          text-decoration:none;
+          display:inline-block;
+        ">💬 Escribir al equipo Wioo</a>
+      </div>
+    </div>
+  </div>
 
   <div id="modal-terminos" style="
     position: fixed;
@@ -601,6 +594,7 @@
         border-radius: 10px;
         border: 1px solid #ccc;
       ">
+        <!-- 📝 Texto completo de términos -->
         <p><strong>Importante:</strong> Al continuar, aceptas las condiciones de uso del sistema Wioo. El acceso está regulado, es temporal y queda registrado por unidad y operador.</p>
         <p>1. El servicio es para uso personal y no puede compartirse.</p>
         <p>2. La conexión tiene una duración limitada por sesión.</p>
@@ -633,237 +627,71 @@
     </div>
   </div>
 
-      <div id="modal-validacion" style="
-  position: fixed;
-  top: 0; left: 0;
-  width: 100vw; height: 100vh;
-  background-color: rgba(0,0,0,0.6);
-  backdrop-filter: blur(4px);
-  display: none;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  z-index: 9999;
-  animation: fadeModal 0.4s ease-out;
-">
-  <img src="logo-wioo.png" alt="Logo Wioo" style="
-    height: 80px;
-    margin-bottom: 30px;
-    animation: parpadeo 1s infinite;
+  <div id="modal-validacion" style="
+    position: fixed;
+    top: 0; left: 0;
+    width: 100vw; height: 100vh;
+    background-color: rgba(0,0,0,0.6);
+    backdrop-filter: blur(4px);
+    display: none;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+    animation: fadeModal 0.4s ease-out;
   ">
-  <h2 style="
-    color: white;
-    font-size: 26px;
-    font-family: 'Poppins', sans-serif;
-    animation: parpadeo 1s infinite;
-  ">🔐 Validando código</h2>
-  <p style="
-    color: #d2a6ff;
-    font-size: 18px;
-    font-weight: 500;
-    font-family: 'Poppins', sans-serif;
-    animation: parpadeo 1.2s infinite;
-  ">Por favor espere...</p>
+    <img src="logo-wioo.png" alt="Logo Wioo" style="
+      height: 80px;
+      margin-bottom: 30px;
+      animation: parpadeo 1s infinite;
+    ">
+    <h2 style="
+      color: white;
+      font-size: 26px;
+      font-family: 'Poppins', sans-serif;
+      animation: parpadeo 1s infinite;
+    ">🔐 Validando código</h2>
+    <p style="
+      color: #d2a6ff;
+      font-size: 18px;
+      font-weight: 500;
+      font-family: 'Poppins', sans-serif;
+      animation: parpadeo 1.2s infinite;
+    ">Por favor espere...</p>
     <p id="mensaje-modal" style="
-  color: white;
-  font-size: 20px;
-  font-weight: 600;
-  margin-top: 20px;
-  text-align: center;
-">🔄 Validando código…</p>  
-      </div>
-<script>
-window.addEventListener("DOMContentLoaded", () => {
-  const logo = document.getElementById("logo");
-  const pantalla1 = document.getElementById("pantalla1");
-  const pantalla2 = document.getElementById("pantalla2");
-  const encabezado = document.getElementById("encabezado-wioo");
+      color: white;
+      font-size: 20px;
+      font-weight: 600;
+      margin-top: 20px;
+      text-align: center;
+    ">🔄 Validando código…</p>  
+  </div>
 
-  setTimeout(() => {
-    logo.classList.add("animar-logo");
-    pantalla1.style.display = "none";
-    pantalla2.style.display = "flex";
-    encabezado.style.opacity = "1";
+  <!-- 📦 Librería QR -->
+<script src="https://unpkg.com/html5-qrcode"></script>
 
-    setTimeout(() => {
-      const modalTerminos = document.getElementById("modal-terminos");
-      if (modalTerminos) {
-        setTimeout(() => {
-          modalTerminos.style.display = "flex";
-        }, 1500);
-      }
-    }, 3000);
-
-    document.getElementById("encabezado-wioo").addEventListener("mouseup", () => {
-      pulsado = false;
-      clearTimeout(timer);
-    });
-
-
-    document.getElementById("close-modal").addEventListener("click", () => {
-      document.getElementById("login-modal").style.display = "none";
-    });
-
-    // abrirLogin("admin"); // ← desactivado para evitar apertura automática
-
-    // 🟣 Activación oculta del login administrativo
-    let pulsado = false;
-    let timer;
-
-    encabezado.addEventListener("mousedown", () => {
-      pulsado = true;
-      timer = setTimeout(() => {
-        if (pulsado) {
-          abrirLogin(); // sin parámetro
-        }
-      }, 5000);
-    });
-
-    encabezado.addEventListener("mouseup", () => {
-      pulsado = false;
-      clearTimeout(timer);
-    });
-
-    encabezado.addEventListener("touchstart", () => {
-      pulsado = true;
-      timer = setTimeout(() => {
-        if (pulsado) {
-          abrirLogin("admin");
-        }
-      }, 5000);
-    });
-
-    encabezado.addEventListener("touchend", () => {
-      pulsado = false;
-      clearTimeout(timer);
-    });
-
-    // 🎯 Redirección institucional (desactivada para esta fase de pruebas)
-    /*
-    const rol = localStorage.getItem("rol"); // ← solo si lo guardás antes
-    if (rol === "admin") {
-      window.location.href = "admin-panel.html";
-    } else if (rol === "chofer") {
-      window.location.href = "chofer-panel.html";
-    } else {
-      alert("⚠️ Rol no reconocido. Contacta al equipo técnico.");
-    }
-    */
-
-    window.cerrarAyuda = function () {
-      document.getElementById("modal-ayuda").classList.remove("active");
-      logo.style.display = "block";
-    };
-
-    const contenedor = document.getElementById("contenedorTerminos");
-    const boton = document.getElementById("botonAceptar");
-
-    if (contenedor && boton) {
-      contenedor.addEventListener("scroll", () => {
-        if (contenedor.scrollTop + contenedor.clientHeight >= contenedor.scrollHeight) {
-          boton.disabled = false;
-          boton.style.opacity = "1";
-          boton.style.cursor = "pointer";
-        }
-      });
-
-      boton.addEventListener("click", () => {
-        document.getElementById("modal-terminos").style.display = "none";
-      });
-    }
-
-    const campoPregunta = document.getElementById("preguntaUsuario");
-    const bloqueRespuesta = document.getElementById("respuestaAsistente");
-
-    if (campoPregunta && bloqueRespuesta) {
-      campoPregunta.addEventListener("input", (e) => {
-        const texto = e.target.value.toLowerCase();
-        const respuestas = {
-          "wifi": "Activa tu WiFi y conéctate a la red 'Wioo Conexión'.",
-          "pago": "Puedes validar vía pago móvil, transferencia o efectivo según tu unidad.",
-          "rechazado": "Verifica el comprobante o consulta al chofer para repetir el intento.",
-          "qr": "Escanea tu código QR o ingresa el código manual entregado.",
-          "cuánto": "La conexión gratuita es de 5 minutos. Validación de 12 horas cuesta 120bs.",
-          "conecto": "Abre tu configuración WiFi y selecciona la red 'Wioo Conexión'. Luego sigue los pasos en pantalla.",
-          "cómo me conecto": "Escanea tu QR, selecciona método de pago, valida, y listo: ¡conexión activa!"
-        };
-        let respuesta = "❓ Aún no tenemos respuesta para esa pregunta.";
-        for (let clave in respuestas) {
-          if (texto.includes(clave)) {
-            respuesta = respuestas[clave];
-          }
-        }
-        bloqueRespuesta.innerText = respuesta;
-      });
-    }
-  });
-});
-</script>
-
-<script>
-  const modalTerminos = document.getElementById("modal-terminos");
-  const botonAceptar = document.getElementById("botonAceptar");
-
-  document.addEventListener("DOMContentLoaded", () => {
-    // Activación institucional visual
-    setTimeout(() => {
-      document.getElementById("logo").classList.add("animar-logo");
-      document.getElementById("pantalla1").style.display = "none";
-      document.getElementById("pantalla2").style.display = "flex";
-      document.getElementById("encabezado-wioo").style.opacity = "1";
-
-      setTimeout(() => {
-        modalTerminos.style.display = "flex";
-      }, 1500);
-    }, 3000);
-  });
-
-  // Activación del login por gesto prolongado
-  const encabezado = document.getElementById("encabezado-wioo");
-  let pulsado = false;
-  let timer;
-
-  encabezado.addEventListener("mousedown", () => {
-    pulsado = true;
-    timer = setTimeout(() => {
-      if (pulsado) abrirLogin("admin");
-    }, 5000);
-  });
-  encabezado.addEventListener("mouseup", () => {
-    pulsado = false;
-    clearTimeout(timer);
-  });
-
-  encabezado.addEventListener("touchstart", () => {
-    pulsado = true;
-    timer = setTimeout(() => {
-      if (pulsado) abrirLogin("admin");
-    }, 5000);
-  });
-  encabezado.addEventListener("touchend", () => {
-    pulsado = false;
-    clearTimeout(timer);
-  });
-</script>
-
-  // Activar lector QR
-      <script src="https://unpkg.com/html5-qrcode"></script>
+<!-- 🔐 Supabase + Validación QR + Manual + Términos -->
 <script type="module">
   import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
 
   const supabase = createClient(
     "https://sjrmzkomzlqpsfvjdnle.supabase.co",
-    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNqcm16a29temxxcHNmdmpkbmxlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTI4MDU0NTMsImV4cCI6MjA2ODM4MTQ1M30.lX1F-w3ar2LEunf6OTfHoWkDOGFn4KdFTxEuCm34Wmw"
   );
 
   const modal = document.getElementById("modal-validacion");
   const mensajeModal = document.getElementById("mensaje-modal");
   const activarQR = document.getElementById("activar-qr");
   const reader = document.getElementById("reader");
+  const inputCodigo = document.getElementById("input-codigo");
+  const botonValidar = document.getElementById("boton-validar");
+  const botonAceptar = document.getElementById("botonAceptar");
+  const contenedor = document.getElementById("contenedorTerminos");
 
   let escaneoActivo = false;
   let html5QrCode;
 
+  // 🎯 Activación QR
   activarQR.addEventListener("click", async () => {
     if (escaneoActivo) {
       html5QrCode.stop().then(() => {
@@ -947,49 +775,8 @@ window.addEventListener("DOMContentLoaded", () => {
       }
     );
   });
-</script>
 
-<script>
- // Registro de términos aceptados
-  const contenedor = document.getElementById("contenedorTerminos");
-  if (contenedor && botonAceptar) {
-    contenedor.addEventListener("scroll", () => {
-      if (contenedor.scrollTop + contenedor.clientHeight >= contenedor.scrollHeight) {
-        botonAceptar.disabled = false;
-        botonAceptar.style.opacity = "1";
-        botonAceptar.style.cursor = "pointer";
-      }
-    });
-
-    botonAceptar.addEventListener("click", async () => {
-      modalTerminos.style.display = "none";
-      const payload = {
-        unidad: localStorage.getItem("unidadId"),
-        chofer: localStorage.getItem("choferId"),
-        hora: new Date().toISOString()
-      };
-      await fetch("/api/registro-terminos", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload)
-      });
-    });
-  } 
-</script>
-      
-      <script type="module">
-  import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
-
-  const supabase = createClient(
-    "https://sjrmzkomzlqpsfvjdnle.supabase.co",
-    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNqcm16a29temxxcHNmdmpkbmxlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTI4MDU0NTMsImV4cCI6MjA2ODM4MTQ1M30.lX1F-w3ar2LEunf6OTfHoWkDOGFn4KdFTxEuCm34Wmw"
-  );
-
-  const inputCodigo = document.getElementById("input-codigo");
-  const botonValidar = document.getElementById("boton-validar");
-  const modal = document.getElementById("modal-validacion");
-  const mensajeModal = document.getElementById("mensaje-modal");
-
+  // 🔐 Validación manual
   botonValidar.addEventListener("click", async () => {
     const codigo = inputCodigo.value.trim();
 
@@ -1052,6 +839,123 @@ window.addEventListener("DOMContentLoaded", () => {
       }, 3000);
     }
   });
-      </script>
+
+  // 📜 Registro de términos aceptados
+  if (contenedor && botonAceptar) {
+    contenedor.addEventListener("scroll", () => {
+      if (contenedor.scrollTop + contenedor.clientHeight >= contenedor.scrollHeight) {
+        botonAceptar.disabled = false;
+        botonAceptar.style.opacity = "1";
+        botonAceptar.style.cursor = "pointer";
+      }
+    });
+
+    botonAceptar.addEventListener("click", async () => {
+      document.getElementById("modal-terminos").style.display = "none";
+      const payload = {
+        unidad: localStorage.getItem("unidadId"),
+        chofer: localStorage.getItem("choferId"),
+        hora: new Date().toISOString()
+      };
+      await fetch("/api/registro-terminos", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload)
+      });
+    });
+  }
+
+  // 🧠 Asistente virtual
+  const campoPregunta = document.getElementById("preguntaUsuario");
+  const bloqueRespuesta = document.getElementById("respuestaAsistente");
+
+  if (campoPregunta && bloqueRespuesta) {
+    campoPregunta.addEventListener("input", (e) => {
+      const texto = e.target.value.toLowerCase();
+      const respuestas = {
+        "wifi": "Activa tu WiFi y conéctate a la red 'Wioo Conexión'.",
+        "pago": "Puedes validar vía pago móvil, transferencia o efectivo según tu unidad.",
+        "rechazado": "Verifica el comprobante o consulta al chofer para repetir el intento.",
+        "qr": "Escanea tu código QR o ingresa el código manual entregado.",
+        "cuánto": "La conexión gratuita es de 5 minutos. Validación de 12 horas cuesta 150bs.",
+        "conecto": "Abre tu configuración WiFi y selecciona la red 'Wioo Conexión'. Luego sigue los pasos en pantalla.",
+        "cómo me conecto": "Escanea tu QR, selecciona método de pago, valida, y listo: ¡conexión activa!"
+      };
+      let respuesta = "❓ Aún no tenemos respuesta para esa pregunta.";
+      for (let clave in respuestas) {
+        if (texto.includes(clave)) {
+          respuesta = respuestas[clave];
+        }
+      }
+      bloqueRespuesta.innerText = respuesta;
+    });
+  }
+
+  // 🕵️ Login oculto por gesto prolongado
+  const encabezado = document.getElementById("encabezado-wioo");
+  let pulsado = false;
+  let timer;
+
+  encabezado.addEventListener("mousedown", () => {
+    pulsado = true;
+    timer = setTimeout(() => {
+      if (pulsado) abrirLogin("admin");
+    }, 5000);
+  });
+
+  encabezado.addEventListener("mouseup", () => {
+    pulsado = false;
+    clearTimeout(timer);
+  });
+
+  encabezado.addEventListener("touchstart", () => {
+    pulsado = true;
+    timer = setTimeout(() => {
+      if (pulsado) abrirLogin("admin");
+    }, 5000);
+  });
+
+  encabezado.addEventListener("touchend", () => {
+    pulsado = false;
+    clearTimeout(timer);
+  });
+
+  // 🎬 Animación inicial y activación de pantalla
+  window.addEventListener("DOMContentLoaded", () => {
+    const logo = document.getElementById("logo");
+    const pantalla1 = document.getElementById("pantalla1");
+    const pantalla2 = document.getElementById("pantalla2");
+    const encabezado = document.getElementById("encabezado-wioo");
+
+    setTimeout(() => {
+      logo.classList.add("animar-logo");
+      pantalla1.style.display = "none";
+      pantalla2.style.display = "flex";
+      encabezado.style.opacity = "1";
+
+      setTimeout(() => {
+        const modalTerminos = document.getElementById("modal-terminos");
+        if (modalTerminos) {
+          modalTerminos.style.display = "flex";
+        }
+      }, 1500);
+    }, 3000);
+
+    document.getElementById("close-modal").addEventListener("click", () => {
+      document.getElementById("login-modal").style.display = "none";
+    });
+
+    window.cerrarAyuda = function () {
+      document.getElementById("modal-ayuda").classList.remove("active");
+      logo.style.display = "block";
+    };
+  });
+
+  // 🧩 Función de apertura de login (puede personalizarse)
+  window.abrirLogin = function (rol = "") {
+    document.getElementById("login-modal").style.display = "flex";
+    document.getElementById("login-title").textContent = rol === "admin" ? "Acceso Administrativo" : "Acceso";
+  };
+</script>
 </body>
 </html>
