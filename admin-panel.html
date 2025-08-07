@@ -340,14 +340,6 @@ table td, table th {
   
 
   <!-- 🔍 Script de navegación por secciones -->
-  <script>
-    function mostrarSeccion(id) {
-      document.querySelectorAll('section').forEach(s => {
-        s.style.display = s.id === id ? 'block' : 'none';
-      });
-    }
-    window.onload = () => mostrarSeccion('resumen');
-  </script>
 
   <script type="module">
   import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm'
