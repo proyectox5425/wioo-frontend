@@ -26,7 +26,7 @@
     }
 
     .logo-inicial.animar-logo {
-      top: 55px;
+      top: 30px;
       transform: translate(-50%, 0%);
       width: 240px;
     }
@@ -89,12 +89,13 @@
     }
 
     .texto-oferta {
-      margin-top: 30px;
-      text-align: center;
-      color: white;
-      font-size: 18px;
-      font-weight: 600;
-      font-family: 'Segoe UI', sans-serif;
+  margin-top: 10px;
+  text-align: center;
+  color: white;
+  font-size: 24px;
+  font-weight: 700;
+  line-height: 1.4;
+  font-family: 'Segoe UI', sans-serif;
     }
 
     .interface-wrapper {
@@ -312,57 +313,69 @@
 
     // 🎁 Activación de tiempo gratis
     if (botonGratis) {
-      botonGratis.addEventListener("click", async () => {
-        const unidadId = localStorage.getItem("unidadId") || "desconocida";
-        const choferId = localStorage.getItem("choferId") || "desconocido";
-        const correo = localStorage.getItem("correoInstitucional") || "sin-correo";
+  botonGratis.addEventListener("click", () => {
+    document.getElementById("modal-correo").style.display = "flex";
+  });
 
-        let ipPublica = "desconocida";
-        try {
-          const respuesta = await fetch("https://api.ipify.org?format=json");
-          const datos = await respuesta.json();
-          ipPublica = datos.ip || "desconocida";
-        } catch (err) {
-          console.warn("No se pudo obtener la IP pública:", err);
-        }
+  document.getElementById("confirmarCorreo").addEventListener("click", async () => {
+    const correo = document.getElementById("inputCorreoModal").value.trim();
+    if (!correo || !correo.includes("@")) {
+      alert("⚠️ Ingresa un correo válido.");
+      return;
+    }
 
-        try {
-          const { data, error } = await supabase
-            .from("tiempo_gratis")
-            .select("*")
-            .eq("ip", ipPublica)
-            .eq("correo", correo)
-            .single();
+    localStorage.setItem("correoInstitucional", correo);
+    document.getElementById("modal-correo").style.display = "none";
 
-          if (data) {
-            alert("⛔ Ya has usado tu tiempo gratis.");
-            return;
-          }
+    const unidadId = localStorage.getItem("unidadId") || "desconocida";
+    const choferId = localStorage.getItem("choferId") || "desconocido";
 
-          const payload = {
-            ip: ipPublica,
-            correo: correo,
-            unidad: unidadId,
-            chofer: choferId,
-            hora_uso: new Date().toISOString()
-          };
+    let ipPublica = "desconocida";
+    try {
+      const respuesta = await fetch("https://api.ipify.org?format=json");
+      const datos = await respuesta.json();
+      ipPublica = datos.ip || "desconocida";
+    } catch (err) {
+      console.warn("No se pudo obtener la IP pública:", err);
+    }
 
-          const { error: insertError } = await supabase
-            .from("tiempo_gratis")
-            .insert(payload);
+    try {
+      const { data } = await supabase
+        .from("tiempo_gratis")
+        .select("*")
+        .eq("ip", ipPublica)
+        .eq("correo", correo)
+        .single();
 
-          if (insertError) {
-            alert("⚠️ No se pudo registrar el tiempo gratis.");
-            console.error("Error al insertar:", insertError);
-            return;
-          }
+      if (data) {
+        alert("⛔ Ya has usado tu tiempo gratis.");
+        return;
+      }
 
-          window.location.href = "http://10.5.50.1/login";
-        } catch (err) {
-          alert("⚠️ Error de conexión. Intenta nuevamente.");
-          console.error("Error en validación de tiempo gratis:", err);
-        }
-      });
+      const payload = {
+        ip: ipPublica,
+        correo: correo,
+        unidad: unidadId,
+        chofer: choferId,
+        hora_uso: new Date().toISOString()
+      };
+
+      const { error: insertError } = await supabase
+        .from("tiempo_gratis")
+        .insert(payload);
+
+      if (insertError) {
+        alert("⚠️ No se pudo registrar el tiempo gratis.");
+        console.error("Error al insertar:", insertError);
+        return;
+      }
+
+      window.location.href = "http://10.5.50.1/login";
+    } catch (err) {
+      alert("⚠️ Error de conexión. Intenta nuevamente.");
+      console.error("Error en validación de tiempo gratis:", err);
+    }
+  });
     }
 
     // 📜 Registro de términos aceptados
@@ -482,5 +495,60 @@
       document.getElementById("login-title").textContent = rol === "admin" ? "Acceso Administrativo" : "Acceso";
     };
   </script>
+
+  <!-- 📧 Modal de correo institucional -->
+<div id="modal-correo" style="
+  position: fixed;
+  top: 0; left: 0;
+  width: 100vw; height: 100vh;
+  background-color: rgba(0,0,0,0.6);
+  backdrop-filter: blur(4px);
+  display: none;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+">
+  <div style="
+    background-color: #fff;
+    padding: 30px;
+    border-radius: 16px;
+    box-shadow: 0 0 20px #7344D090;
+    max-width: 360px;
+    width: 90%;
+    text-align: center;
+    font-family: 'Segoe UI', sans-serif;
+  ">
+    <h2 style="color:#7344D0;">📧 Ingresa tu correo institucional</h2>
+    <input type="email" id="inputCorreoModal" placeholder="usuario@institucion.com" style="
+      width: 100%;
+      padding: 12px;
+      font-size: 16px;
+      margin-top: 20px;
+      border-radius: 8px;
+      border: 1px solid #7344D0;
+    " />
+    <button id="confirmarCorreo" style="
+      margin-top: 20px;
+      background-color: #7344D0;
+      color: white;
+      padding: 12px 18px;
+      font-size: 16px;
+      font-weight: 600;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+    ">📨 Enviar y activar</button>
+    <button onclick="document.getElementById('modal-correo').style.display='none'" style="
+  margin-top: 10px;
+  background-color: #ccc;
+  color: #333;
+  padding: 10px 14px;
+  font-size: 14px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+">❌ Cancelar</button>
+  </div>
+</div>
 </body>
 </html>
