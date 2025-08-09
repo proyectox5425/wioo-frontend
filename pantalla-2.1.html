@@ -121,12 +121,22 @@
 </head>
 <body>
   <div class="interface-wrapper">
-    <div class="grupo-campo">
-      <input type="text" id="input-codigo" maxlength="4" placeholder="****" />
-      <button id="activar-qr" class="boton-qr">📷 Escanear QR</button>
-    </div>
-    <button id="boton-validar" class="boton-wioo">🔐 Verificar</button>
-    <div id="reader"></div>
+  <img src="logo-wioo.png" alt="Logo Wioo" style="width: 180px; margin-bottom: 20px;" />
+
+  <div style="text-align: center; color: white; font-size: 16px; margin-bottom: 20px;">
+    <p>💵 <strong>Paga en efectivo al conductor antes de validar.</strong></p>
+    <p>📲 Escanea tu código QR o ingresa el código entregado por el chofer.</p>
+    <p>⏱️ La validación activa tu conexión por 12 horas.</p>
+    <p>✅ Solo códigos autorizados por el operador son válidos.</p>
+  </div>
+
+  <div class="grupo-campo">
+    <input type="text" id="input-codigo" maxlength="4" placeholder="****" />
+    <button id="activar-qr" class="boton-qr">📷 Escanear QR</button>
+  </div>
+
+  <button id="boton-validar" class="boton-wioo">🔐 Verificar</button>
+  <div id="reader"></div>
   </div>
 
   <div id="modal-validacion">
