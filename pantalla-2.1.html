@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Escáner Institucional</title>
+  <script type="module">
+    import QrScanner from "https://unpkg.com/qr-scanner@1.4.2/qr-scanner.min.js";
+    QrScanner.WORKER_PATH = 'https://unpkg.com/qr-scanner@1.4.2/qr-scanner-worker.min.js';
+
+    const supabase = createClient(
+      "https://sjrmzkomzlqpsfvjdnle.supabase.co",
+      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNqcm16a29temxxcHNmdmpkbmxlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTI4MDU0NTMsImV4cCI6MjA2ODM4MTQ1M30.lX1F-w3ar2LEunf6OTfHoWkDOGFn4KdFTxEuCm34Wmw"
+    );
+
+    const videoElem = document.getElementById('preview');
+    const resultElem = document.getElementById('resultado');
+    const btnEscanear = document.getElementById('btn-escanear');
+
+    let scanner;
+
+    btnEscanear.addEventListener('click', () => {
+      if (!scanner) {
+        scanner = new QrScanner(videoElem, result => {
+          validarCodigo(result);
+        }, {
+          highlightScanRegion: true,
+          highlightCodeOutline: true
+        });
+      }
+      scanner.start();
+    });
+
+    async function validarCodigo(codigo) {
+      resultElem.textContent = "Validando código...";
+      const { data, error } = await supabase
+        .from('codigos_activos')
+        .select('*')
+        .eq('codigo', codigo);
+
+      if (error) {
+        resultElem.textContent = "Error de conexión.";
+        return;
+      }
+
+      if (data.length > 0) {
+        resultElem.textContent = "✅ Código válido: " + codigo;
+      } else {
+        resultElem.textContent = "❌ Código no registrado.";
+      }
+    }
+  </script>
+  <style>
+    body {
+      font-family: sans-serif;
+      background: #f4f4f4;
+      padding: 20px;
+      text-align: center;
+    }
+    #scanner-container {
+      position: relative;
+      width: 100%;
+      max-width: 400px;
+      margin: auto;
+      border-radius: 8px;
+      overflow: hidden;
+    }
+    #preview {
+      width: 100%;
+      border-radius: 8px;
+    }
+    #scan-line {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 2px;
+      background: red;
+      animation: scan 2s infinite linear;
+    }
+    @keyframes scan {
+      0% { top: 0; }
+      50% { top: 90%; }
+      100% { top: 0; }
+    }
+    #btn-escanear {
+      margin-top: 20px;
+      padding: 10px 20px;
+      background: #0077cc;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+    #resultado {
+      margin-top: 20px;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <h2>Escáner Institucional</h2>
+  <div id="scanner-container">
+    <video id="preview"></video>
+    <div id="scan-line"></div>
+  </div>
+  <button id="btn-escanear">🎯 Activar Escáner</button>
+  <div id="resultado"></div>
+</body>
+  </html>
