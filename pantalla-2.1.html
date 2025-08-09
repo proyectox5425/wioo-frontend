@@ -2,110 +2,234 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Escáner Institucional</title>
+  <title>Wioo | Validación Efectivo</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      width: 100%;
+      font-family: 'Segoe UI', sans-serif;
+      background-image: url('fondo-autobus.jpg');
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .interface-wrapper {
+      max-width: 360px;
+      width: 100%;
+      padding: 30px 20px;
+      box-sizing: border-box;
+      background-color: rgba(0, 0, 0, 0.6);
+      border-radius: 16px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 25px;
+    }
+
+    .grupo-campo {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .grupo-campo input {
+      flex: 1;
+      font-size: 18px;
+      padding: 12px 16px;
+      border: none;
+      border-radius: 6px;
+      text-align: center;
+      background-color: white;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+      max-width: 160px;
+    }
+
+    .boton-wioo {
+      background: linear-gradient(90deg, #7344D0 0%, #a278ff 100%);
+      color: white;
+      border: none;
+      padding: 14px 20px;
+      border-radius: 12px;
+      font-size: 17px;
+      font-weight: 600;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+      cursor: pointer;
+      width: 100%;
+      transition: transform 0.2s ease;
+    }
+
+    .boton-qr {
+      font-size: 12px;
+      padding: 8px 14px;
+      background-color: #7344D0;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+      transition: background 0.3s ease;
+    }
+
+    #reader {
+      width: 280px;
+      margin-top: 20px;
+      display: none;
+      opacity: 0;
+      transform: scale(0.95);
+      transition: opacity 0.4s ease, transform 0.4s ease;
+    }
+
+    #reader.visible {
+      opacity: 1;
+      transform: scale(1);
+    }
+
+    #modal-validacion {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100vw; height: 100vh;
+      background-color: rgba(0,0,0,0.6);
+      backdrop-filter: blur(4px);
+      display: none;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      z-index: 9999;
+      animation: fadeModal 0.4s ease-out;
+      font-family: 'Poppins', sans-serif;
+    }
+
+    @keyframes fadeModal {
+      from { opacity: 0; transform: scale(0.95); }
+      to   { opacity: 1; transform: scale(1); }
+    }
+
+    @keyframes parpadeo {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.3; }
+    }
+  </style>
+</head>
+<body>
+  <div class="interface-wrapper">
+    <div class="grupo-campo">
+      <input type="text" id="input-codigo" maxlength="4" placeholder="****" />
+      <button id="activar-qr" class="boton-qr">📷 Escanear QR</button>
+    </div>
+    <button id="boton-validar" class="boton-wioo">🔐 Verificar</button>
+    <div id="reader"></div>
+  </div>
+
+  <div id="modal-validacion">
+    <img src="logo-wioo.png" alt="Logo Wioo" style="height: 80px; margin-bottom: 30px; animation: parpadeo 1s infinite;">
+    <h2 style="color: white; font-size: 26px; animation: parpadeo 1s infinite;">🔐 Validando código</h2>
+    <p id="mensaje-modal" style="color: white; font-size: 20px; font-weight: 600; margin-top: 20px; text-align: center;">🔄 Validando…</p>
+  </div>
+
+  <script src="https://unpkg.com/html5-qrcode"></script>
   <script type="module">
-    import QrScanner from "https://unpkg.com/qr-scanner@1.4.2/qr-scanner.min.js";
-    QrScanner.WORKER_PATH = 'https://unpkg.com/qr-scanner@1.4.2/qr-scanner-worker.min.js';
+    import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
 
     const supabase = createClient(
       "https://sjrmzkomzlqpsfvjdnle.supabase.co",
       "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNqcm16a29temxxcHNmdmpkbmxlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTI4MDU0NTMsImV4cCI6MjA2ODM4MTQ1M30.lX1F-w3ar2LEunf6OTfHoWkDOGFn4KdFTxEuCm34Wmw"
     );
 
-    const videoElem = document.getElementById('preview');
-    const resultElem = document.getElementById('resultado');
-    const btnEscanear = document.getElementById('btn-escanear');
+    const modal = document.getElementById("modal-validacion");
+    const mensajeModal = document.getElementById("mensaje-modal");
+    const activarQR = document.getElementById("activar-qr");
+    const reader = document.getElementById("reader");
+    const inputCodigo = document.getElementById("input-codigo");
+    const botonValidar = document.getElementById("boton-validar");
 
-    let scanner;
+    let escaneoActivo = false;
+    let html5QrCode;
 
-    btnEscanear.addEventListener('click', () => {
-      if (!scanner) {
-        scanner = new QrScanner(videoElem, result => {
-          validarCodigo(result);
-        }, {
-          highlightScanRegion: true,
-          highlightCodeOutline: true
+    activarQR.addEventListener("click", async () => {
+      if (escaneoActivo) {
+        html5QrCode.stop().then(() => {
+          reader.classList.remove("visible");
+          setTimeout(() => reader.style.display = "none", 500);
+          activarQR.textContent = "📷 Escanear QR";
+          escaneoActivo = false;
         });
-      }
-      scanner.start();
-    });
-
-    async function validarCodigo(codigo) {
-      resultElem.textContent = "Validando código...";
-      const { data, error } = await supabase
-        .from('codigos_activos')
-        .select('*')
-        .eq('codigo', codigo);
-
-      if (error) {
-        resultElem.textContent = "Error de conexión.";
         return;
       }
 
-      if (data.length > 0) {
-        resultElem.textContent = "✅ Código válido: " + codigo;
-      } else {
-        resultElem.textContent = "❌ Código no registrado.";
+      reader.style.display = "block";
+      setTimeout(() => reader.classList.add("visible"), 0);
+      activarQR.textContent = "⛔️ Detener escaneo";
+      escaneoActivo = true;
+
+      html5QrCode = new Html5Qrcode("reader");
+      html5QrCode.start(
+        { facingMode: "environment" },
+        { fps: 10, qrbox: 250 },
+        async (codigo) => {
+          html5QrCode.stop();
+          reader.classList.remove("visible");
+          setTimeout(() => reader.style.display = "none", 500);
+          activarQR.textContent = "📷 Escanear QR";
+          escaneoActivo = false;
+          validarCodigo(codigo);
+        },
+        (errorMessage) => {
+          console.warn("Error de escaneo:", errorMessage);
+        }
+      );
+    });
+
+    botonValidar.addEventListener("click", async () => {
+      const codigo = inputCodigo.value.trim();
+      if (!codigo) {
+        alert("⚠️ Ingresá el código entregado por el chofer.");
+        return;
+      }
+      validarCodigo(codigo);
+    });
+
+    async function validarCodigo(codigo) {
+      mensajeModal.textContent = "🔄 Validando código…";
+      modal.style.display = "flex";
+
+      try {
+        const { data, error } = await supabase
+          .from("codigos_activos")
+          .select("*")
+          .eq("codigo", codigo)
+          .eq("activo", true)
+          .single();
+
+        if (error || !data) {
+          mensajeModal.textContent = "❌ Código inválido o ya usado";
+          setTimeout(() => {
+            modal.style.display = "none";
+            }, 2500);
+          return;
+        }
+
+        mensajeModal.textContent = "✅ Código válido. Acceso concedido.";
+        setTimeout(() => {
+          modal.style.display = "none";
+          inputCodigo.value = "";
+        }, 2500);
+      } catch (err) {
+        console.error("Error en validación:", err);
+        mensajeModal.textContent = "⚠️ Error de conexión. Intentá de nuevo.";
+        setTimeout(() => {
+          modal.style.display = "none";
+        }, 2500);
       }
     }
   </script>
-  <style>
-    body {
-      font-family: sans-serif;
-      background: #f4f4f4;
-      padding: 20px;
-      text-align: center;
-    }
-    #scanner-container {
-      position: relative;
-      width: 100%;
-      max-width: 400px;
-      margin: auto;
-      border-radius: 8px;
-      overflow: hidden;
-    }
-    #preview {
-      width: 100%;
-      border-radius: 8px;
-    }
-    #scan-line {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 2px;
-      background: red;
-      animation: scan 2s infinite linear;
-    }
-    @keyframes scan {
-      0% { top: 0; }
-      50% { top: 90%; }
-      100% { top: 0; }
-    }
-    #btn-escanear {
-      margin-top: 20px;
-      padding: 10px 20px;
-      background: #0077cc;
-      color: white;
-      border: none;
-      border-radius: 6px;
-      font-size: 16px;
-      cursor: pointer;
-    }
-    #resultado {
-      margin-top: 20px;
-      font-weight: bold;
-    }
-  </style>
-</head>
-<body>
-  <h2>Escáner Institucional</h2>
-  <div id="scanner-container">
-    <video id="preview"></video>
-    <div id="scan-line"></div>
-  </div>
-  <button id="btn-escanear">🎯 Activar Escáner</button>
-  <div id="resultado"></div>
 </body>
-  </html>
+</html>
