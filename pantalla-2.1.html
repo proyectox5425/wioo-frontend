@@ -208,37 +208,39 @@
     });
 
     async function validarCodigo(codigo) {
-      mensajeModal.textContent = "🔄 Validando código…";
-      modal.style.display = "flex";
+  mensajeModal.textContent = "🔄 Validando código…";
+  modal.style.display = "flex";
 
-      try {
-        const { data, error } = await supabase
-          .from("codigos_activos")
-          .select("*")
-          .eq("codigo", codigo)
-          .eq("activo", true)
-          .single();
+  try {
+    const { data, error } = await supabase
+      .from("codigos_activos")
+      .select("*")
+      .eq("codigo", codigo)
+      .eq("activo", true)
+      .single();
 
-        if (error || !data) {
-          mensajeModal.textContent = "❌ Código inválido o ya usado";
-          setTimeout(() => {
-            modal.style.display = "none";
-            }, 2500);
-          return;
-        }
+    if (error || !data) {
+      mensajeModal.textContent = "❌ Código inválido o ya usado";
+      setTimeout(() => {
+        modal.style.display = "none";
+        window.location.href = "pantalla-4.2.html"; // Redirección a rechazado
+      }, 2500);
+      return;
+    }
 
-        mensajeModal.textContent = "✅ Código válido. Acceso concedido.";
-        setTimeout(() => {
-          modal.style.display = "none";
-          inputCodigo.value = "";
-        }, 2500);
-      } catch (err) {
-        console.error("Error en validación:", err);
-        mensajeModal.textContent = "⚠️ Error de conexión. Intentá de nuevo.";
-        setTimeout(() => {
-          modal.style.display = "none";
-        }, 2500);
-      }
+    mensajeModal.textContent = "✅ Código válido. Acceso concedido.";
+    setTimeout(() => {
+      modal.style.display = "none";
+      inputCodigo.value = "";
+      window.location.href = "pantalla-4.1.html"; // Redirección a aprobado
+    }, 2500);
+  } catch (err) {
+    console.error("Error en validación:", err);
+    mensajeModal.textContent = "⚠️ Error de conexión. Intentá de nuevo.";
+    setTimeout(() => {
+      modal.style.display = "none";
+    }, 2500);
+  }
     }
   </script>
 </body>
