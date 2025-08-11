@@ -204,6 +204,45 @@
     .mensaje-enviado.visible {
       display: block;
     }
+
+    .modal-espera {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: rgba(0, 0, 0, 0.6);
+  display: none;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+}
+
+.modal-contenido {
+  background: #fff;
+  padding: 2rem;
+  border-radius: 12px;
+  text-align: center;
+  box-shadow: 0 0 20px rgba(0,0,0,0.3);
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+.spinner {
+  width: 40px;
+  height: 40px;
+  margin: 0 auto 1rem;
+  border: 4px solid #ccc;
+  border-top: 4px solid #007bff;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: scale(0.95); }
+  to { opacity: 1; transform: scale(1); }
+    }
   </style>
 </head>
 <body>
@@ -330,6 +369,7 @@
   if (cedula && codigo && telefono.length === 7 && banco && referencia.length === 4) {
     mensaje.classList.add('visible');
     cerrarModal();
+    document.getElementById("modal-espera").style.display = "flex";
 
     fetch("https://api.ipify.org?format=json")
       .then((respuesta) => respuesta.json())
@@ -365,11 +405,10 @@
           body: JSON.stringify(datos)
         })
           .then((res) => {
-            alert("📡 Código HTTP Supabase: " + res.status);
             return res.text();
           })
           .then((respuestaTexto) => {
-            alert("📦 Respuesta completa: " + respuestaTexto);
+            verificarEstadoPago(referencia);
           })
           .catch((err) => {
             console.error("⛔ Error al enviar comprobante:", err);
@@ -384,7 +423,36 @@
   }
     }
 
+    function verificarEstadoPago(referencia) {
+  const intervalo = setInterval(() => {
+    fetch(`https://sjrmzkomzlqpsfvjdnle.supabase.co/rest/v1/pago_manual?referencia=eq.${referencia}`, {
+      headers: {
+        "apikey": "TU_API_KEY",
+        "Authorization": "Bearer TU_TOKEN"
+      }
+    })
+    .then(res => res.json())
+    .then(data => {
+      if (data.length && data[0].estado === "aprobado") {
+        clearInterval(intervalo);
+        document.getElementById("modal-espera").style.display = "none";
+        location.href = "pantalla-4.1.html";
+      } else if (data.length && data[0].estado === "rechazado") {
+        clearInterval(intervalo);
+        document.getElementById("modal-espera").style.display = "none";
+        location.href = "pantalla-4.2.html";
+      }
+    });
+  }, 5000);
+    }
   </script>
   <script src="api.js"></script>
+  <div id="modal-espera" class="modal-espera">
+  <div class="modal-contenido">
+    <div class="spinner"></div>
+    <h2>Validando comprobante...</h2>
+    <p>Esperando respuesta del operador. No cierres esta ventana.</p>
+  </div>
+  </div>
 </body>
 </html>
