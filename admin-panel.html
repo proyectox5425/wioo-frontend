@@ -473,12 +473,6 @@ window.validarComprobante = async (id) => {
     })
     .eq('id', id);
 
-  try {
-    const respuesta = await fetch('https://TU_ENDPOINT_MIKROTIK/activar', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ ip: ipPasajero, duracion_minutos: 20 })
-    });
 
     const json = await respuesta.json();
     if (json.ok) {
@@ -504,13 +498,14 @@ window.rechazarComprobante = async (id) => {
 
   const ipPasajero = data?.ip_pasajero ?? null;
 
-  await supabase.from('pago_manual')
-    .update({
-      estado: 'rechazado',
-      motivo_rechazo: 'No se registró pago',
-      fecha_validacion: new Date().toISOString()
-    })
-    .eq('id', id);
+  await supabase
+  .from('pago_manual')
+  .update({
+    estado: 'rechazado',
+    motivo_rechazo: 'No se registró pago',
+    fecha_validacion: new Date().toISOString()
+  })
+  .eq('id', id);
 
   if (ipPasajero) {
     try {
