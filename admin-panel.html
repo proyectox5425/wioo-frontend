@@ -322,7 +322,7 @@ table td, table th {
 </div>
       </section>
 
-      <section id="tickets" style="padding:20px;">
+      <section id="tickets" style="display:none; padding:20px;">
   <h2>🎫 Tickets generados</h2>
   <table id="tabla-tickets">
     <thead>
@@ -477,7 +477,7 @@ window.validarComprobante = async (id) => {
     const respuesta = await fetch('https://TU_ENDPOINT_MIKROTIK/activar', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ ip: ipPasajero })
+      body: JSON.stringify({ ip: ipPasajero, duracion_minutos: 20 })
     });
 
     const json = await respuesta.json();
@@ -504,14 +504,13 @@ window.rechazarComprobante = async (id) => {
 
   const ipPasajero = data?.ip_pasajero ?? null;
 
-  await supabase
-  .from('pago_manual')
-  .update({
-    estado: 'rechazado',
-    motivo_rechazo: 'No se registró pago',
-    fecha_validacion: new Date().toISOString()
-  })
-  .eq('id', id);
+  await supabase.from('pago_manual')
+    .update({
+      estado: 'rechazado',
+      motivo_rechazo: 'No se registró pago',
+      fecha_validacion: new Date().toISOString()
+    })
+    .eq('id', id);
 
   if (ipPasajero) {
     try {
