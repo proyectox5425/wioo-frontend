@@ -489,12 +489,15 @@ window.rechazarComprobante = async (id) => {
       const respuesta = await fetch('https://TU_ENDPOINT_MIKROTIK/revertir', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ ip: ipPasajero })
+        body: JSON.stringify({
+          ip: ipPasajero,
+          redirigirPantalla: '4.2' // 👈 instrucción para Mikrotik o panel
+        })
       });
 
       const json = await respuesta.json();
       if (json.ok) {
-        alert(`⛔ IP ${ipPasajero} removida de acceso en Mikrotik`);
+        alert(`⛔ IP ${ipPasajero} removida de acceso y redirigida a pantalla 4.2`);
       } else {
         alert(`⚠️ Se rechazó el comprobante pero Mikrotik no respondió correctamente.`);
       }
