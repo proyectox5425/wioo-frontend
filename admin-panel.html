@@ -98,6 +98,7 @@ table td, table th {
       <button onclick="mostrarSeccion('anuncios')" class="nav-link">📺 Anuncios</button>
       <button onclick="mostrarSeccion('estadisticas')" class="nav-link">📈 Estadísticas</button>
       <button onclick="mostrarSeccion('gestion')" class="nav-link">⚙️ Gestión Técnica</button>
+      <button onclick="mostrarSeccion('empresas')" class="nav-link">🏢 Empresas</button>
     </aside>
 
     <!-- Panel central -->
@@ -325,6 +326,26 @@ table td, table th {
     <tbody></tbody>
   </table>
       </section>
+
+     <section id="empresas">
+  <h2 style="color:#7344D0;">🏢 Empresas de Transporte</h2>
+
+  <!-- Crear empresa -->
+  <div style="margin-bottom:20px;">
+    <input type="text" id="nombreEmpresa" placeholder="Nombre de empresa" />
+    <button onclick="crearEmpresa()">➕ Crear Empresa</button>
+  </div>
+
+  <!-- Tabla de empresas -->
+  <table style="width:100%; background:white;">
+    <thead>
+      <tr style="background:#7344D0; color:white;">
+        <th>Empresa</th><th>Choferes</th><th>Acciones</th>
+      </tr>
+    </thead>
+    <tbody id="tablaEmpresas"></tbody>
+  </table>
+     </section> 
     </main>
   
 
@@ -347,6 +368,7 @@ function mostrarSeccion(id) {
     activa.style.display = "block";
     if (id === "tickets") cargarTickets();
     if (id === "comprobantes") renderComprobantes();
+    if (id === "empresas") cargarEmpresas();
   }
 }
 window.mostrarSeccion = mostrarSeccion;
@@ -510,6 +532,41 @@ window.rechazarComprobante = async (id) => {
 
   renderComprobantes();
     }
+
+    async function cargarEmpresas() {
+  const { data: empresas } = await supabase.from('empresas').select('*');
+  const tabla = document.getElementById('tablaEmpresas');
+  tabla.innerHTML = '';
+
+  for (const e of empresas) {
+    const { data: choferes } = await supabase
+      .from('choferes')
+      .select('id, unidad')
+      .eq('empresa_id', e.id);
+
+    const lista = choferes.map(c => `🧑 ${c.id} (${c.unidad})`).join('<br>') || '—';
+
+    tabla.innerHTML += `<tr>
+      <td>${e.nombre}</td>
+      <td>${lista}</td>
+      <td>
+        <button onclick="eliminarEmpresa('${e.id}')">🗑️ Eliminar</button>
+      </td>
+    </tr>`;
+  }
+}
+
+window.crearEmpresa = async () => {
+  const nombre = document.getElementById('nombreEmpresa').value.trim();
+  if (!nombre) return alert("❌ Nombre vacío");
+  await supabase.from('empresas').insert({ nombre });
+  cargarEmpresas();
+};
+
+window.eliminarEmpresa = async (id) => {
+  await supabase.from('empresas').delete().eq('id', id);
+  cargarEmpresas();
+};
   </script>
 </body>
   </html>
