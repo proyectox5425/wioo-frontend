@@ -462,26 +462,9 @@ window.validarComprobante = async (id) => {
     })
     .eq('id', id);
 
-  try {
-    const respuesta = await fetch('https://TU_ENDPOINT_MIKROTIK/activar', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ ip: ipPasajero, duracion_minutos: 20 })
-    });
-
-    const json = await respuesta.json();
-    if (json.ok) {
-      alert("✅ Servicio extendido en Mikrotik para " + ipPasajero);
-    } else {
-      alert("⚠️ Validado, pero Mikrotik no respondió correctamente.");
-    }
-  } catch (e) {
-    alert("⚠️ Validado, pero no se pudo activar servicio en Mikrotik.");
-  }
-
+  alert("✅ Comprobante aprobado. El pasajero será redirigido a pantalla 4.1.");
   renderComprobantes();
 };
-
 
 // ✅ Rechazar comprobante
 window.rechazarComprobante = async (id) => {
