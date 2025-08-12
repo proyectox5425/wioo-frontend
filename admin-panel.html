@@ -327,6 +327,41 @@ table td, table th {
   </table>
       </section>
 
+      <section id="gestion">
+  <h2 style="color:#7344D0;">⚙️ Gestión Técnica y Administrativa</h2>
+
+  <!-- Empresas -->
+  <h3 style="margin-top:30px;">🚛 Empresas de Transporte</h3>
+  <div>
+    <input type="text" id="nuevaEmpresa" placeholder="Nombre de empresa" />
+    <button onclick="agregarEmpresa()">➕ Agregar Empresa</button>
+  </div>
+  <table style="margin-top:10px; background:white;">
+    <thead>
+      <tr style="background:#7344D0; color:white;">
+        <th>Empresa</th><th>Tipo</th><th>Estado</th><th>Acciones</th>
+      </tr>
+    </thead>
+    <tbody id="tabla-empresas"></tbody>
+  </table>
+
+  <!-- Choferes -->
+  <h3 style="margin-top:40px;">🧑‍✈️ Choferes</h3>
+  <div>
+    <input type="text" id="nuevoChofer" placeholder="ID Chofer" />
+    <input type="text" id="unidadChofer" placeholder="Unidad asignada" />
+    <button onclick="agregarChofer()">➕ Agregar Chofer</button>
+  </div>
+  <table style="margin-top:10px; background:white;">
+    <thead>
+      <tr style="background:#7344D0; color:white;">
+        <th>ID</th><th>Unidad</th><th>Estado</th><th>Acciones</th>
+      </tr>
+    </thead>
+    <tbody id="tabla-choferes"></tbody>
+  </table>
+      </section>
+
      <section id="empresas">
   <h2 style="color:#7344D0;">🏢 Empresas de Transporte</h2>
 
@@ -369,6 +404,7 @@ function mostrarSeccion(id) {
     if (id === "tickets") cargarTickets();
     if (id === "comprobantes") renderComprobantes();
     if (id === "empresas") cargarEmpresas();
+    if (id === "gestion") cargarGestion();
   }
 }
 window.mostrarSeccion = mostrarSeccion;
@@ -533,6 +569,65 @@ window.rechazarComprobante = async (id) => {
   renderComprobantes();
     }
 
+    async function cargarGestion() {
+  const { data: empresas } = await supabase.from('empresas').select('*');
+  const { data: choferes } = await supabase.from('choferes').select('*');
+
+  const tablaEmpresas = document.getElementById('tabla-empresas');
+  const tablaChoferes = document.getElementById('tabla-choferes');
+  tablaEmpresas.innerHTML = '';
+  tablaChoferes.innerHTML = '';
+
+  empresas.forEach(e => {
+    const fila = `<tr>
+      <td>${e.nombre}</td>
+      <td>${e.tipo ?? '—'}</td>
+      <td>${e.estado ?? '—'}</td>
+      <td>
+        <button onclick="eliminarEmpresa('${e.id}')">🗑️ Eliminar</button>
+      </td>
+    </tr>`;
+    tablaEmpresas.innerHTML += fila;
+  });
+
+  choferes.forEach(c => {
+    const fila = `<tr>
+      <td>${c.id}</td>
+      <td>${c.unidad}</td>
+      <td>${c.estado ?? '—'}</td>
+      <td>
+        <button onclick="eliminarChofer('${c.id}')">🗑️ Eliminar</button>
+      </td>
+    </tr>`;
+    tablaChoferes.innerHTML += fila;
+  });
+}
+
+window.agregarEmpresa = async () => {
+  const nombre = document.getElementById('nuevaEmpresa').value.trim();
+  if (!nombre) return alert("❌ Nombre vacío");
+  await supabase.from('empresas').insert({ nombre, tipo: 'urbana', estado: 'activa' });
+  cargarGestion();
+};
+
+window.eliminarEmpresa = async (id) => {
+  await supabase.from('empresas').delete().eq('id', id);
+  cargarGestion();
+};
+
+window.agregarChofer = async () => {
+  const id = document.getElementById('nuevoChofer').value.trim();
+  const unidad = document.getElementById('unidadChofer').value.trim();
+  if (!id || !unidad) return alert("❌ Datos incompletos");
+  await supabase.from('choferes').insert({ id, unidad, estado: 'activo' });
+  cargarGestion();
+};
+
+window.eliminarChofer = async (id) => {
+  await supabase.from('choferes').delete().eq('id', id);
+  cargarGestion();
+};
+    
     async function cargarEmpresas() {
   const { data: empresas } = await supabase.from('empresas').select('*');
   const tabla = document.getElementById('tablaEmpresas');
