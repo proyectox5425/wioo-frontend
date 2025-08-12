@@ -461,6 +461,11 @@ window.validarComprobante = async (id) => {
     })
     .eq('id', id);
 
+  try {
+    const respuesta = await fetch('https://TU_ENDPOINT_MIKROTIK/activar', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ ip: ipPasajero, duracion_minutos: 20 })
     });
 
     const json = await respuesta.json();
