@@ -105,186 +105,81 @@ table td, table th {
     <main style="flex:1; padding:30px;">
       <!-- 📊 Resumen del día -->
       <section id="resumen">
-        <h2 style="color:#7344D0;">📊 Resumen del Día</h2>
-        <div class="card-container">
-          <div class="card"><h3>Total de tickets</h3><p>—</p></div>
-          <div class="card"><h3>Conexiones activas</h3><p>—</p></div>
-          <div class="card"><h3>Comprobantes aprobados</h3><p>—</p></div>
-        </div>
-      </section>
+  <h2 style="color:#7344D0;">📊 Resumen Operativo</h2>
+
+  <div class="card-group">
+    <h3>📅 Hoy</h3>
+    <div class="card-container">
+      <div class="card"><h4>Tickets</h4><p id="ticketsDia">⏳</p></div>
+      <div class="card"><h4>Comprobantes</h4><p id="comprobantesDia">⏳</p></div>
+    </div>
+  </div>
+
+  <div class="card-group">
+    <h3>📈 Esta semana</h3>
+    <div class="card-container">
+      <div class="card"><h4>Tickets</h4><p id="ticketsSemana">⏳</p></div>
+      <div class="card"><h4>Comprobantes</h4><p id="comprobantesSemana">⏳</p></div>
+    </div>
+  </div>
+
+  <div class="card-group">
+    <h3>📊 Este mes</h3>
+    <div class="card-container">
+      <div class="card"><h4>Tickets</h4><p id="ticketsMes">⏳</p></div>
+      <div class="card"><h4>Comprobantes</h4><p id="comprobantesMes">⏳</p></div>
+    </div>
+  </div>
+</section>
 
       <section id="unidades">
-  <h2 style="color:#7344D0;">🚍 Estado de Unidades</h2>
+  <h2 style="color:#7344D0;">🚍 Gestión de Unidades</h2>
 
-  <!-- Tabla operativa -->
-  <table style="width:100%; border-collapse:collapse; background:white; margin-top:20px;">
+  <!-- Formulario para agregar unidad -->
+  <div style="margin-bottom:20px;">
+    <input type="text" id="idUnidad" placeholder="ID de unidad (ej: BUS-001)" />
+    <button onclick="agregarUnidad()">➕ Agregar Unidad</button>
+  </div>
+
+  <!-- Tabla de unidades -->
+  <table style="width:100%; background:white;">
     <thead>
       <tr style="background:#7344D0; color:white;">
-        <th>Unidad</th><th>Chofer</th><th>Estado</th><th>Tickets generados</th><th>Tickets usados</th><th>Conexión</th><th>Acciones</th>
+        <th>ID</th><th>Estado</th><th>Chofer</th><th>Acciones</th>
       </tr>
     </thead>
-    <tbody>
-      <tr>
-        <td>BUS-001</td><td>CHF-1023</td><td>🟢 En ruta</td><td>12</td><td>10</td><td>🟢 Online</td>
-        <td>
-          <button class="nav-link">🔄 Reiniciar</button>
-          <button class="nav-link">🔧 Mantenimiento</button>
-          <button class="nav-link">🔒 Inhabilitar</button>
-        </td>
-      </tr>
-      <tr>
-        <td>BUS-007</td><td>CHF-1050</td><td>🟡 En terminal</td><td>4</td><td>4</td><td>🟢 Online</td>
-        <td><button class="nav-link">🔒 Inhabilitar</button></td>
-      </tr>
-      <tr>
-        <td>BUS-011</td><td>CHF-1168</td><td>🔧 En mantenimiento</td><td>—</td><td>—</td><td>🔴 Offline</td>
-        <td><button class="nav-link">✅ Activar</button></td>
-      </tr>
-    </tbody>
+    <tbody id="tablaUnidades"></tbody>
   </table>
-
-  <!-- Horarios asignados -->
-  <h3 style="color:#7344D0; margin-top:40px;">🕓 Horarios Asignados</h3>
-  <table style="width:100%; border-collapse:collapse; background:white; margin-top:10px;">
-    <thead>
-      <tr style="background:#7344D0; color:white;">
-        <th>Unidad</th><th>Salida</th><th>Destino</th><th>Hora salida</th><th>Hora llegada</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr><td>BUS-001</td><td>Terminal Norte</td><td>Valencia</td><td>13:30</td><td>15:15</td></tr>
-      <tr><td>BUS-007</td><td>Terminal Sur</td><td>Maracay</td><td>12:40</td><td>14:00</td></tr>
-    </tbody>
-  </table>
-      </section>
+</section>
 
       <section id="choferes">
-  <h2 style="color:#7344D0;">🧑‍✈️ Choferes por Empresa</h2>
+  <h2 style="color:#7344D0;">🧑‍✈️ Gestión de Choferes</h2>
 
-  <!-- Empresa: TransMiranda -->
-  <h3 style="margin-top:30px;">🚚 TransMiranda</h3>
-  <table style="width:100%; border-collapse:collapse; background:white;">
+<div style="margin-bottom:20px;">
+  <label for="filtroEmpresa">Filtrar por empresa:</label>
+  <select id="filtroEmpresa" onchange="filtrarChoferesPorEmpresa()">
+    <option value="">— Todas —</option>
+  </select>
+</div>
+
+  <!-- Formulario para agregar chofer -->
+  <div style="margin-bottom:20px;">
+    <input type="text" id="idChofer" placeholder="ID Chofer (ej: CHF-1023)" />
+    <input type="text" id="unidadChofer" placeholder="Unidad asignada (ej: BUS-001)" />
+    <input type="text" id="licenciaChofer" placeholder="Tipo de licencia (ej: Tipo D)" />
+    <button onclick="agregarChofer()">➕ Agregar Chofer</button>
+  </div>
+
+  <!-- Tabla de choferes -->
+  <table style="width:100%; background:white;">
     <thead>
       <tr style="background:#7344D0; color:white;">
-        <th>Chofer</th><th>Unidad Asignada</th><th>Estado</th><th>Licencia</th><th>Último Servicio</th><th>Acciones</th>
+        <th>ID</th><th>Unidad</th><th>Licencia</th><th>Estado</th><th>Acciones</th>
       </tr>
     </thead>
-    <tbody>
-      <tr>
-        <td>CHF-1023</td><td>BUS-001</td><td>🟢 Activo</td><td>Tipo D</td><td>2025-08-02</td>
-        <td>
-          <button class="nav-link">📋 Ver perfil</button>
-          <button class="nav-link">🔒 Inhabilitar</button>
-        </td>
-      </tr>
-    </tbody>
+    <tbody id="tablaChoferes"></tbody>
   </table>
-
-  <!-- Empresa: UniónBus -->
-  <h3 style="margin-top:30px;">🚛 UniónBus</h3>
-  <table style="width:100%; border-collapse:collapse; background:white;">
-    <thead>
-      <tr style="background:#7344D0; color:white;">
-        <th>Chofer</th><th>Unidad Asignada</th><th>Estado</th><th>Licencia</th><th>Último Servicio</th><th>Acciones</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td>CHF-1050</td><td>BUS-007</td><td>🟡 Disponible</td><td>Tipo C</td><td>2025-07-30</td>
-        <td>
-          <button class="nav-link">📋 Ver perfil</button>
-          <button class="nav-link">🔧 Asignar ruta</button>
-        </td>
-      </tr>
-    </tbody>
-  </table>
-      </section>
-
-      <section id="rutas">
-  <h2 style="color:#7344D0;">🧭 Rutas Asignadas</h2>
-
-  <!-- Empresa: TransMiranda -->
-  <h3 style="margin-top:30px;">🚚 TransMiranda</h3>
-  <table style="width:100%; border-collapse:collapse; background:white;">
-    <thead>
-      <tr style="background:#7344D0; color:white;">
-        <th>Unidad</th><th>Salida</th><th>Destino</th><th>Hora Salida</th><th>Hora Llegada</th><th>Acciones</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td>BUS-001</td><td>Terminal Norte</td><td>Valencia</td><td>13:30</td><td>15:15</td>
-        <td>
-          <button class="nav-link">📝 Editar</button>
-          <button class="nav-link">🔄 Reasignar</button>
-          <button class="nav-link">❌ Cancelar</button>
-        </td>
-      </tr>
-    </tbody>
-  </table>
-
-  <!-- Empresa: UniónBus -->
-  <h3 style="margin-top:30px;">🚛 UniónBus</h3>
-  <table style="width:100%; border-collapse:collapse; background:white;">
-    <thead>
-      <tr style="background:#7344D0; color:white;">
-        <th>Unidad</th><th>Salida</th><th>Destino</th><th>Hora Salida</th><th>Hora Llegada</th><th>Acciones</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td>BUS-007</td><td>Terminal Sur</td><td>Maracay</td><td>12:40</td><td>14:00</td>
-        <td>
-          <button class="nav-link">📝 Editar</button>
-          <button class="nav-link">🔄 Reasignar</button>
-          <button class="nav-link">❌ Cancelar</button>
-        </td>
-      </tr>
-    </tbody>
-  </table>
-      </section>
-
-      <section id="terminales">
-  <h2 style="color:#7344D0;">🏢 Terminales por Empresa</h2>
-
-  <!-- Empresa: TransMiranda -->
-  <h3 style="margin-top:30px;">🚚 TransMiranda</h3>
-  <table style="width:100%; border-collapse:collapse; background:white;">
-    <thead>
-      <tr style="background:#7344D0; color:white;">
-        <th>Nombre</th><th>Ubicación</th><th>Capacidad</th><th>Estado</th><th>Última Inspección</th><th>Acciones</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td>Terminal Norte</td><td>Guarenas</td><td>12 buses</td><td>🟢 Operativo</td><td>2025-08-01</td>
-        <td>
-          <button class="nav-link">🔍 Inspección</button>
-          <button class="nav-link">📝 Editar</button>
-        </td>
-      </tr>
-    </tbody>
-  </table>
-
-  <!-- Empresa: UniónBus -->
-  <h3 style="margin-top:30px;">🚛 UniónBus</h3>
-  <table style="width:100%; border-collapse:collapse; background:white;">
-    <thead>
-      <tr style="background:#7344D0; color:white;">
-        <th>Nombre</th><th>Ubicación</th><th>Capacidad</th><th>Estado</th><th>Última Inspección</th><th>Acciones</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td>Terminal Sur</td><td>Maracay</td><td>8 buses</td><td>🟡 En revisión</td><td>2025-07-28</td>
-        <td>
-          <button class="nav-link">🔍 Inspección</button>
-          <button class="nav-link">🔧 Programar revisión</button>
-        </td>
-      </tr>
-    </tbody>
-  </table>
-      </section>
+</section>
 
       <section id="comprobantes"
 <h2 style="color:#7344D0;">📥 Comprobantes Pendientes</h2>
@@ -327,60 +222,89 @@ table td, table th {
   </table>
       </section>
 
-      <section id="gestion">
-  <h2 style="color:#7344D0;">⚙️ Gestión Técnica y Administrativa</h2>
+<section id="anuncios" style="display:none; text-align:center; padding:40px;">
+  <h2 style="color:#7344D0;">📺 Sección de Anuncios</h2>
+  <p style="font-size:18px; margin-top:20px;">🚧 Esta sección está en construcción.</p>
+  <p style="color:#666;">Estamos definiendo su propósito institucional. Pronto estará disponible.</p>
+</section>
 
-  <!-- Empresas -->
-  <h3 style="margin-top:30px;">🚛 Empresas de Transporte</h3>
-  <div>
-    <input type="text" id="nuevaEmpresa" placeholder="Nombre de empresa" />
-    <button onclick="agregarEmpresa()">➕ Agregar Empresa</button>
-  </div>
-  <table style="margin-top:10px; background:white;">
-    <thead>
-      <tr style="background:#7344D0; color:white;">
-        <th>Empresa</th><th>Tipo</th><th>Estado</th><th>Acciones</th>
-      </tr>
-    </thead>
-    <tbody id="tabla-empresas"></tbody>
-  </table>
+     <section id="gestion" style="display:none;">
+  <h2 style="color:#7344D0;">⚙️ Gestión Institucional</h2>
 
-  <!-- Choferes -->
-  <h3 style="margin-top:40px;">🧑‍✈️ Choferes</h3>
-  <div>
-    <input type="text" id="nuevoChofer" placeholder="ID Chofer" />
-    <input type="text" id="unidadChofer" placeholder="Unidad asignada" />
-    <button onclick="agregarChofer()">➕ Agregar Chofer</button>
-  </div>
-  <table style="margin-top:10px; background:white;">
-    <thead>
-      <tr style="background:#7344D0; color:white;">
-        <th>ID</th><th>Unidad</th><th>Estado</th><th>Acciones</th>
-      </tr>
-    </thead>
-    <tbody id="tabla-choferes"></tbody>
-  </table>
-      </section>
-
-     <section id="empresas">
-  <h2 style="color:#7344D0;">🏢 Empresas de Transporte</h2>
-
-  <!-- Crear empresa -->
-  <div style="margin-bottom:20px;">
-    <input type="text" id="nombreEmpresa" placeholder="Nombre de empresa" />
-    <button onclick="crearEmpresa()">➕ Crear Empresa</button>
-  </div>
-
-  <!-- Tabla de empresas -->
+  <!-- 🔍 Choferes sin unidad asignada -->
+  <h3 style="margin-top:30px;">🧑‍✈️ Choferes sin unidad</h3>
   <table style="width:100%; background:white;">
     <thead>
       <tr style="background:#7344D0; color:white;">
-        <th>Empresa</th><th>Choferes</th><th>Acciones</th>
+        <th>ID</th><th>Licencia</th><th>Empresa</th><th>Acciones</th>
       </tr>
     </thead>
-    <tbody id="tablaEmpresas"></tbody>
+    <tbody id="choferesSinUnidad"></tbody>
   </table>
-     </section> 
+
+  <!-- 🚍 Unidades sin chofer asignado -->
+  <h3 style="margin-top:40px;">🚍 Unidades sin chofer</h3>
+  <table style="width:100%; background:white;">
+    <thead>
+      <tr style="background:#7344D0; color:white;">
+        <th>ID</th><th>Estado</th><th>Acciones</th>
+      </tr>
+    </thead>
+    <tbody id="unidadesSinChofer"></tbody>
+  </table>
+
+  <!-- 🏢 Asignar empresa a chofer -->
+  <h3 style="margin-top:40px;">🏢 Asignar empresa a chofer</h3>
+  <div style="margin-bottom:10px;">
+    <select id="selectorChofer"></select>
+    <select id="selectorEmpresa"></select>
+    <button onclick="asignarEmpresaAChofer()">Asignar empresa</button>
+  </div>
+</section>
+
+     <section id="empresas" class="panel-section">
+  <h2>Empresas registradas</h2>
+
+  <div class="form-group">
+    <input type="text" id="nombreEmpresa" placeholder="Nombre de la empresa" />
+    <button onclick="agregarEmpresa()">Agregar empresa</button>
+  </div>
+
+  <table id="tablaEmpresas">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Nombre</th>
+        <th>Estado</th>
+        <th>Acciones</th>
+      </tr>
+    </thead>
+    <tbody>
+      <!-- Empresas se renderizan aquí -->
+    </tbody>
+  </table>
+</section>
+
+<section id="estadisticas">
+  <h2 style="color:#7344D0;">📈 Estadísticas Operativas</h2>
+
+  <div class="table-wrapper">
+    <table style="background:white;">
+      <thead>
+        <tr>
+          <th>Fecha</th>
+          <th>Tickets</th>
+          <th>Comprobantes</th>
+          <th>Choferes activos</th>
+        </tr>
+      </thead>
+      <tbody id="tablaEstadisticas"></tbody>
+    </table>
+  </div>
+
+  <canvas id="graficoTickets" width="600" height="200" style="margin-top:30px;"></canvas>
+  <canvas id="graficoComprobantes" width="600" height="200" style="margin-top:30px;"></canvas>
+</section>
     </main>
   
 
@@ -403,13 +327,58 @@ function mostrarSeccion(id) {
     activa.style.display = "block";
     if (id === "tickets") cargarTickets();
     if (id === "comprobantes") renderComprobantes();
+    if (id === "resumen") cargarResumen();
     if (id === "empresas") cargarEmpresas();
     if (id === "gestion") cargarGestion();
+    if (id === "unidades") cargarUnidades();
+    if (id === "estadisticas") cargarEstadisticas();
+    if (id === "choferes") cargarChoferes();
+cargarEmpresasEnFiltro()
+filtrarChoferesPorEmpresa()
   }
 }
 window.mostrarSeccion = mostrarSeccion;
 window.onload = () => mostrarSeccion('resumen');
 
+async function cargarResumen() {
+  const hoy = new Date();
+  const yyyy = hoy.getFullYear();
+  const mm = String(hoy.getMonth() + 1).padStart(2, '0');
+  const dd = String(hoy.getDate()).padStart(2, '0');
+
+  const inicioSemana = new Date(hoy);
+  inicioSemana.setDate(hoy.getDate() - hoy.getDay()); // domingo
+  const inicioMes = new Date(yyyy, hoy.getMonth(), 1);
+
+  const fechas = {
+    dia: `${yyyy}-${mm}-${dd}T00:00:00`,
+    semana: inicioSemana.toISOString().split('T')[0] + 'T00:00:00',
+    mes: inicioMes.toISOString().split('T')[0] + 'T00:00:00'
+  };
+
+  // Tickets
+  const [ticketsDia, ticketsSemana, ticketsMes] = await Promise.all([
+    supabase.from('codigos_activos').select('id').gte('creado_en', fechas.dia),
+    supabase.from('codigos_activos').select('id').gte('creado_en', fechas.semana),
+    supabase.from('codigos_activos').select('id').gte('creado_en', fechas.mes)
+  ]);
+
+  // Comprobantes aprobados
+  const [comprobantesDia, comprobantesSemana, comprobantesMes] = await Promise.all([
+    supabase.from('pago_manual').select('id').eq('estado', 'aprobado').gte('fecha_validacion', fechas.dia),
+    supabase.from('pago_manual').select('id').eq('estado', 'aprobado').gte('fecha_validacion', fechas.semana),
+    supabase.from('pago_manual').select('id').eq('estado', 'aprobado').gte('fecha_validacion', fechas.mes)
+  ]);
+
+  // Render
+  document.getElementById('ticketsDia').textContent = ticketsDia.data?.length ?? '—';
+  document.getElementById('ticketsSemana').textContent = ticketsSemana.data?.length ?? '—';
+  document.getElementById('ticketsMes').textContent = ticketsMes.data?.length ?? '—';
+
+  document.getElementById('comprobantesDia').textContent = comprobantesDia.data?.length ?? '—';
+  document.getElementById('comprobantesSemana').textContent = comprobantesSemana.data?.length ?? '—';
+  document.getElementById('comprobantesMes').textContent = comprobantesMes.data?.length ?? '—';
+}
 
 // ✅ Tickets generados
 async function cargarTickets() {
@@ -570,98 +539,335 @@ window.rechazarComprobante = async (id) => {
     }
 
     async function cargarGestion() {
-  const { data: empresas } = await supabase.from('empresas').select('*');
   const { data: choferes } = await supabase.from('choferes').select('*');
+  const { data: unidades } = await supabase.from('unidades').select('*');
+  const { data: empresas } = await supabase.from('empresas').select('id, nombre');
 
-  const tablaEmpresas = document.getElementById('tabla-empresas');
-  const tablaChoferes = document.getElementById('tabla-choferes');
-  tablaEmpresas.innerHTML = '';
+  const sinUnidad = choferes.filter(c => !c.unidad);
+  const sinChofer = unidades.filter(u => !u.chofer_id);
+
+  const tablaChoferes = document.getElementById('choferesSinUnidad');
+  const tablaUnidades = document.getElementById('unidadesSinChofer');
+  const selectorChofer = document.getElementById('selectorChofer');
+  const selectorEmpresa = document.getElementById('selectorEmpresa');
+
   tablaChoferes.innerHTML = '';
+  tablaUnidades.innerHTML = '';
+  selectorChofer.innerHTML = '';
+  selectorEmpresa.innerHTML = '';
 
-  empresas.forEach(e => {
-    const fila = `<tr>
-      <td>${e.nombre}</td>
-      <td>${e.tipo ?? '—'}</td>
-      <td>${e.estado ?? '—'}</td>
-      <td>
-        <button onclick="eliminarEmpresa('${e.id}')">🗑️ Eliminar</button>
-      </td>
-    </tr>`;
-    tablaEmpresas.innerHTML += fila;
-  });
-
-  choferes.forEach(c => {
+  sinUnidad.forEach(c => {
     const fila = `<tr>
       <td>${c.id}</td>
-      <td>${c.unidad}</td>
-      <td>${c.estado ?? '—'}</td>
-      <td>
-        <button onclick="eliminarChofer('${c.id}')">🗑️ Eliminar</button>
-      </td>
+      <td>${c.licencia ?? '—'}</td>
+      <td>${c.empresa_id ?? '—'}</td>
+      <td><button onclick="asignarUnidad('${c.id}')">🧩 Asignar unidad</button></td>
     </tr>`;
     tablaChoferes.innerHTML += fila;
+
+    const option = document.createElement('option');
+    option.value = c.id;
+    option.textContent = c.id;
+    selectorChofer.appendChild(option);
+  });
+
+  sinChofer.forEach(u => {
+    const fila = `<tr>
+      <td>${u.id}</td>
+      <td>${u.estado}</td>
+      <td><button onclick="asignarChofer('${u.id}')">🧑‍✈️ Asignar chofer</button></td>
+    </tr>`;
+    tablaUnidades.innerHTML += fila;
+  });
+
+  empresas.forEach(e => {
+    const option = document.createElement('option');
+    option.value = e.id;
+    option.textContent = e.nombre;
+    selectorEmpresa.appendChild(option);
   });
 }
 
-window.agregarEmpresa = async () => {
-  const nombre = document.getElementById('nuevaEmpresa').value.trim();
-  if (!nombre) return alert("❌ Nombre vacío");
-  await supabase.from('empresas').insert({ nombre, tipo: 'urbana', estado: 'activa' });
-  cargarGestion();
-};
+async function asignarEmpresaAChofer() {
+  const choferId = document.getElementById('selectorChofer').value;
+  const empresaId = document.getElementById('selectorEmpresa').value;
 
-window.eliminarEmpresa = async (id) => {
-  await supabase.from('empresas').delete().eq('id', id);
+  const { error } = await supabase.rpc('asignar_empresa_chofer', {
+    chofer_id: choferId,
+    nueva_empresa_id: empresaId
+  });
+
+  if (error) return alert("⛔ Error al asignar empresa");
+  alert("✅ Empresa asignada correctamente");
   cargarGestion();
-};
+}
+    
+    async function cargarEmpresas() {
+  const { data, error } = await supabase.from('empresas').select('*')
+  if (error) return console.error('Error al cargar empresas:', error)
+
+  const tbody = document.querySelector('#tablaEmpresas tbody')
+  tbody.innerHTML = ''
+  data.forEach(emp => {
+    const row = document.createElement('tr')
+    row.innerHTML = `
+      <td>${emp.id}</td>
+      <td>${emp.nombre}</td>
+      <td>${emp.estado}</td>
+      <td>
+        <button onclick="activarEmpresa(${emp.id})">Activar</button>
+        <button onclick="desactivarEmpresa(${emp.id})">Desactivar</button>
+        <button onclick="eliminarEmpresa(${emp.id})">Eliminar</button>
+      </td>
+    `
+    tbody.appendChild(row)
+  })
+}
+
+async function agregarEmpresa() {
+  const nombre = document.getElementById('nombreEmpresa').value
+  const { error } = await supabase.from('empresas').insert([{ nombre, estado: 'activo' }])
+  if (error) return console.error('Error al agregar empresa:', error)
+  cargarEmpresas()
+}
+
+async function activarEmpresa(id) {
+  await supabase.from('empresas').update({ estado: 'activo' }).eq('id', id)
+  cargarEmpresas()
+}
+
+async function desactivarEmpresa(id) {
+  await supabase.from('empresas').update({ estado: 'inactivo' }).eq('id', id)
+  cargarEmpresas()
+}
+
+async function eliminarEmpresa(id) {
+  await supabase.from('empresas').delete().eq('id', id)
+  cargarEmpresas()
+}
+
+async function cargarChoferes() {
+  const { data } = await supabase.from('choferes').select('*');
+  const tabla = document.getElementById('tablaChoferes');
+  tabla.innerHTML = '';
+
+  data.forEach(c => {
+    const fila = `<tr>
+      <td>${c.id}</td>
+      <td>${c.unidad ?? '—'}</td>
+      <td>${c.licencia ?? '—'}</td>
+      <td>${c.estado ?? '—'}</td>
+      <td>
+        <button onclick="inhabilitarChofer('${c.id}')">🔒 Inhabilitar</button>
+        <button onclick="activarChofer('${c.id}')">✅ Activar</button>
+        <button onclick="eliminarChofer('${c.id}')">🗑️ Eliminar</button>
+      </td>
+    </tr>`;
+    tabla.innerHTML += fila;
+  });
+}
 
 window.agregarChofer = async () => {
-  const id = document.getElementById('nuevoChofer').value.trim();
+  const id = document.getElementById('idChofer').value.trim();
   const unidad = document.getElementById('unidadChofer').value.trim();
-  if (!id || !unidad) return alert("❌ Datos incompletos");
-  await supabase.from('choferes').insert({ id, unidad, estado: 'activo' });
-  cargarGestion();
+  const licencia = document.getElementById('licenciaChofer').value.trim();
+  if (!id || !unidad || !licencia) return alert("❌ Datos incompletos");
+
+  await supabase.from('choferes').insert({ id, unidad, licencia, estado: 'activo' });
+  cargarChoferes();
 };
 
 window.eliminarChofer = async (id) => {
   await supabase.from('choferes').delete().eq('id', id);
-  cargarGestion();
+  cargarChoferes();
 };
-    
-    async function cargarEmpresas() {
-  const { data: empresas } = await supabase.from('empresas').select('*');
-  const tabla = document.getElementById('tablaEmpresas');
+
+window.inhabilitarChofer = async (id) => {
+  await supabase.from('choferes').update({ estado: 'inhabilitado' }).eq('id', id);
+  cargarChoferes();
+};
+
+window.activarChofer = async (id) => {
+  await supabase.from('choferes').update({ estado: 'activo' }).eq('id', id);
+  cargarChoferes();
+};
+
+async function cargarUnidades() {
+  const { data } = await supabase.from('unidades').select('*');
+  const tabla = document.getElementById('tablaUnidades');
   tabla.innerHTML = '';
 
-  for (const e of empresas) {
-    const { data: choferes } = await supabase
-      .from('choferes')
-      .select('id, unidad')
-      .eq('empresa_id', e.id);
-
-    const lista = choferes.map(c => `🧑 ${c.id} (${c.unidad})`).join('<br>') || '—';
-
-    tabla.innerHTML += `<tr>
-      <td>${e.nombre}</td>
-      <td>${lista}</td>
+  data.forEach(u => {
+    const fila = `<tr>
+      <td>${u.id}</td>
+      <td>${u.estado ?? '—'}</td>
+      <td>${u.chofer_id ?? '—'}</td>
       <td>
-        <button onclick="eliminarEmpresa('${e.id}')">🗑️ Eliminar</button>
+        <button onclick="activarUnidad('${u.id}')">✅ Activar</button>
+        <button onclick="desactivarUnidad('${u.id}')">⛔ Desactivar</button>
+        <button onclick="asignarChofer('${u.id}')">🧑‍✈️ Asignar Chofer</button>
+        <button onclick="eliminarUnidad('${u.id}')">🗑️ Eliminar</button>
       </td>
     </tr>`;
-  }
+    tabla.innerHTML += fila;
+  });
 }
 
-window.crearEmpresa = async () => {
-  const nombre = document.getElementById('nombreEmpresa').value.trim();
-  if (!nombre) return alert("❌ Nombre vacío");
-  await supabase.from('empresas').insert({ nombre });
-  cargarEmpresas();
+window.agregarUnidad = async () => {
+  const id = document.getElementById('idUnidad').value.trim();
+  if (!id) return alert("❌ ID vacío");
+  await supabase.from('unidades').insert({ id, estado: 'inactivo' });
+  cargarUnidades();
 };
 
-window.eliminarEmpresa = async (id) => {
-  await supabase.from('empresas').delete().eq('id', id);
-  cargarEmpresas();
+window.eliminarUnidad = async (id) => {
+  await supabase.from('unidades').delete().eq('id', id);
+  cargarUnidades();
 };
+
+window.activarUnidad = async (id) => {
+  await supabase.from('unidades').update({ estado: 'activo' }).eq('id', id);
+  cargarUnidades();
+};
+
+window.desactivarUnidad = async (id) => {
+  await supabase.from('unidades').update({ estado: 'inactivo' }).eq('id', id);
+  cargarUnidades();
+};
+
+window.asignarChofer = async (id) => {
+  const nuevoChofer = prompt("🧑‍✈️ ID del chofer a asignar:");
+  if (!nuevoChofer) return;
+  await supabase.from('unidades').update({ chofer_id: nuevoChofer }).eq('id', id);
+  cargarUnidades();
+};
+
+async function cargarEmpresasEnFiltro() {
+  const { data } = await supabase.from('empresas').select('id, nombre')
+  const selector = document.getElementById('filtroEmpresa')
+  selector.innerHTML = '<option value="">— Todas —</option>'
+
+  data.forEach(e => {
+    const option = document.createElement('option')
+    option.value = e.id
+    option.textContent = e.nombre
+    selector.appendChild(option)
+  })
+}
+
+let choferSeleccionado = null
+
+async function abrirAsignacionEmpresa(choferId) {
+  choferSeleccionado = choferId
+  const { data } = await supabase.from('empresas').select('id, nombre')
+  const selector = document.getElementById('selectorEmpresa')
+  selector.innerHTML = ''
+
+  data.forEach(e => {
+    const option = document.createElement('option')
+    option.value = e.id
+    option.textContent = e.nombre
+    selector.appendChild(option)
+  })
+
+  document.getElementById('modalAsignacion').style.display = 'block'
+}
+
+async function confirmarAsignacionEmpresa() {
+  const empresaId = document.getElementById('selectorEmpresa').value
+
+  const { error } = await supabase.rpc('asignar_empresa_chofer', {
+    chofer_id: choferSeleccionado,
+    nueva_empresa_id: empresaId
+  })
+
+  if (error) {
+    alert('Error al asignar empresa')
+    return
+  }
+
+  document.getElementById('modalAsignacion').style.display = 'none'
+  filtrarChoferesPorEmpresa()
+}
+
+async function filtrarChoferesPorEmpresa() {
+  const empresaId = document.getElementById('filtroEmpresa').value
+  let query = supabase.from('choferes').select('*')
+
+  if (empresaId) query = query.eq('empresa_id', empresaId)
+
+  const { data } = await query
+  const tabla = document.getElementById('tablaChoferes')
+  tabla.innerHTML = ''
+
+  data.forEach(c => {
+    const fila = `<tr>
+      <td>${c.id}</td>
+      <td>${c.unidad}</td>
+      <td>${c.licencia}</td>
+      <td>${c.estado}</td>
+      <td>
+        <button onclick="inhabilitarChofer('${c.id}')">🔒</button>
+        <button onclick="activarChofer('${c.id}')">✅</button>
+        <button onclick="eliminarChofer('${c.id}')">🗑️</button>
+      </td>
+    </tr>`
+    tabla.innerHTML += fila
+  })
+}
+
+async function cargarEstadisticas() {
+  const hoy = new Date();
+  const fechas = [];
+
+  for (let i = 6; i >= 0; i--) {
+    const d = new Date(hoy);
+    d.setDate(hoy.getDate() - i);
+    fechas.push(d.toISOString().split('T')[0]);
+  }
+
+  const etiquetas = fechas.map(f => f); // para mostrar en gráfico
+  const ticketsPorDia = [];
+  const comprobantesPorDia = [];
+
+  for (const fecha of fechas) {
+    const [tickets, comprobantes] = await Promise.all([
+      supabase.from('codigos_activos').select('id').gte('creado_en', `${fecha}T00:00:00`).lt('creado_en', `${fecha}T23:59:59`),
+      supabase.from('pago_manual').select('id').eq('estado', 'aprobado').gte('fecha_validacion', `${fecha}T00:00:00`).lt('fecha_validacion', `${fecha}T23:59:59`)
+    ]);
+
+    ticketsPorDia.push(tickets.data?.length ?? 0);
+    comprobantesPorDia.push(comprobantes.data?.length ?? 0);
+  }
+
+  dibujarGrafico('graficoTickets', etiquetas, ticketsPorDia, '#00bfff');
+  dibujarGrafico('graficoComprobantes', etiquetas, comprobantesPorDia, '#00ff99');
+}
+
+function dibujarGrafico(canvasId, etiquetas, valores, color = '#7344D0') {
+  const canvas = document.getElementById(canvasId);
+  const ctx = canvas.getContext('2d');
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+  const max = Math.max(...valores) || 1;
+  const anchoBarra = canvas.width / etiquetas.length;
+  const escala = canvas.height / max;
+
+  etiquetas.forEach((etiqueta, i) => {
+    const x = i * anchoBarra + 10;
+    const altura = valores[i] * escala;
+    const y = canvas.height - altura;
+
+    // Barra
+    ctx.fillStyle = color;
+    ctx.fillRect(x, y, anchoBarra - 20, altura);
+
+    // Etiqueta
+    ctx.fillStyle = '#333';
+    ctx.font = '12px Segoe UI';
+    ctx.fillText(etiqueta.slice(5), x, canvas.height - 5); // muestra solo MM-DD
+  });
+}
   </script>
 </body>
   </html>
