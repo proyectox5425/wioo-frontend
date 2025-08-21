@@ -396,24 +396,31 @@
 
     // 🎬 Animación inicial y activación de pantalla
     window.addEventListener("DOMContentLoaded", () => {
-      const logo = document.getElementById("logo");
-      const pantalla1 = document.getElementById("pantalla1");
-      const pantalla2 = document.getElementById("pantalla2");
-      const encabezado = document.getElementById("encabezado-wioo");
+  const logo = document.getElementById("logo");
+  const pantalla1 = document.getElementById("pantalla1");
+  const pantalla2 = document.getElementById("pantalla2");
+  const encabezado = document.getElementById("encabezado-wioo");
 
+  // 🟣 Paso 1: animar el logo
+  setTimeout(() => {
+    logo.classList.add("animar-logo");
+
+    // 🟣 Paso 2: cambiar de pantalla después de la animación
+    setTimeout(() => {
+      pantalla1.style.display = "none";
+      pantalla2.style.display = "flex";
+      encabezado.style.opacity = "1";
+
+      // 🟣 Paso 3: mostrar términos 2 segundos después
       setTimeout(() => {
-        logo.classList.add("animar-logo");
-        pantalla1.style.display = "none";
-        pantalla2.style.display = "flex";
-        encabezado.style.opacity = "1";
-
-        setTimeout(() => {
-  const modalTerminos = document.getElementById("modal-terminos");
-  if (modalTerminos) {
-    modalTerminos.style.display = "block";
-  }
-}, 2000); // ⏱️ 2 segundos después de pantalla2
-      }, 3000);
+        const modalTerminos = document.getElementById("modal-terminos");
+        if (modalTerminos) {
+          modalTerminos.style.display = "block";
+        }
+      }, 2000);
+    }, 1000); // ⏱️ Esperamos 1 segundo para que se vea la animación
+  }, 300); // ⏱️ Activamos animación del logo tras 300ms
+});
 
       document.getElementById("close-modal").addEventListener("click", () => {
         document.getElementById("login-modal").style.display = "none";
