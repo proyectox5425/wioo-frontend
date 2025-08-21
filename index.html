@@ -334,16 +334,6 @@ if (botonAceptar) {
 
   botonAceptar.addEventListener("click", async () => {
     document.getElementById("modal-terminos").style.display = "none";
-    const payload = {
-      unidad: localStorage.getItem("unidadId"),
-      chofer: localStorage.getItem("choferId"),
-      hora: new Date().toISOString()
-    };
-    await fetch("/api/registro-terminos", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload)
-    });
   });
 }
 
