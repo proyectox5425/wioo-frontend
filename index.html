@@ -234,80 +234,71 @@
   <!-- 📜 Modal de términos -->
   <div id="modal-terminos" style="
   position: fixed;
-  top: 0; left: 0;
-  width: 100vw; height: 100vh;
-  background-color: rgba(0,0,0,0.5);
-  backdrop-filter: blur(6px);
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: #f8f8f8;
+  color: #222;
+  max-width: 480px;
+  width: 90%;
+  padding: 30px;
+  border-radius: 16px;
+  box-shadow: 0 0 20px #7344D090;
+  font-family: 'Segoe UI', sans-serif;
+  display: none;
   z-index: 9999;
 ">
-  <div style="
-    background-color: #f8f8f8;
-    color: #222;
-    max-width: 520px;
-    width: 90%;
-    padding: 30px;
-    border-radius: 16px;
-    box-shadow: 0 0 20px #7344D090;
-    font-family: 'Segoe UI', sans-serif;
+  <h2 style="color:#7344D0;">📜 Términos y Condiciones</h2>
+  <div id="contenedorTerminos" style="
+    margin-top: 20px;
+    font-size: 13px;
+    line-height: 1.6;
+    padding: 10px;
+    background-color: #ffffff;
+    border-radius: 10px;
+    border: 1px solid #ccc;
   ">
-    <h2 style="color:#7344D0;">📜 Términos y Condiciones</h2>
-
-    <div id="contenedorTerminos" style="
-      margin-top: 20px;
-      font-size: 13px;
-      line-height: 1.6;
-      padding: 10px;
-      background-color: #ffffff;
-      border-radius: 10px;
-      border: 1px solid #ccc;
+    <p><strong>Importante:</strong> Al continuar, usted acepta las condiciones de uso del sistema Wioo.</p>
+    <p>1. El servicio es personal, no transferible ni compartible.</p>
+    <p>2. La conexión puede variar según demanda, ubicación y hora.</p>
+    <p>3. Toda validación queda registrada por unidad, operador y método.</p>
+    <p>4. El sistema no implica relación bancaria directa ni intermediación financiera.</p>
+    <p>5. Códigos falsos, duplicados o manipulados serán bloqueados automáticamente.</p>
+    <p>6. Al conectarse, el usuario autoriza la recolección temporal de datos técnicos.</p>
+    <p>7. El uso indebido puede derivar en suspensión de conectividad sin previo aviso.</p>
+    <p>8. La aceptación de estos términos se registra digitalmente junto al identificador de unidad.</p>
+    <p>9. El sistema cumple estándares éticos urbanos y protocolos de auditoría institucional.</p>
+    <p>10. La conexión puede ser limitada en velocidad o duración según demanda operativa.</p>
+    <p>11. Métodos de validación QR y código manual son equivalentes legalmente.</p>
+    <p>12. Manipulación del sistema será registrada y reportada a la autoridad operativa.</p>
+    <p>13. Wioo no se hace responsable por fallas eléctricas, cortes externos o zonas sin cobertura.</p>
+    <p>14. El operador puede verificar su validación en tiempo real desde el panel institucional.</p>
+    <p>15. El sistema puede actualizarse sin previo aviso para mejorar la experiencia urbana.</p>
+    <p>16. El acceso está regulado por unidad, operador y condiciones de ruta.</p>
+    <p>17. La red puede suspenderse temporalmente por mantenimiento o auditoría técnica.</p>
+    <p>18. El usuario se compromete a respetar el flujo de validación y no interferir con el sistema.</p>
+    <p>19. Toda actividad queda registrada para fines de trazabilidad y control institucional.</p>
+    <p>20. Al continuar, usted confirma haber leído, comprendido y aceptado estas condiciones de uso.</p>
+  </div>
+  <div style="margin-top: 20px; text-align: center;">
+    <button id="botonAceptar" style="
+      background-color: #7344D0;
+      color: white;
+      padding: 12px 18px;
+      font-size: 16px;
+      font-weight: 600;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+    ">✅ Aceptar y continuar</button>
+    <p style="
+      margin-top: 10px;
+      font-size: 12px;
+      color: #555;
+      font-style: italic;
     ">
-      <p><strong>Importante:</strong> Al continuar, aceptas las condiciones de uso del sistema Wioo.</p>
-      <p>1. El servicio es personal, no transferible ni compartible.</p>
-      <p>2. La conexión puede variar según demanda y ubicación.</p>
-      <p>3. Toda validación queda registrada por unidad, operador y hora.</p>
-      <p>4. El sistema no implica relación bancaria directa.</p>
-      <p>5. Códigos falsos o duplicados serán bloqueados automáticamente.</p>
-      <p>6. Al conectarte, autorizas la recolección temporal de datos técnicos.</p>
-      <p>7. El uso indebido puede derivar en suspensión de conectividad.</p>
-      <p>8. La aceptación de estos términos se registra digitalmente.</p>
-      <p>9. El sistema cumple estándares éticos urbanos y operativos.</p>
-      <p>10. La conexión puede ser limitada en velocidad o duración.</p>
-      <p>11. Métodos de validación QR y código manual son equivalentes.</p>
-      <p>12. Manipulación del sistema será registrada y reportada.</p>
-      <p>13. Wioo no se hace responsable por fallas externas o eléctricas.</p>
-      <p>14. El operador puede verificar tu validación en tiempo real.</p>
-      <p>15. El sistema puede actualizarse sin previo aviso.</p>
-      <p>16. El acceso está regulado por unidad y operador en turno.</p>
-      <p>17. La red puede suspenderse temporalmente por mantenimiento.</p>
-      <p>18. El usuario se compromete a respetar el flujo de validación.</p>
-      <p>19. Toda actividad queda registrada para fines de auditoría urbana.</p>
-      <p>20. Al continuar, confirmas que has leído, comprendido y aceptado estas condiciones.</p>
-    </div>
-
-    <div style="margin-top: 20px; text-align: center;">
-      <button id="botonAceptar" style="
-        background-color: #7344D0;
-        color: white;
-        padding: 12px 18px;
-        font-size: 16px;
-        font-weight: 600;
-        border: none;
-        border-radius: 8px;
-        cursor: pointer;
-        opacity: 1;
-      ">✅ Aceptar y continuar</button>
-      <p style="
-        margin-top: 10px;
-        font-size: 12px;
-        color: #555;
-        font-style: italic;
-      ">
-        Al tocar el botón “Aceptar y continuar”, usted declara haber leído los términos y condiciones, y se compromete a cumplir con las normas operativas del sistema Wioo.
-      </p>
-    </div>
+      Al tocar el botón “Aceptar y continuar”, usted declara haber leído los términos y condiciones, y se compromete a cumplir con las normas operativas del sistema Wioo.
+    </p>
   </div>
 </div>
 
@@ -417,11 +408,11 @@
         encabezado.style.opacity = "1";
 
         setTimeout(() => {
-          const modalTerminos = document.getElementById("modal-terminos");
-          if (modalTerminos) {
-            modalTerminos.style.display = "flex";
-          }
-        }, 1500);
+  const modalTerminos = document.getElementById("modal-terminos");
+  if (modalTerminos) {
+    modalTerminos.style.display = "block";
+  }
+}, 2000); // ⏱️ 2 segundos después de pantalla2
       }, 3000);
 
       document.getElementById("close-modal").addEventListener("click", () => {
