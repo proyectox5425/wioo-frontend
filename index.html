@@ -315,14 +315,28 @@
     );
 
         // 📜 Registro de términos aceptados
-    if (contenedor && botonAceptar) {
-      contenedor.addEventListener("scroll", () => {
-        if (contenedor.scrollTop + contenedor.clientHeight >= contenedor.scrollHeight) {
-          botonAceptar.disabled = false;
-          botonAceptar.style.opacity = "1";
-          botonAceptar.style.cursor = "pointer";
-        }
-      });
+    const contenedor = document.getElementById("contenedorTerminos");
+const botonAceptar = document.getElementById("botonAceptar");
+
+if (botonAceptar) {
+  botonAceptar.disabled = false;
+  botonAceptar.style.opacity = "1";
+  botonAceptar.style.cursor = "pointer";
+
+  botonAceptar.addEventListener("click", async () => {
+    document.getElementById("modal-terminos").style.display = "none";
+    const payload = {
+      unidad: localStorage.getItem("unidadId"),
+      chofer: localStorage.getItem("choferId"),
+      hora: new Date().toISOString()
+    };
+    await fetch("/api/registro-terminos", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload)
+    });
+  });
+}
 
       botonAceptar.addEventListener("click", async () => {
         document.getElementById("modal-terminos").style.display = "none";
