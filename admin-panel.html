@@ -176,8 +176,10 @@ table td, table th {
   <!-- Formulario para agregar chofer -->
   <div style="margin-bottom:20px;">
     <input type="text" id="idChofer" placeholder="ID Chofer (ej: CHF-1023)" />
-    <input type="text" id="unidadChofer" placeholder="Unidad asignada (ej: BUS-001)" />
-    <input type="text" id="licenciaChofer" placeholder="Tipo de licencia (ej: Tipo D)" />
+    <select id="selectorUnidadChofer">
+  <option value="">— Selecciona unidad —</option>
+</select>
+    <input type="text" id="licenciaChofer" placeholder="Tipo de licencia (ej: 5ta)" />
     <button onclick="agregarChofer()">➕ Agregar Chofer</button>
   </div>
 
@@ -345,6 +347,7 @@ function mostrarSeccion(id) {
     cargarEmpresasParaUnidades();
     if (id === "estadisticas") cargarEstadisticas();
     if (id === "choferes") cargarChoferes();
+cargarUnidadesParaChoferes();
 cargarEmpresasEnFiltro()
 filtrarChoferesPorEmpresa()
   }
@@ -681,7 +684,7 @@ async function cargarChoferes() {
 
 window.agregarChofer = async () => {
   const id = document.getElementById('idChofer').value.trim();
-  const unidad = document.getElementById('unidadChofer').value.trim();
+  const unidad = document.getElementById('selectorUnidadChofer').value;
   const licencia = document.getElementById('licenciaChofer').value.trim();
   if (!id || !unidad || !licencia) return alert("❌ Datos incompletos");
 
@@ -854,6 +857,19 @@ async function cargarEmpresasParaUnidades() {
     const option = document.createElement('option');
     option.value = e.id;
     option.textContent = e.nombre;
+    selector.appendChild(option);
+  });
+}
+
+async function cargarUnidadesParaChoferes() {
+  const { data } = await supabase.from('unidades').select('id');
+  const selector = document.getElementById('selectorUnidadChofer');
+  selector.innerHTML = '<option value="">— Selecciona unidad —</option>';
+
+  data.forEach(u => {
+    const option = document.createElement('option');
+    option.value = u.id;
+    option.textContent = u.id;
     selector.appendChild(option);
   });
 }
