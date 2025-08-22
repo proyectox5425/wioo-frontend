@@ -146,7 +146,10 @@ table td, table th {
   <!-- Formulario para agregar unidad -->
   <div style="margin-bottom:20px;">
     <input type="text" id="idUnidad" placeholder="ID de unidad (ej: BUS-001)" />
-    <button onclick="agregarUnidad()">➕ Agregar Unidad</button>
+ <select id="selectorEmpresaUnidad">
+  <option value="">— Selecciona empresa —</option>
+</select>   
+<button onclick="agregarUnidad()">➕ Agregar Unidad</button>
   </div>
 
   <!-- Tabla de unidades -->
@@ -339,6 +342,7 @@ function mostrarSeccion(id) {
     if (id === "empresas") cargarEmpresas();
     if (id === "gestion") cargarGestion();
     if (id === "unidades") cargarUnidades();
+    cargarEmpresasParaUnidades();
     if (id === "estadisticas") cargarEstadisticas();
     if (id === "choferes") cargarChoferes();
 cargarEmpresasEnFiltro()
@@ -681,6 +685,10 @@ window.agregarChofer = async () => {
   const licencia = document.getElementById('licenciaChofer').value.trim();
   if (!id || !unidad || !licencia) return alert("❌ Datos incompletos");
 
+  const { data: unidades } = await supabase.from('unidades').select('id');
+  const existeUnidad = unidades.some(u => u.id === unidad);
+  if (!existeUnidad) return alert("⛔ Unidad no registrada.");
+
   await supabase.from('choferes').insert({ id, unidad, licencia, estado: 'activo' });
   cargarChoferes();
 };
@@ -723,8 +731,14 @@ async function cargarUnidades() {
 
 window.agregarUnidad = async () => {
   const id = document.getElementById('idUnidad').value.trim();
-  if (!id) return alert("❌ ID vacío");
-  await supabase.from('unidades').insert({ id, estado: 'inactivo' });
+  const empresaId = document.getElementById('selectorEmpresaUnidad').value;
+  if (!id || !empresaId) return alert("❌ Datos incompletos");
+
+  const { data: empresas } = await supabase.from('empresas').select('id');
+  const existe = empresas.some(e => e.id === empresaId);
+  if (!existe) return alert("⛔ Empresa no registrada.");
+
+  await supabase.from('unidades').insert({ id, estado: 'inactivo', empresa_id: empresaId });
   cargarUnidades();
 };
 
@@ -743,10 +757,17 @@ window.desactivarUnidad = async (id) => {
   cargarUnidades();
 };
 
-window.asignarChofer = async (id) => {
-  const nuevoChofer = prompt("🧑‍✈️ ID del chofer a asignar:");
-  if (!nuevoChofer) return;
-  await supabase.from('unidades').update({ chofer_id: nuevoChofer }).eq('id', id);
+window.asignarChofer = async (unidadId) => {
+  const choferId = prompt("🧑‍✈️ ID del chofer a asignar:");
+  if (!choferId) return;
+
+  const { data: choferes } = await supabase.from('choferes').select('id');
+  const existe = choferes.some(c => c.id === choferId);
+  if (!existe) return alert("⛔ Chofer no registrado.");
+
+  await supabase.from('unidades').update({ chofer_id: choferId }).eq('id', unidadId);
+  await supabase.from('choferes').update({ unidad: unidadId }).eq('id', choferId);
+  alert("✅ Chofer asignado.");
   cargarUnidades();
 };
 
@@ -822,6 +843,19 @@ async function filtrarChoferesPorEmpresa() {
     </tr>`
     tabla.innerHTML += fila
   })
+}
+
+async function cargarEmpresasParaUnidades() {
+  const { data } = await supabase.from('empresas').select('id, nombre');
+  const selector = document.getElementById('selectorEmpresaUnidad');
+  selector.innerHTML = '<option value="">— Selecciona empresa —</option>';
+
+  data.forEach(e => {
+    const option = document.createElement('option');
+    option.value = e.id;
+    option.textContent = e.nombre;
+    selector.appendChild(option);
+  });
 }
 
 async function cargarEstadisticas() {
