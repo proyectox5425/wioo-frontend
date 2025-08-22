@@ -282,6 +282,7 @@ table td, table th {
     <input type="text" id="nombreEmpresa" placeholder="Nombre de la empresa" />
     <button onclick="agregarEmpresa()">Agregar empresa</button>
   </div>
+<div id="logAccion" style="margin-top: 10px; font-weight: bold;"></div>
 
   <table id="tablaEmpresas">
     <thead>
@@ -669,6 +670,8 @@ async function agregarEmpresa() {
 
   alert("✅ Empresa registrada correctamente.");
   document.getElementById('nombreEmpresa').value = "";
+
+document.getElementById('logAccion').textContent = `✅ Registrada empresa: ${nombre}`;
   cargarEmpresas();
 }
 
