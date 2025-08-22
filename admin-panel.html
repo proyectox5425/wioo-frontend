@@ -444,14 +444,18 @@ async function cargarTickets() {
 }
 
 
-// ✅ Comprobantes cargados por pasajeros
+// ✅ Renderizar comprobantes desde Supabase
 async function renderComprobantes() {
   const { data, error } = await supabase
     .from('pago_manual')
     .select('*')
     .order('fecha_hora', { ascending: false });
 
-  if (error || !data) return;
+  if (error || !data) {
+    console.error('⛔ Error al cargar comprobantes:', error?.message);
+    alert("Error al cargar comprobantes");
+    return;
+  }
 
   const tablaPendientes = document.getElementById('tabla-comprobantes-pendientes');
   const tablaActivos = document.getElementById('tabla-comprobantes-activos');
@@ -476,8 +480,8 @@ async function renderComprobantes() {
       const fila = document.createElement('tr');
       fila.innerHTML = filaBase + `
         <td>
-          <button onclick="validarComprobante('${c.id}')" style="background:#4CAF50; color:white;">✅ Validar</button>
-          <button onclick="rechazarComprobante('${c.id}')" style="background:#f44336; color:white;">❌ Rechazar</button>
+          <button onclick="validarComprobante('${c.id}')">✅ Validar</button>
+          <button onclick="rechazarComprobante('${c.id}')">❌ Rechazar</button>
         </td>
       `;
       tablaPendientes.appendChild(fila);
@@ -492,32 +496,25 @@ async function renderComprobantes() {
 }
 
 
-// ✅ Validar comprobante
+// ✅ Validar comprobante usando RPC
 window.validarComprobante = async (id) => {
-  const { data } = await supabase
-    .from('pago_manual')
-    .select('ip_pasajero')
-    .eq('id', id)
-    .single();
+  const { error } = await supabase.rpc('validar_comprobante', {
+    comprobante_id: id
+  });
 
-  const ipPasajero = data?.ip_pasajero ?? null;
-  if (!ipPasajero) return alert("⛔ Sin IP registrada.");
+  if (error) {
+    console.error('⛔ Error al validar comprobante:', error.message);
+    alert("Error al validar comprobante");
+    return;
+  }
 
-  await supabase
-    .from('pago_manual')
-    .update({
-      estado: 'aprobado',
-      fecha_validacion: new Date().toISOString()
-    })
-    .eq('id', id);
-
-  alert("✅ Comprobante aprobado. El pasajero será redirigido a pantalla 4.1.");
+  alert("✅ Comprobante validado correctamente");
   renderComprobantes();
 };
 
 // ✅ Rechazar comprobante
 window.rechazarComprobante = async (id) => {
-  const { data } = await supabase
+  const { data, error: fetchError } = await supabase
     .from('pago_manual')
     .select('ip_pasajero')
     .eq('id', id)
@@ -525,13 +522,18 @@ window.rechazarComprobante = async (id) => {
 
   const ipPasajero = data?.ip_pasajero ?? null;
 
-  await supabase.from('pago_manual')
-    .update({
-      estado: 'rechazado',
-      motivo_rechazo: 'No se registró pago',
-      fecha_validacion: new Date().toISOString()
-    })
-    .eq('id', id);
+  const motivo = "No se registró pago"; // o usar prompt si querés hacerlo dinámico
+
+  const { error } = await supabase.rpc('rechazar_comprobante', {
+    comprobante_id: id,
+    motivo
+  });
+
+  if (error) {
+    console.error('⛔ Error al rechazar comprobante:', error.message);
+    alert("Error al rechazar comprobante");
+    return;
+  }
 
   if (ipPasajero) {
     try {
@@ -540,7 +542,7 @@ window.rechazarComprobante = async (id) => {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           ip: ipPasajero,
-          redirigirPantalla: '4.2' // 👈 instrucción para Mikrotik o panel
+          redirigirPantalla: '4.2'
         })
       });
 
@@ -558,7 +560,7 @@ window.rechazarComprobante = async (id) => {
   }
 
   renderComprobantes();
-    }
+};
 
     async function cargarGestion() {
   const { data: choferes } = await supabase.from('choferes').select('*');
@@ -624,53 +626,106 @@ async function asignarEmpresaAChofer() {
   cargarGestion();
 }
     
-    async function cargarEmpresas() {
-  const { data, error } = await supabase.from('empresas').select('*')
-  if (error) return console.error('Error al cargar empresas:', error)
+    // ✅ Cargar empresas desde Supabase
+async function cargarEmpresas() {
+  const { data, error } = await supabase.from('empresas').select('*');
+  if (error) {
+    console.error('⛔ Error al cargar empresas:', error.message);
+    alert('Error al cargar empresas');
+    return;
+  }
 
-  const tbody = document.querySelector('#tablaEmpresas tbody')
-  tbody.innerHTML = ''
+  const tbody = document.querySelector('#tablaEmpresas tbody');
+  tbody.innerHTML = '';
+
   data.forEach(emp => {
-    const row = document.createElement('tr')
+    const row = document.createElement('tr');
     row.innerHTML = `
       <td>${emp.id}</td>
       <td>${emp.nombre}</td>
       <td>${emp.estado}</td>
       <td>
-        <button onclick="activarEmpresa('${emp.id}')">Activar</button>
-        <button onclick="desactivarEmpresa('${emp.id}')">Desactivar</button>
-        <button onclick="eliminarEmpresa('${emp.id}')">Eliminar</button>
+        <button onclick="activarEmpresa('${emp.id}')">✅ Activar</button>
+        <button onclick="desactivarEmpresa('${emp.id}')">⛔ Desactivar</button>
+        <button onclick="eliminarEmpresa('${emp.id}')">🗑️ Eliminar</button>
       </td>
-    `
-    tbody.appendChild(row)
-  })
+    `;
+    tbody.appendChild(row);
+  });
 }
 
+// ✅ Agregar empresa usando RPC institucional
 async function agregarEmpresa() {
-  const nombre = document.getElementById('nombreEmpresa').value
-  const { error } = await supabase.from('empresas').insert([{ nombre, estado: 'activo' }])
-  if (error) return console.error('Error al agregar empresa:', error)
-  cargarEmpresas()
-if (!nombre.trim()) return alert("❌ Nombre vacío");
+  const nombre = document.getElementById('nombreEmpresa').value.trim();
+  if (!nombre) return alert("❌ Debes ingresar un nombre de empresa.");
+
+  const { error } = await supabase.rpc('insertar_empresa', { nombre });
+
+  if (error) {
+    console.error('⛔ Error al registrar empresa:', error.message);
+    alert("Error al registrar empresa");
+    return;
+  }
+
+  alert("✅ Empresa registrada correctamente.");
+  document.getElementById('nombreEmpresa').value = "";
+  cargarEmpresas();
 }
 
+// ✅ Activar empresa usando RPC
 async function activarEmpresa(id) {
-  await supabase.from('empresas').update({ estado: 'activo' }).eq('id', id)
-  cargarEmpresas()
+  const { error } = await supabase.rpc('activar_empresa', { id_empresa: id });
+
+  if (error) {
+    console.error('⛔ Error al activar empresa:', error.message);
+    alert("Error al activar empresa");
+    return;
+  }
+
+  alert("✅ Empresa activada");
+  cargarEmpresas();
 }
 
+// ✅ Desactivar empresa usando RPC
 async function desactivarEmpresa(id) {
-  await supabase.from('empresas').update({ estado: 'inactivo' }).eq('id', id)
-  cargarEmpresas()
+  const { error } = await supabase.rpc('desactivar_empresa', { id_empresa: id });
+
+  if (error) {
+    console.error('⛔ Error al desactivar empresa:', error.message);
+    alert("Error al desactivar empresa");
+    return;
+  }
+
+  alert("✅ Empresa desactivada");
+  cargarEmpresas();
 }
 
+// ✅ Eliminar empresa usando RPC
 async function eliminarEmpresa(id) {
-  await supabase.from('empresas').delete().eq('id', id)
-  cargarEmpresas()
+  const confirmacion = confirm("¿Estás seguro de que deseas eliminar esta empresa?");
+  if (!confirmacion) return;
+
+  const { error } = await supabase.rpc('eliminar_empresa', { id_empresa: id });
+
+  if (error) {
+    console.error('⛔ Error al eliminar empresa:', error.message);
+    alert("Error al eliminar empresa");
+    return;
+  }
+
+  alert("✅ Empresa eliminada");
+  cargarEmpresas();
 }
 
+// ✅ Cargar choferes desde Supabase
 async function cargarChoferes() {
-  const { data } = await supabase.from('choferes').select('*');
+  const { data, error } = await supabase.from('choferes').select('*');
+  if (error) {
+    console.error('⛔ Error al cargar choferes:', error.message);
+    alert('Error al cargar choferes');
+    return;
+  }
+
   const tabla = document.getElementById('tablaChoferes');
   tabla.innerHTML = '';
 
@@ -690,37 +745,92 @@ async function cargarChoferes() {
   });
 }
 
+// ✅ Agregar chofer usando RPC institucional
 window.agregarChofer = async () => {
   const id = document.getElementById('idChofer').value.trim();
   const unidad = document.getElementById('selectorUnidadChofer').value;
   const licencia = document.getElementById('licenciaChofer').value.trim();
+
   if (!id || !unidad || !licencia) return alert("❌ Datos incompletos");
 
-  const { data: unidades } = await supabase.from('unidades').select('id');
-  const existeUnidad = unidades.some(u => u.id === unidad);
-  if (!existeUnidad) return alert("⛔ Unidad no registrada.");
+  const { error } = await supabase.rpc('insertar_chofer', {
+    nuevo_id: id,
+    nueva_unidad: unidad,
+    nueva_licencia: licencia
+  });
 
-  await supabase.from('choferes').insert({ id, unidad, licencia, estado: 'activo' });
+  if (error) {
+    console.error('⛔ Error al registrar chofer:', error.message);
+    alert("Error al registrar chofer");
+    return;
+  }
+
+  alert("✅ Chofer registrado correctamente");
+  document.getElementById('idChofer').value = "";
+  document.getElementById('licenciaChofer').value = "";
   cargarChoferes();
 };
 
+// ✅ Eliminar chofer usando RPC
 window.eliminarChofer = async (id) => {
-  await supabase.from('choferes').delete().eq('id', id);
+  const confirmacion = confirm("¿Estás seguro de que deseas eliminar este chofer?");
+  if (!confirmacion) return;
+
+  const { error } = await supabase.rpc('eliminar_chofer', { chofer_id: id });
+
+  if (error) {
+    console.error('⛔ Error al eliminar chofer:', error.message);
+    alert("Error al eliminar chofer");
+    return;
+  }
+
+  alert("✅ Chofer eliminado");
   cargarChoferes();
 };
 
+// ✅ Inhabilitar chofer usando RPC
 window.inhabilitarChofer = async (id) => {
-  await supabase.from('choferes').update({ estado: 'inhabilitado' }).eq('id', id);
+  const { error } = await supabase.rpc('cambiar_estado_chofer', {
+    chofer_id: id,
+    nuevo_estado: 'inhabilitado'
+  });
+
+  if (error) {
+    console.error('⛔ Error al inhabilitar chofer:', error.message);
+    alert("Error al inhabilitar chofer");
+    return;
+  }
+
+  alert("✅ Chofer inhabilitado");
   cargarChoferes();
 };
 
+// ✅ Activar chofer usando RPC
 window.activarChofer = async (id) => {
-  await supabase.from('choferes').update({ estado: 'activo' }).eq('id', id);
+  const { error } = await supabase.rpc('cambiar_estado_chofer', {
+    chofer_id: id,
+    nuevo_estado: 'activo'
+  });
+
+  if (error) {
+    console.error('⛔ Error al activar chofer:', error.message);
+    alert("Error al activar chofer");
+    return;
+  }
+
+  alert("✅ Chofer activado");
   cargarChoferes();
 };
 
+// ✅ Cargar unidades desde Supabase
 async function cargarUnidades() {
-  const { data } = await supabase.from('unidades').select('*');
+  const { data, error } = await supabase.from('unidades').select('*');
+  if (error) {
+    console.error('⛔ Error al cargar unidades:', error.message);
+    alert('Error al cargar unidades');
+    return;
+  }
+
   const tabla = document.getElementById('tablaUnidades');
   tabla.innerHTML = '';
 
@@ -740,45 +850,91 @@ async function cargarUnidades() {
   });
 }
 
+// ✅ Agregar unidad usando RPC institucional
 window.agregarUnidad = async () => {
   const id = document.getElementById('idUnidad').value.trim();
   const empresaId = document.getElementById('selectorEmpresaUnidad').value;
+
   if (!id || !empresaId) return alert("❌ Datos incompletos");
 
-  const { data: empresas } = await supabase.from('empresas').select('id');
-  const existe = empresas.some(e => e.id === empresaId);
-  if (!existe) return alert("⛔ Empresa no registrada.");
+  const { error } = await supabase.rpc('insertar_unidad', {
+    unidad_id: id,
+    empresa_id: empresaId
+  });
 
-  await supabase.from('unidades').insert({ id, estado: 'inactivo', empresa_id: empresaId });
+  if (error) {
+    console.error('⛔ Error al registrar unidad:', error.message);
+    alert("Error al registrar unidad");
+    return;
+  }
+
+  alert("✅ Unidad registrada correctamente");
+  document.getElementById('idUnidad').value = "";
   cargarUnidades();
 };
 
+// ✅ Eliminar unidad usando RPC
 window.eliminarUnidad = async (id) => {
-  await supabase.from('unidades').delete().eq('id', id);
+  const confirmacion = confirm("¿Estás seguro de que deseas eliminar esta unidad?");
+  if (!confirmacion) return;
+
+  const { error } = await supabase.rpc('eliminar_unidad', { unidad_id: id });
+
+  if (error) {
+    console.error('⛔ Error al eliminar unidad:', error.message);
+    alert("Error al eliminar unidad");
+    return;
+  }
+
+  alert("✅ Unidad eliminada");
   cargarUnidades();
 };
 
+// ✅ Activar unidad usando RPC
 window.activarUnidad = async (id) => {
-  await supabase.from('unidades').update({ estado: 'activo' }).eq('id', id);
+  const { error } = await supabase.rpc('activar_unidad', { unidad_id: id });
+
+  if (error) {
+    console.error('⛔ Error al activar unidad:', error.message);
+    alert("Error al activar unidad");
+    return;
+  }
+
+  alert("✅ Unidad activada");
   cargarUnidades();
 };
 
+// ✅ Desactivar unidad usando RPC
 window.desactivarUnidad = async (id) => {
-  await supabase.from('unidades').update({ estado: 'inactivo' }).eq('id', id);
+  const { error } = await supabase.rpc('desactivar_unidad', { unidad_id: id });
+
+  if (error) {
+    console.error('⛔ Error al desactivar unidad:', error.message);
+    alert("Error al desactivar unidad");
+    return;
+  }
+
+  alert("✅ Unidad desactivada");
   cargarUnidades();
 };
 
+// ✅ Asignar chofer a unidad usando RPC
 window.asignarChofer = async (unidadId) => {
   const choferId = prompt("🧑‍✈️ ID del chofer a asignar:");
   if (!choferId) return;
 
-  const { data: choferes } = await supabase.from('choferes').select('id');
-  const existe = choferes.some(c => c.id === choferId);
-  if (!existe) return alert("⛔ Chofer no registrado.");
+  const { error } = await supabase.rpc('asignar_chofer_a_unidad', {
+    unidad_id: unidadId,
+    chofer_id: choferId
+  });
 
-  await supabase.from('unidades').update({ chofer_id: choferId }).eq('id', unidadId);
-  await supabase.from('choferes').update({ unidad: unidadId }).eq('id', choferId);
-  alert("✅ Chofer asignado.");
+  if (error) {
+    console.error('⛔ Error al asignar chofer:', error.message);
+    alert("Error al asignar chofer");
+    return;
+  }
+
+  alert("✅ Chofer asignado correctamente");
   cargarUnidades();
 };
 
