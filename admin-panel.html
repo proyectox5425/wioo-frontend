@@ -338,18 +338,25 @@ function mostrarSeccion(id) {
   const activa = document.getElementById(id);
   if (activa) {
     activa.style.display = "block";
+
     if (id === "tickets") cargarTickets();
     if (id === "comprobantes") renderComprobantes();
     if (id === "resumen") cargarResumen();
     if (id === "empresas") cargarEmpresas();
     if (id === "gestion") cargarGestion();
-    if (id === "unidades") cargarUnidades();
-    cargarEmpresasParaUnidades();
     if (id === "estadisticas") cargarEstadisticas();
-    if (id === "choferes") cargarChoferes();
-cargarUnidadesParaChoferes();
-cargarEmpresasEnFiltro()
-filtrarChoferesPorEmpresa()
+
+    if (id === "unidades") {
+      cargarUnidades();
+      cargarEmpresasParaUnidades();
+    }
+
+    if (id === "choferes") {
+      cargarChoferes();
+      cargarUnidadesParaChoferes();
+      cargarEmpresasEnFiltro();
+      filtrarChoferesPorEmpresa();
+    }
   }
 }
 window.mostrarSeccion = mostrarSeccion;
@@ -630,9 +637,9 @@ async function asignarEmpresaAChofer() {
       <td>${emp.nombre}</td>
       <td>${emp.estado}</td>
       <td>
-        <button onclick="activarEmpresa(${emp.id})">Activar</button>
-        <button onclick="desactivarEmpresa(${emp.id})">Desactivar</button>
-        <button onclick="eliminarEmpresa(${emp.id})">Eliminar</button>
+        <button onclick="activarEmpresa('${emp.id}')">Activar</button>
+        <button onclick="desactivarEmpresa('${emp.id}')">Desactivar</button>
+        <button onclick="eliminarEmpresa('${emp.id}')">Eliminar</button>
       </td>
     `
     tbody.appendChild(row)
@@ -644,6 +651,7 @@ async function agregarEmpresa() {
   const { error } = await supabase.from('empresas').insert([{ nombre, estado: 'activo' }])
   if (error) return console.error('Error al agregar empresa:', error)
   cargarEmpresas()
+if (!nombre.trim()) return alert("❌ Nombre vacío");
 }
 
 async function activarEmpresa(id) {
