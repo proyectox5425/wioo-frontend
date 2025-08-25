@@ -389,7 +389,7 @@
           unidad,
           estado: "pendiente",
           hash_dispositivo: hash,
-          ip_pasajero: ip,                           // ✅ IP pública real del pasajero
+          ip_pasajero: ip,
           fecha_hora: new Date().toISOString(),
           fecha_validacion: null,
           motivo_rechazo: null
@@ -404,33 +404,39 @@
           },
           body: JSON.stringify(datos)
         })
-          .then((res) => {
-            return res.text();
-          })
-          .then((respuestaTexto) => {
-            verificarEstadoPago(referencia);
-          })
-          .catch((err) => {
-            console.error("⛔ Error al enviar comprobante:", err);
-            alert("❌ Error técnico al enviar el comprobante.");
-          });
+        .then(res => res.json())
+        .then(respuesta => {
+          const id = respuesta[0]?.id || respuesta?.id;
+          if (id) {
+            localStorage.setItem("pagoId", id);
+            verificarEstadoPagoPorId(id);
+          } else {
+            throw new Error("No se recibió ID del comprobante");
+          }
+        })
+        .catch((err) => {
+          console.error("⛔ Error al enviar comprobante:", err);
+          alert("❌ Error técnico al enviar el comprobante.");
+          document.getElementById("modal-espera").style.display = "none";
+        });
       })
       .catch(() => {
         alert("❌ No se pudo obtener la IP pública. Verifica tu conexión.");
+        document.getElementById("modal-espera").style.display = "none";
       });
   } else {
     alert("Por favor completa todos los campos correctamente.");
   }
-    }
-
-    function verificarEstadoPago(referencia) {
-  const intervalo = setInterval(() => {
- fetch(`https://sjrmzkomzlqpsfvjdnle.supabase.co/rest/v1/pago_manual?referencia=eq.${referencia}`, {
-      headers: {
-  "Content-Type": "application/json",
-  "apikey": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNqcm16a29temxxcHNmdmpkbmxlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTI4MDU0NTMsImV4cCI6MjA2ODM4MTQ1M30.lX1F-w3ar2LEunf6OTfHoWkDOGFn4KdFTxEuCm34Wmw",
-  "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNqcm16a29temxxcHNmdmpkbmxlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTI4MDU0NTMsImV4cCI6MjA2ODM4MTQ1M30.lX1F-w3ar2LEunf6OTfHoWkDOGFn4KdFTxEuCm34Wmw"
 }
+
+function verificarEstadoPagoPorId(id) {
+  const intervalo = setInterval(() => {
+    fetch(`https://sjrmzkomzlqpsfvjdnle.supabase.co/rest/v1/pago_manual?id=eq.${id}`, {
+      headers: {
+        "Content-Type": "application/json",
+        "apikey": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNqcm16a29temxxcHNmdmpkbmxlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTI4MDU0NTMsImV4cCI6MjA2ODM4MTQ1M30.lX1F-w3ar2LEunf6OTfHoWkDOGFn4KdFTxEuCm34Wmw",
+        "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNqcm16a29temxxcHNmdmpkbmxlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTI4MDU0NTMsImV4cCI6MjA2ODM4MTQ1M30.lX1F-w3ar2LEunf6OTfHoWkDOGFn4KdFTxEuCm34Wmw"
+      }
     })
     .then(res => res.json())
     .then(data => {
@@ -446,13 +452,12 @@
     });
   }, 5000);
 
-// ⏱️ Cortar verificación después de 15 minutos (900,000 ms)
-setTimeout(() => {
-  clearInterval(intervalo);
-  document.getElementById("modal-espera").style.display = "none";
-  alert("⏳ Tiempo de espera agotado. Intenta nuevamente o consulta con el operador.");
-}, 900000);
-    }
+  setTimeout(() => {
+    clearInterval(intervalo);
+    document.getElementById("modal-espera").style.display = "none";
+    alert("⏳ Tiempo de espera agotado. Intenta nuevamente o consulta con el operador.");
+  }, 900000);
+}
   </script>
   <script type="module" src="api.js"></script>
   <div id="modal-espera" class="modal-espera">
