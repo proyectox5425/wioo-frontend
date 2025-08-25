@@ -674,6 +674,7 @@ async function agregarEmpresa() {
 document.getElementById('logAccion').textContent = `✅ Registrada empresa: ${nombre}`;
   cargarEmpresas();
 }
+window.agregarEmpresa = agregarEmpresa;
 
 // ✅ Activar empresa usando RPC
 async function activarEmpresa(id) {
