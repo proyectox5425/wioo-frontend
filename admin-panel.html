@@ -115,6 +115,21 @@ table td, table th {
       <section id="resumen">
   <h2 style="color:#7344D0;">📊 Resumen Operativo</h2>
 
+<div style="margin-top:20px; margin-bottom:30px; display:flex; gap:12px; flex-wrap:wrap;">
+  <select id="filtroEmpresaResumen">
+    <option value="">🏢 Empresa</option>
+  </select>
+  <select id="filtroUnidadResumen">
+    <option value="">🚍 Unidad</option>
+  </select>
+  <select id="filtroChoferResumen">
+    <option value="">🧑‍✈️ Chofer</option>
+  </select>
+  <input type="date" id="filtroFechaResumen" />
+  <button onclick="filtrarResumen()">🔍 Buscar</button>
+<button onclick="exportarResumen()">📤 Exportar Resumen</button>
+</div>
+
   <div class="card-group">
     <h3>📅 Hoy</h3>
     <div class="card-container">
@@ -342,7 +357,10 @@ function mostrarSeccion(id) {
 
     if (id === "tickets") cargarTickets();
     if (id === "comprobantes") renderComprobantes();
-    if (id === "resumen") cargarResumen();
+    if (id === "resumen") {
+  cargarResumen();
+  cargarFiltrosResumen();
+}
     if (id === "empresas") cargarEmpresas();
     if (id === "gestion") cargarGestion();
     if (id === "estadisticas") cargarEstadisticas();
@@ -401,6 +419,118 @@ async function cargarResumen() {
   document.getElementById('comprobantesDia').textContent = comprobantesDia.data?.length ?? '—';
   document.getElementById('comprobantesSemana').textContent = comprobantesSemana.data?.length ?? '—';
   document.getElementById('comprobantesMes').textContent = comprobantesMes.data?.length ?? '—';
+}
+
+async function filtrarResumen() {
+  const empresa = document.getElementById('filtroEmpresaResumen').value;
+  const unidad = document.getElementById('filtroUnidadResumen').value;
+  const chofer = document.getElementById('filtroChoferResumen').value;
+  const fecha = document.getElementById('filtroFechaResumen').value;
+
+  const filtros = {};
+
+  if (empresa) filtros.empresa_id = empresa;
+  if (unidad) filtros.unidad = unidad;
+  if (chofer) filtros.chofer_id = chofer;
+
+  const fechaISO = fecha ? `${fecha}T00:00:00` : null;
+
+  // Tickets filtrados
+  let queryTickets = supabase.from('codigos_activos').select('id');
+  if (fechaISO) queryTickets = queryTickets.gte('creado_en', fechaISO);
+  if (unidad) queryTickets = queryTickets.eq('unidad', unidad);
+
+  // Comprobantes filtrados
+  let queryComprobantes = supabase.from('pago_manual').select('id').eq('estado', 'aprobado');
+  if (fechaISO) queryComprobantes = queryComprobantes.gte('fecha_validacion', fechaISO);
+  if (unidad) queryComprobantes = queryComprobantes.eq('unidad', unidad);
+
+  const [tickets, comprobantes] = await Promise.all([
+    queryTickets,
+    queryComprobantes
+  ]);
+
+  document.getElementById('ticketsDia').textContent = tickets.data?.length ?? '—';
+  document.getElementById('ticketsSemana').textContent = '—';
+  document.getElementById('ticketsMes').textContent = '—';
+
+  document.getElementById('comprobantesDia').textContent = comprobantes.data?.length ?? '—';
+  document.getElementById('comprobantesSemana').textContent = '—';
+  document.getElementById('comprobantesMes').textContent = '—';
+}
+
+async function exportarResumen() {
+  const empresa = document.getElementById('filtroEmpresaResumen').value;
+  const unidad = document.getElementById('filtroUnidadResumen').value;
+  const chofer = document.getElementById('filtroChoferResumen').value;
+  const fecha = document.getElementById('filtroFechaResumen').value;
+
+  const fechaISO = fecha ? `${fecha}T00:00:00` : null;
+
+  let queryTickets = supabase.from('codigos_activos').select('*');
+  let queryComprobantes = supabase.from('pago_manual').select('*').eq('estado', 'aprobado');
+
+  if (fechaISO) {
+    queryTickets = queryTickets.gte('creado_en', fechaISO);
+    queryComprobantes = queryComprobantes.gte('fecha_validacion', fechaISO);
+  }
+  if (unidad) {
+    queryTickets = queryTickets.eq('unidad', unidad);
+    queryComprobantes = queryComprobantes.eq('unidad', unidad);
+  }
+
+  const [tickets, comprobantes] = await Promise.all([
+    queryTickets,
+    queryComprobantes
+  ]);
+
+  const resumen = `
+📤 RESUMEN OPERATIVO
+Fecha: ${fecha || '—'}
+Empresa: ${empresa || '—'}
+Unidad: ${unidad || '—'}
+Chofer: ${chofer || '—'}
+
+🎫 Tickets generados: ${tickets.data?.length ?? '—'}
+📥 Comprobantes aprobados: ${comprobantes.data?.length ?? '—'}
+
+🕒 Hora de exportación: ${new Date().toLocaleString()}
+`;
+
+  alert(resumen);
+}
+
+async function cargarFiltrosResumen() {
+  const [empresas, unidades, choferes] = await Promise.all([
+    supabase.from('empresas').select('id, nombre'),
+    supabase.from('unidades').select('id'),
+    supabase.from('choferes').select('id')
+  ]);
+
+  const empresaSelect = document.getElementById('filtroEmpresaResumen');
+  const unidadSelect = document.getElementById('filtroUnidadResumen');
+  const choferSelect = document.getElementById('filtroChoferResumen');
+
+  empresas.data?.forEach(e => {
+    const opt = document.createElement('option');
+    opt.value = e.id;
+    opt.textContent = e.nombre;
+    empresaSelect.appendChild(opt);
+  });
+
+  unidades.data?.forEach(u => {
+    const opt = document.createElement('option');
+    opt.value = u.id;
+    opt.textContent = u.id;
+    unidadSelect.appendChild(opt);
+  });
+
+  choferes.data?.forEach(c => {
+    const opt = document.createElement('option');
+    opt.value = c.id;
+    opt.textContent = c.id;
+    choferSelect.appendChild(opt);
+  });
 }
 
 // ✅ Tickets generados
