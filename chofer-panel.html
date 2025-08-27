@@ -243,15 +243,17 @@ loginBtn.addEventListener("click", async () => {
   const usuario = document.getElementById("usuario").value.trim();
   const clave = document.getElementById("clave").value.trim();
 
-  const { data } = await fetch(
-    "https://sjrmzkomzlqpsfvjdnle.supabase.co/rest/v1/choferes?select=id,unidad&usuario=eq." + usuario + "&clave=eq." + clave,
-    {
-      headers: {
-        Authorization: `Bearer ${token}`,
-        apikey: token
-      }
+  const res = await fetch(
+  `https://sjrmzkomzlqpsfvjdnle.supabase.co/rest/v1/choferes?select=id,unidad&usuario=eq.${usuario}&clave=eq.${clave}`,
+  {
+    headers: {
+      Authorization: `Bearer ${token}`,
+      apikey: token
     }
-  ).then(res => res.json());
+  }
+);
+
+const data = await res.json();
 
   if (data.length === 1) {
     // ✅ Login exitoso
