@@ -125,7 +125,8 @@ table td, table th {
   <select id="filtroChoferResumen">
     <option value="">🧑‍✈️ Chofer</option>
   </select>
-  <input type="date" id="filtroFechaResumen" />
+  <input type="date" id="fechaDesdeResumen" placeholder="Desde" />
+<input type="date" id="fechaHastaResumen" placeholder="Hasta" />
   <button onclick="filtrarResumen()">🔍 Buscar</button>
 <button onclick="exportarResumen()">📤 Exportar Resumen</button>
 </div>
@@ -153,6 +154,19 @@ table td, table th {
       <div class="card"><h4>Comprobantes</h4><p id="comprobantesMes">⏳</p></div>
     </div>
   </div>
+<h2>📅 Detalle por día</h2>
+<div id="detallePorDia" class="table-wrapper">
+  <table style="background:white;">
+    <thead>
+      <tr>
+        <th>Fecha</th>
+        <th>Tickets</th>
+        <th>Comprobantes</th>
+      </tr>
+    </thead>
+    <tbody id="tablaDetallePorDia"></tbody>
+  </table>
+</div>
 </section>
 
       <section id="unidades">
@@ -482,36 +496,64 @@ async function filtrarResumen() {
   const empresa = document.getElementById('filtroEmpresaResumen').value;
   const unidad = document.getElementById('filtroUnidadResumen').value;
   const chofer = document.getElementById('filtroChoferResumen').value;
-  const fecha = document.getElementById('filtroFechaResumen').value;
+  const desde = document.getElementById('fechaDesdeResumen').value;
+  const hasta = document.getElementById('fechaHastaResumen').value;
 
-  const filtros = {};
+  if (!desde || !hasta) {
+    alert("❌ Debes seleccionar fecha desde y hasta");
+    return;
+  }
 
-  if (empresa) filtros.empresa_id = empresa;
-  if (unidad) filtros.unidad = unidad;
-  if (chofer) filtros.chofer_id = chofer;
+  const fechaInicio = new Date(desde);
+  const fechaFin = new Date(hasta);
+  const dias = [];
 
-  const fechaISO = fecha ? `${fecha}T00:00:00` : null;
+  for (let d = new Date(fechaInicio); d <= fechaFin; d.setDate(d.getDate() + 1)) {
+    dias.push(new Date(d));
+  }
 
-  // Tickets filtrados
-  let queryTickets = supabase.from('codigos_activos').select('id');
-  if (fechaISO) queryTickets = queryTickets.gte('creado_en', fechaISO);
-  if (unidad) queryTickets = queryTickets.eq('unidad', unidad);
+  const tablaDetalle = document.getElementById('tablaDetallePorDia');
+  tablaDetalle.innerHTML = "<tr><td colspan='3'>⏳ Cargando...</td></tr>";
 
-  // Comprobantes filtrados
-  let queryComprobantes = supabase.from('pago_manual').select('id').eq('estado', 'aprobado');
-  if (fechaISO) queryComprobantes = queryComprobantes.gte('fecha_validacion', fechaISO);
-  if (unidad) queryComprobantes = queryComprobantes.eq('unidad', unidad);
+  const resultados = await Promise.all(dias.map(async fecha => {
+    const isoDesde = fecha.toISOString().split('T')[0] + 'T00:00:00';
+    const isoHasta = fecha.toISOString().split('T')[0] + 'T23:59:59';
 
-  const [tickets, comprobantes] = await Promise.all([
-    queryTickets,
-    queryComprobantes
-  ]);
+    let queryTickets = supabase.from('codigos_activos').select('id').gte('creado_en', isoDesde).lte('creado_en', isoHasta);
+    let queryComprobantes = supabase.from('pago_manual').select('id').eq('estado', 'aprobado').gte('fecha_validacion', isoDesde).lte('fecha_validacion', isoHasta);
 
-  document.getElementById('ticketsDia').textContent = tickets.data?.length ?? '—';
+    if (unidad) {
+      queryTickets = queryTickets.eq('unidad', unidad);
+      queryComprobantes = queryComprobantes.eq('unidad', unidad);
+    }
+
+    const [tickets, comprobantes] = await Promise.all([queryTickets, queryComprobantes]);
+
+    return {
+      fecha: fecha.toISOString().split('T')[0],
+      tickets: tickets.data?.length ?? 0,
+      comprobantes: comprobantes.data?.length ?? 0
+    };
+  }));
+
+  tablaDetalle.innerHTML = "";
+  resultados.forEach(r => {
+    const fila = `<tr>
+      <td>${r.fecha}</td>
+      <td>${r.tickets}</td>
+      <td>${r.comprobantes}</td>
+    </tr>`;
+    tablaDetalle.innerHTML += fila;
+  });
+
+  // Actualizar resumen general
+  const totalTickets = resultados.reduce((acc, r) => acc + r.tickets, 0);
+  const totalComprobantes = resultados.reduce((acc, r) => acc + r.comprobantes, 0);
+
+  document.getElementById('ticketsDia').textContent = totalTickets;
+  document.getElementById('comprobantesDia').textContent = totalComprobantes;
   document.getElementById('ticketsSemana').textContent = '—';
   document.getElementById('ticketsMes').textContent = '—';
-
-  document.getElementById('comprobantesDia').textContent = comprobantes.data?.length ?? '—';
   document.getElementById('comprobantesSemana').textContent = '—';
   document.getElementById('comprobantesMes').textContent = '—';
 }
@@ -543,7 +585,7 @@ async function exportarResumen() {
 
   const resumen = `
 📤 RESUMEN OPERATIVO
-Fecha: ${fecha || '—'}
+Fecha: ${desde || '—'} hasta ${hasta || '—'}
 Empresa: ${empresa || '—'}
 Unidad: ${unidad || '—'}
 Chofer: ${chofer || '—'}
