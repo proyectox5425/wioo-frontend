@@ -319,7 +319,8 @@ table td, table th {
     <thead>
       <tr>
         <th>Nombre</th>
-        <th>Estado</th>
+         <th>Estado</th>
+         <th>Choferes</th>
         <th>Acciones</th>
       </tr>
     </thead>
@@ -837,7 +838,6 @@ window.rechazarComprobante = async (id) => {
   sinUnidad.forEach(c => {
     const fila = `<tr>
       <td>${c.id}</td>
-      <td>${c.licencia ?? '—'}</td>
       <td>${c.empresa_id ?? '—'}</td>
       <td><button onclick="asignarUnidad('${c.id}')">🧩 Asignar unidad</button></td>
     </tr>`;
@@ -895,9 +895,9 @@ async function cargarEmpresas() {
   data.forEach(emp => {
     const row = document.createElement('tr');
     row.innerHTML = `
-      <td>${emp.id}</td>
       <td>${emp.nombre}</td>
       <td>${emp.estado}</td>
+      <td>${emp.total_choferes}</td>
       <td>
         <button onclick="activarEmpresa('${emp.id}')">✅ Activar</button>
         <button onclick="desactivarEmpresa('${emp.id}')">⛔ Desactivar</button>
@@ -1101,7 +1101,9 @@ window.activarChofer = async (id) => {
 
 // ✅ Cargar unidades desde Supabase
 async function cargarUnidades() {
-  const { data, error } = await supabase.from('unidades').select('*');
+  const { data, error } = await supabase
+  .from('unidades')
+  .select('id, estado, chofer_id');
   if (error) {
     console.error('⛔ Error al cargar unidades:', error.message);
     alert('Error al cargar unidades');
@@ -1112,19 +1114,19 @@ async function cargarUnidades() {
   tabla.innerHTML = '';
 
   data.forEach(u => {
-    const fila = `<tr>
-      <td>${u.id}</td>
-      <td>${u.estado ?? '—'}</td>
-      <td>${u.chofer_id ?? '—'}</td>
-      <td>
-        <button onclick="activarUnidad('${u.id}')">✅ Activar</button>
-        <button onclick="desactivarUnidad('${u.id}')">⛔ Desactivar</button>
-        <button onclick="asignarChofer('${u.id}')">🧑‍✈️ Asignar Chofer</button>
-        <button onclick="eliminarUnidad('${u.id}')">🗑️ Eliminar</button>
-      </td>
-    </tr>`;
-    tabla.innerHTML += fila;
-  });
+  const fila = `<tr>
+    <td>${u.id}</td>
+    <td>${u.estado ?? '—'}</td>
+    <td>${u.chofer_id ?? '—'}</td>
+    <td>
+      <button onclick="activarUnidad('${u.id}')">✅</button>
+      <button onclick="desactivarUnidad('${u.id}')">⛔</button>
+      ${!u.chofer_id ? `<button onclick="asignarChofer('${u.id}')">🧑‍✈️ Asignar Chofer</button>` : ''}
+      <button onclick="eliminarUnidad('${u.id}')">🗑️</button>
+    </td>
+  </tr>`;
+  tabla.innerHTML += fila;
+});
 }
 
 // ✅ Agregar unidad usando RPC institucional
@@ -1197,22 +1199,45 @@ window.desactivarUnidad = async (id) => {
 
 // ✅ Asignar chofer a unidad usando RPC
 window.asignarChofer = async (unidadId) => {
-  const choferId = prompt("🧑‍✈️ ID del chofer a asignar:");
-  if (!choferId) return;
+  const { data: choferes } = await supabase
+    .from('choferes')
+    .select('id, nombre')
+    .is('unidad', null); // solo choferes sin unidad
 
-  const { error } = await supabase.rpc('asignar_chofer_a_unidad', {
-    unidad_id: unidadId,
-    chofer_id: choferId
+  const selector = document.createElement('select');
+  selector.innerHTML = '<option value="">— Selecciona chofer —</option>';
+  choferes.forEach(c => {
+    const opt = document.createElement('option');
+    opt.value = c.id;
+    opt.textContent = `${c.id} - ${c.nombre}`;
+    selector.appendChild(opt);
   });
 
-  if (error) {
-    console.error('⛔ Error al asignar chofer:', error.message);
-    alert("Error al asignar chofer");
-    return;
-  }
+  const modal = document.createElement('div');
+  modal.style = 'position:fixed;top:20%;left:10%;background:white;padding:20px;border:1px solid #ccc;z-index:999;';
+  modal.innerHTML = '<h3>🧑‍✈️ Asignar Chofer</h3>';
+  modal.appendChild(selector);
 
-  alert("✅ Chofer asignado correctamente");
-  cargarUnidades();
+  const confirmar = document.createElement('button');
+  confirmar.textContent = '✅ Asignar';
+  confirmar.onclick = async () => {
+    const choferId = selector.value;
+    if (!choferId) return alert("❌ Selecciona un chofer");
+
+    const { error } = await supabase.rpc('asignar_chofer_a_unidad', {
+      unidad_id: unidadId,
+      chofer_id: choferId
+    });
+
+    if (error) return alert("⛔ Error al asignar chofer");
+
+    alert("✅ Chofer asignado correctamente");
+    modal.remove();
+    cargarUnidades();
+  };
+
+  modal.appendChild(confirmar);
+  document.body.appendChild(modal);
 };
 
 async function cargarEmpresasEnFiltro() {
