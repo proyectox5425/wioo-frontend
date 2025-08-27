@@ -194,6 +194,9 @@ table td, table th {
     <select id="selectorUnidadChofer">
   <option value="">— Selecciona unidad —</option>
 </select>
+<select id="selectorEmpresaChofer">
+  <option value="">— Selecciona empresa —</option>
+</select>
     <input type="text" id="licenciaChofer" placeholder="Tipo de licencia (ej: 5ta)" />
     <button onclick="agregarChofer()">➕ Agregar Chofer</button>
   </div>
@@ -375,6 +378,7 @@ function mostrarSeccion(id) {
       cargarUnidadesParaChoferes();
       cargarEmpresasEnFiltro();
       filtrarChoferesPorEmpresa();
+      cargarEmpresasParaChoferes();
     }
   }
 }
@@ -908,18 +912,22 @@ async function cargarChoferes() {
   });
 }
 
-// ✅ Agregar chofer usando RPC institucional
+// ✅ Agregar chofer usando RPC institucional con empresa incluida
 window.agregarChofer = async () => {
   const id = document.getElementById('idChofer').value.trim();
   const unidad = document.getElementById('selectorUnidadChofer').value;
   const licencia = document.getElementById('licenciaChofer').value.trim();
+  const empresa = document.getElementById('selectorEmpresaChofer').value;
 
-  if (!id || !unidad || !licencia) return alert("❌ Datos incompletos");
+  if (!id || !unidad || !licencia || !empresa) {
+    return alert("❌ Datos incompletos");
+  }
 
   const { error } = await supabase.rpc('insertar_chofer', {
     nuevo_id: id,
     nueva_unidad: unidad,
-    nueva_licencia: licencia
+    nueva_licencia: licencia,
+    nueva_empresa_id: empresa
   });
 
   if (error) {
@@ -931,6 +939,7 @@ window.agregarChofer = async () => {
   alert("✅ Chofer registrado correctamente");
   document.getElementById('idChofer').value = "";
   document.getElementById('licenciaChofer').value = "";
+  document.getElementById('selectorEmpresaChofer').value = "";
   cargarChoferes();
 };
 
