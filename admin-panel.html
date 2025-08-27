@@ -125,8 +125,13 @@ table td, table th {
   <select id="filtroChoferResumen">
     <option value="">🧑‍✈️ Chofer</option>
   </select>
-  <input type="date" id="fechaDesdeResumen" placeholder="Desde" />
-<input type="date" id="fechaHastaResumen" placeholder="Hasta" />
+  <div style="display:flex; gap:12px; align-items:center;">
+  <label for="fechaDesdeResumen">📅 Desde:</label>
+  <input type="date" id="fechaDesdeResumen" />
+
+  <label for="fechaHastaResumen">📅 Hasta:</label>
+  <input type="date" id="fechaHastaResumen" />
+</div>
   <button onclick="filtrarResumen()">🔍 Buscar</button>
 <button onclick="exportarResumen()">📤 Exportar Resumen</button>
 </div>
