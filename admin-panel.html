@@ -1016,7 +1016,6 @@ async function cargarChoferes() {
 window.agregarChofer = async () => {
   const id = document.getElementById('idChofer').value.trim();
   const unidad = document.getElementById('selectorUnidadChofer').value;
-  const licencia = document.getElementById('licenciaChofer').value.trim();
   const empresa = document.getElementById('selectorEmpresaChofer').value;
   const nombre = document.getElementById('nombreChofer').value.trim();
   const cedula = document.getElementById('cedulaChofer').value.trim();
@@ -1024,7 +1023,7 @@ window.agregarChofer = async () => {
   const usuario = document.getElementById('usuarioChofer').value.trim();
   const clave = document.getElementById('claveChofer').value.trim();
 
-  if (!id || !unidad || !licencia || !empresa || !nombre || !cedula || !telefono || !usuario || !clave) {
+  if (!id || !unidad || !empresa || !nombre || !cedula || !telefono || !usuario || !clave) {
     return alert("❌ Datos incompletos");
   }
 
