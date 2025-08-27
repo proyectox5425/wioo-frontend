@@ -501,31 +501,60 @@ Chofer: ${chofer || '—'}
 }
 
 async function cargarFiltrosResumen() {
-  const [empresas, unidades, choferes] = await Promise.all([
-    supabase.from('empresas').select('id, nombre'),
-    supabase.from('unidades').select('id'),
-    supabase.from('choferes').select('id')
-  ]);
+  const { data: empresas } = await supabase.from('empresas').select('id, nombre');
 
   const empresaSelect = document.getElementById('filtroEmpresaResumen');
   const unidadSelect = document.getElementById('filtroUnidadResumen');
   const choferSelect = document.getElementById('filtroChoferResumen');
 
-  empresas.data?.forEach(e => {
+  empresaSelect.innerHTML = '<option value="">🏢 Empresa</option>';
+  unidadSelect.innerHTML = '<option value="">🚍 Unidad</option>';
+  choferSelect.innerHTML = '<option value="">🧑‍✈️ Chofer</option>';
+
+  empresas?.forEach(e => {
     const opt = document.createElement('option');
     opt.value = e.id;
     opt.textContent = e.nombre;
     empresaSelect.appendChild(opt);
   });
 
-  unidades.data?.forEach(u => {
+  // 🔁 Listener reactivo
+  empresaSelect.addEventListener('change', async (e) => {
+    const empresaId = e.target.value;
+    await cargarUnidadesPorEmpresa(empresaId);
+    await cargarChoferesPorEmpresa(empresaId);
+  });
+}
+
+async function cargarUnidadesPorEmpresa(empresaId) {
+  const unidadSelect = document.getElementById('filtroUnidadResumen');
+  unidadSelect.innerHTML = '<option value="">🚍 Unidad</option>';
+  if (!empresaId) return;
+
+  const { data } = await supabase
+    .from('unidades')
+    .select('id')
+    .eq('empresa_id', empresaId);
+
+  data?.forEach(u => {
     const opt = document.createElement('option');
     opt.value = u.id;
     opt.textContent = u.id;
     unidadSelect.appendChild(opt);
   });
+}
 
-  choferes.data?.forEach(c => {
+async function cargarChoferesPorEmpresa(empresaId) {
+  const choferSelect = document.getElementById('filtroChoferResumen');
+  choferSelect.innerHTML = '<option value="">🧑‍✈️ Chofer</option>';
+  if (!empresaId) return;
+
+  const { data } = await supabase
+    .from('choferes')
+    .select('id')
+    .eq('empresa_id', empresaId);
+
+  data?.forEach(c => {
     const opt = document.createElement('option');
     opt.value = c.id;
     opt.textContent = c.id;
