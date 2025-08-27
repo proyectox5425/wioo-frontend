@@ -191,11 +191,11 @@ table td, table th {
   <!-- Formulario para agregar chofer -->
   <div style="margin-bottom:20px;">
     <input type="text" id="idChofer" placeholder="ID Chofer (ej: CHF-1023)" />
-    <select id="selectorUnidadChofer">
-  <option value="">— Selecciona unidad —</option>
-</select>
 <select id="selectorEmpresaChofer">
   <option value="">— Selecciona empresa —</option>
+</select>
+    <select id="selectorUnidadChofer">
+  <option value="">— Selecciona unidad —</option>
 </select>
     <input type="text" id="licenciaChofer" placeholder="Tipo de licencia (ej: 5ta)" />
     <button onclick="agregarChofer()">➕ Agregar Chofer</button>
@@ -527,6 +527,44 @@ async function cargarFiltrosResumen() {
     const empresaId = e.target.value;
     await cargarUnidadesPorEmpresa(empresaId);
     await cargarChoferesPorEmpresa(empresaId);
+  });
+}
+
+async function cargarEmpresasParaChoferes() {
+  const { data } = await supabase.from('empresas').select('id, nombre');
+  const selector = document.getElementById('selectorEmpresaChofer');
+  selector.innerHTML = '<option value="">— Selecciona empresa —</option>';
+
+  data.forEach(e => {
+    const option = document.createElement('option');
+    option.value = e.id;
+    option.textContent = e.nombre;
+    selector.appendChild(option);
+  });
+
+  // 🔁 Listener reactivo: actualiza unidades según empresa
+  selector.addEventListener('change', async (e) => {
+    const empresaId = e.target.value;
+    await cargarUnidadesParaEmpresa(empresaId);
+  });
+}
+
+async function cargarUnidadesParaEmpresa(empresaId) {
+  const selector = document.getElementById('selectorUnidadChofer');
+  selector.innerHTML = '<option value="">— Selecciona unidad —</option>';
+
+  if (!empresaId) return;
+
+  const { data } = await supabase
+    .from('unidades')
+    .select('id')
+    .eq('empresa_id', empresaId);
+
+  data?.forEach(u => {
+    const option = document.createElement('option');
+    option.value = u.id;
+    option.textContent = u.id;
+    selector.appendChild(option);
   });
 }
 
