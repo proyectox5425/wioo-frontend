@@ -882,7 +882,7 @@ async function asignarEmpresaAChofer() {
     
     // ✅ Cargar empresas desde Supabase
 async function cargarEmpresas() {
-  const { data, error } = await supabase.from('empresas').select('*');
+  const { data, error } = await supabase.rpc('listar_empresas_con_choferes');
   if (error) {
     console.error('⛔ Error al cargar empresas:', error.message);
     alert('Error al cargar empresas');
@@ -897,7 +897,7 @@ async function cargarEmpresas() {
     row.innerHTML = `
       <td>${emp.nombre}</td>
       <td>${emp.estado}</td>
-      <td>${emp.total_choferes}</td>
+      <td>${emp.total_choferes ?? 0}</td>
       <td>
         <button onclick="activarEmpresa('${emp.id}')">✅ Activar</button>
         <button onclick="desactivarEmpresa('${emp.id}')">⛔ Desactivar</button>
