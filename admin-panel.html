@@ -1000,7 +1000,6 @@ async function cargarChoferes() {
       <td>${c.telefono ?? '—'}</td>
       <td>${c.empresa_id ?? '—'}</td>
       <td>${c.unidad ?? '—'}</td>
-      <td>${c.licencia ?? '—'}</td>
       <td>${c.usuario ?? '—'}</td>
       <td>${c.estado ?? '—'}</td>
       <td>
@@ -1032,7 +1031,6 @@ window.agregarChofer = async () => {
   const { error } = await supabase.rpc('insertar_chofer', {
     nuevo_id: id,
     nueva_unidad: unidad,
-    nueva_licencia: licencia,
     nueva_empresa_id: empresa,
     nuevo_nombre: nombre,
     nueva_cedula: cedula,
@@ -1280,7 +1278,6 @@ async function filtrarChoferesPorEmpresa() {
     const fila = `<tr>
       <td>${c.id}</td>
       <td>${c.unidad}</td>
-      <td>${c.licencia}</td>
       <td>${c.estado}</td>
       <td>
         <button onclick="inhabilitarChofer('${c.id}')">🔒</button>
