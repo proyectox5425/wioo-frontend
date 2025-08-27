@@ -982,7 +982,18 @@ async function eliminarEmpresa(id) {
 
 // ✅ Cargar choferes desde Supabase
 async function cargarChoferes() {
-  const { data, error } = await supabase.from('choferes').select('*');
+  const { data, error } = await supabase
+  .from('choferes')
+  .select(`
+    id,
+    nombre,
+    cedula,
+    telefono,
+    unidad,
+    usuario,
+    estado,
+    empresa:empresa_id(nombre)
+  `);
   if (error) {
     console.error('⛔ Error al cargar choferes:', error.message);
     alert('Error al cargar choferes');
@@ -1002,6 +1013,7 @@ async function cargarChoferes() {
       <td>${c.unidad ?? '—'}</td>
       <td>${c.usuario ?? '—'}</td>
       <td>${c.estado ?? '—'}</td>
+      <td>${c.empresa?.nombre ?? '—'}</td>
       <td>
         <button onclick="inhabilitarChofer('${c.id}')">🔒</button>
         <button onclick="activarChofer('${c.id}')">✅</button>
