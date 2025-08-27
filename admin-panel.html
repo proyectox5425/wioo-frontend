@@ -498,6 +498,8 @@ async function cargarResumen() {
 }
 
 async function filtrarResumen() {
+  alert("🔍 Ejecutando filtro...");
+
   const empresa = document.getElementById('filtroEmpresaResumen').value;
   const unidad = document.getElementById('filtroUnidadResumen').value;
   const chofer = document.getElementById('filtroChoferResumen').value;
@@ -524,8 +526,18 @@ async function filtrarResumen() {
     const isoDesde = fecha.toISOString().split('T')[0] + 'T00:00:00';
     const isoHasta = fecha.toISOString().split('T')[0] + 'T23:59:59';
 
-    let queryTickets = supabase.from('codigos_activos').select('id').gte('creado_en', isoDesde).lte('creado_en', isoHasta);
-    let queryComprobantes = supabase.from('pago_manual').select('id').eq('estado', 'aprobado').gte('fecha_validacion', isoDesde).lte('fecha_validacion', isoHasta);
+    let queryTickets = supabase
+      .from('codigos_activos')
+      .select('id')
+      .gte('creado_en', isoDesde)
+      .lte('creado_en', isoHasta);
+
+    let queryComprobantes = supabase
+      .from('pago_manual')
+      .select('id')
+      .eq('estado', 'aprobado')
+      .gte('fecha_validacion', isoDesde)
+      .lte('fecha_validacion', isoHasta);
 
     if (unidad) {
       queryTickets = queryTickets.eq('unidad', unidad);
@@ -541,6 +553,13 @@ async function filtrarResumen() {
     };
   }));
 
+  console.log("Resultados:", resultados);
+
+  if (resultados.length === 0 || resultados.every(r => r.tickets === 0 && r.comprobantes === 0)) {
+    tablaDetalle.innerHTML = "<tr><td colspan='3'>📭 No hay datos en el rango seleccionado</td></tr>";
+    return;
+  }
+
   tablaDetalle.innerHTML = "";
   resultados.forEach(r => {
     const fila = `<tr>
@@ -551,7 +570,6 @@ async function filtrarResumen() {
     tablaDetalle.innerHTML += fila;
   });
 
-  // Actualizar resumen general
   const totalTickets = resultados.reduce((acc, r) => acc + r.tickets, 0);
   const totalComprobantes = resultados.reduce((acc, r) => acc + r.comprobantes, 0);
 
