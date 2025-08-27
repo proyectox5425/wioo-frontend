@@ -1298,7 +1298,9 @@ async function confirmarAsignacionEmpresa() {
   filtrarChoferesPorEmpresa()
 }
 
-async function filtrarChoferesPorEmpresa(idEmpresa) {
+async function filtrarChoferesPorEmpresa() {
+  const idEmpresa = document.getElementById('filtroEmpresa').value;
+
   const { data, error } = await supabase
     .from('choferes')
     .select(`
