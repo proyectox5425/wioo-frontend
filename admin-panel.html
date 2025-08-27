@@ -191,6 +191,11 @@ table td, table th {
   <!-- Formulario para agregar chofer -->
   <div style="margin-bottom:20px;">
     <input type="text" id="idChofer" placeholder="ID Chofer (ej: CHF-1023)" />
+<input type="text" id="nombreChofer" placeholder="Nombre completo" />
+<input type="text" id="cedulaChofer" placeholder="Cédula" />
+<input type="text" id="telefonoChofer" placeholder="Teléfono" />
+<input type="text" id="usuarioChofer" placeholder="Usuario de acceso" />
+<input type="password" id="claveChofer" placeholder="Clave de acceso" />
 <select id="selectorEmpresaChofer">
   <option value="">— Selecciona empresa —</option>
 </select>
@@ -204,10 +209,19 @@ table td, table th {
   <!-- Tabla de choferes -->
   <table style="width:100%; background:white;">
     <thead>
-      <tr style="background:#7344D0; color:white;">
-        <th>ID</th><th>Unidad</th><th>Licencia</th><th>Estado</th><th>Acciones</th>
-      </tr>
-    </thead>
+  <tr style="background:#7344D0; color:white;">
+    <th>ID</th>
+    <th>Nombre</th>
+    <th>Cédula</th>
+    <th>Teléfono</th>
+    <th>Empresa</th>
+    <th>Unidad</th>
+    <th>Licencia</th>
+    <th>Usuario</th>
+    <th>Estado</th>
+    <th>Acciones</th>
+  </tr>
+</thead>
     <tbody id="tablaChoferes"></tbody>
   </table>
 </section>
@@ -937,13 +951,18 @@ async function cargarChoferes() {
   data.forEach(c => {
     const fila = `<tr>
       <td>${c.id}</td>
+      <td>${c.nombre ?? '—'}</td>
+      <td>${c.cedula ?? '—'}</td>
+      <td>${c.telefono ?? '—'}</td>
+      <td>${c.empresa_id ?? '—'}</td>
       <td>${c.unidad ?? '—'}</td>
       <td>${c.licencia ?? '—'}</td>
+      <td>${c.usuario ?? '—'}</td>
       <td>${c.estado ?? '—'}</td>
       <td>
-        <button onclick="inhabilitarChofer('${c.id}')">🔒 Inhabilitar</button>
-        <button onclick="activarChofer('${c.id}')">✅ Activar</button>
-        <button onclick="eliminarChofer('${c.id}')">🗑️ Eliminar</button>
+        <button onclick="inhabilitarChofer('${c.id}')">🔒</button>
+        <button onclick="activarChofer('${c.id}')">✅</button>
+        <button onclick="eliminarChofer('${c.id}')">🗑️</button>
       </td>
     </tr>`;
     tabla.innerHTML += fila;
@@ -956,8 +975,13 @@ window.agregarChofer = async () => {
   const unidad = document.getElementById('selectorUnidadChofer').value;
   const licencia = document.getElementById('licenciaChofer').value.trim();
   const empresa = document.getElementById('selectorEmpresaChofer').value;
+  const nombre = document.getElementById('nombreChofer').value.trim();
+  const cedula = document.getElementById('cedulaChofer').value.trim();
+  const telefono = document.getElementById('telefonoChofer').value.trim();
+  const usuario = document.getElementById('usuarioChofer').value.trim();
+  const clave = document.getElementById('claveChofer').value.trim();
 
-  if (!id || !unidad || !licencia || !empresa) {
+  if (!id || !unidad || !licencia || !empresa || !nombre || !cedula || !telefono || !usuario || !clave) {
     return alert("❌ Datos incompletos");
   }
 
@@ -965,7 +989,12 @@ window.agregarChofer = async () => {
     nuevo_id: id,
     nueva_unidad: unidad,
     nueva_licencia: licencia,
-    nueva_empresa_id: empresa
+    nueva_empresa_id: empresa,
+    nuevo_nombre: nombre,
+    nueva_cedula: cedula,
+    nuevo_telefono: telefono,
+    nuevo_usuario: usuario,
+    nueva_clave: clave
   });
 
   if (error) {
@@ -975,9 +1004,6 @@ window.agregarChofer = async () => {
   }
 
   alert("✅ Chofer registrado correctamente");
-  document.getElementById('idChofer').value = "";
-  document.getElementById('licenciaChofer').value = "";
-  document.getElementById('selectorEmpresaChofer').value = "";
   cargarChoferes();
 };
 
