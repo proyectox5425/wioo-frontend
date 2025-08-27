@@ -160,7 +160,7 @@ table td, table th {
 
   <!-- Formulario para agregar unidad -->
   <div style="margin-bottom:20px;">
-    <input type="text" id="idUnidad" placeholder="ID de unidad (ej: BUS-001)" />
+    <input type="text" id="idUnidad" placeholder="ID de unidad (PLACA DEL VEHICULO)" />
  <select id="selectorEmpresaUnidad">
   <option value="">— Selecciona empresa —</option>
 </select>   
@@ -190,7 +190,7 @@ table td, table th {
 
   <!-- Formulario para agregar chofer -->
   <div style="margin-bottom:20px;">
-    <input type="text" id="idChofer" placeholder="ID Chofer (ej: CHF-1023)" />
+    <input type="text" id="idChofer" placeholder="ID autogenerado" disabled />
 <input type="text" id="nombreChofer" placeholder="Nombre completo" />
 <input type="text" id="cedulaChofer" placeholder="Cédula" />
 <input type="text" id="telefonoChofer" placeholder="Teléfono" />
@@ -202,7 +202,6 @@ table td, table th {
     <select id="selectorUnidadChofer">
   <option value="">— Selecciona unidad —</option>
 </select>
-    <input type="text" id="licenciaChofer" placeholder="Tipo de licencia (ej: 5ta)" />
     <button onclick="agregarChofer()">➕ Agregar Chofer</button>
   </div>
 
@@ -311,6 +310,7 @@ table td, table th {
 
   <div class="form-group">
     <input type="text" id="nombreEmpresa" placeholder="Nombre de la empresa" />
+    <input type="text" id="prefijoEmpresa" placeholder="Prefijo institucional (ej: EOC)" />
     <button onclick="agregarEmpresa()">Agregar empresa</button>
   </div>
 <div id="logAccion" style="margin-top: 10px; font-weight: bold;"></div>
@@ -386,12 +386,52 @@ function mostrarSeccion(id) {
     }
 
     if (id === "choferes") {
-      cargarChoferes();
-      cargarUnidadesParaChoferes();
-      cargarEmpresasEnFiltro();
-      filtrarChoferesPorEmpresa();
-      cargarEmpresasParaChoferes();
+  cargarChoferes();
+  cargarUnidadesParaChoferes();
+  cargarEmpresasEnFiltro();
+  filtrarChoferesPorEmpresa();
+  cargarEmpresasParaChoferes();
+
+  // 🔁 Generar ID institucional al seleccionar empresa
+  document.getElementById('selectorEmpresaChofer').addEventListener('change', async (e) => {
+    const empresaId = e.target.value;
+    if (!empresaId) return;
+
+    const { data: empresaData, error: empresaError } = await supabase
+      .from('empresas')
+      .select('prefijo_id')
+      .eq('id', empresaId)
+      .single();
+
+    if (empresaError || !empresaData?.prefijo_id) {
+      console.error('⛔ Error al obtener prefijo de empresa');
+      return;
     }
+
+    const prefijo = empresaData.prefijo_id;
+
+    const { data: choferes, error: choferError } = await supabase
+      .from('choferes')
+      .select('id')
+      .eq('empresa_id', empresaId);
+
+    if (choferError) {
+      console.error('⛔ Error al consultar choferes:', choferError.message);
+      return;
+    }
+
+    const usados = choferes
+      .map(c => c.id)
+      .filter(id => id?.startsWith(`${prefijo}-CHF`))
+      .map(id => parseInt(id.split('CHF')[1]))
+      .filter(n => !isNaN(n));
+
+    const siguiente = Math.max(...usados, 0) + 1;
+    const nuevoId = `${prefijo}-CHF${String(siguiente).padStart(3, '0')}`;
+
+    document.getElementById('idChofer').value = nuevoId;
+  });
+}
   }
 }
 window.mostrarSeccion = mostrarSeccion;
@@ -868,12 +908,18 @@ async function cargarEmpresas() {
   });
 }
 
-// ✅ Agregar empresa usando RPC institucional
+// ✅ Agregar empresa con prefijo institucional
 async function agregarEmpresa() {
   const nombre = document.getElementById('nombreEmpresa').value.trim();
-  if (!nombre) return alert("❌ Debes ingresar un nombre de empresa.");
+  const prefijo = document.getElementById('prefijoEmpresa').value.trim();
 
-  const { error } = await supabase.rpc('insertar_empresa', { nombre });
+  if (!nombre || !prefijo) {
+    return alert("❌ Debes ingresar nombre y prefijo.");
+  }
+
+  const { error } = await supabase.from('empresas').insert([
+    { nombre, prefijo_id: prefijo }
+  ]);
 
   if (error) {
     console.error('⛔ Error al registrar empresa:', error.message);
@@ -883,8 +929,8 @@ async function agregarEmpresa() {
 
   alert("✅ Empresa registrada correctamente.");
   document.getElementById('nombreEmpresa').value = "";
-
-document.getElementById('logAccion').textContent = `✅ Registrada empresa: ${nombre}`;
+  document.getElementById('prefijoEmpresa').value = "";
+  document.getElementById('logAccion').textContent = `✅ Registrada empresa: ${nombre} (${prefijo})`;
   cargarEmpresas();
 }
 window.agregarEmpresa = agregarEmpresa;
