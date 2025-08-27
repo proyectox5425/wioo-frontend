@@ -983,17 +983,18 @@ async function eliminarEmpresa(id) {
 // ✅ Cargar choferes desde Supabase
 async function cargarChoferes() {
   const { data, error } = await supabase
-  .from('choferes')
-  .select(`
-    id,
-    nombre,
-    cedula,
-    telefono,
-    unidad,
-    usuario,
-    estado,
-    empresa:empresa_id(nombre)
-  `);
+    .from('choferes')
+    .select(`
+      id,
+      nombre,
+      cedula,
+      telefono,
+      unidad,
+      usuario,
+      estado,
+      empresa:empresa_id(nombre)
+    `);
+
   if (error) {
     console.error('⛔ Error al cargar choferes:', error.message);
     alert('Error al cargar choferes');
@@ -1009,11 +1010,10 @@ async function cargarChoferes() {
       <td>${c.nombre ?? '—'}</td>
       <td>${c.cedula ?? '—'}</td>
       <td>${c.telefono ?? '—'}</td>
-      <td>${c.empresa_id ?? '—'}</td>
+      <td>${c.empresa?.nombre ?? '—'}</td>
       <td>${c.unidad ?? '—'}</td>
       <td>${c.usuario ?? '—'}</td>
       <td>${c.estado ?? '—'}</td>
-      <td>${c.empresa?.nombre ?? '—'}</td>
       <td>
         <button onclick="inhabilitarChofer('${c.id}')">🔒</button>
         <button onclick="activarChofer('${c.id}')">✅</button>
@@ -1300,29 +1300,48 @@ async function confirmarAsignacionEmpresa() {
   filtrarChoferesPorEmpresa()
 }
 
-async function filtrarChoferesPorEmpresa() {
-  const empresaId = document.getElementById('filtroEmpresa').value
-  let query = supabase.from('choferes').select('*')
+async function filtrarChoferesPorEmpresa(idEmpresa) {
+  const { data, error } = await supabase
+    .from('choferes')
+    .select(`
+      id,
+      nombre,
+      cedula,
+      telefono,
+      unidad,
+      usuario,
+      estado,
+      empresa:empresa_id(nombre)
+    `)
+    .eq('empresa_id', idEmpresa);
 
-  if (empresaId) query = query.eq('empresa_id', empresaId)
+  if (error) {
+    console.error('⛔ Error al filtrar choferes:', error.message);
+    alert('Error al filtrar choferes');
+    return;
+  }
 
-  const { data } = await query
-  const tabla = document.getElementById('tablaChoferes')
-  tabla.innerHTML = ''
+  const tabla = document.getElementById('tablaChoferes');
+  tabla.innerHTML = '';
 
   data.forEach(c => {
     const fila = `<tr>
       <td>${c.id}</td>
-      <td>${c.unidad}</td>
-      <td>${c.estado}</td>
+      <td>${c.nombre ?? '—'}</td>
+      <td>${c.cedula ?? '—'}</td>
+      <td>${c.telefono ?? '—'}</td>
+      <td>${c.empresa?.nombre ?? '—'}</td>
+      <td>${c.unidad ?? '—'}</td>
+      <td>${c.usuario ?? '—'}</td>
+      <td>${c.estado ?? '—'}</td>
       <td>
         <button onclick="inhabilitarChofer('${c.id}')">🔒</button>
         <button onclick="activarChofer('${c.id}')">✅</button>
         <button onclick="eliminarChofer('${c.id}')">🗑️</button>
       </td>
-    </tr>`
-    tabla.innerHTML += fila
-  })
+    </tr>`;
+    tabla.innerHTML += fila;
+  });
 }
 
 async function cargarEmpresasParaUnidades() {
