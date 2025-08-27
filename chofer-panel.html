@@ -133,6 +133,13 @@
     <img src="emoji-wioo-white.png" alt="Emoji Wioo" style="height: 80px;" />
   </div>
   </div>
+<div id="login-wrapper" class="interface-wrapper">
+  <h2 style="text-align:center;">🔐 Iniciar sesión</h2>
+  <input type="text" id="usuario" placeholder="Usuario" style="padding:10px; border-radius:6px; border:none;">
+  <input type="password" id="clave" placeholder="Clave" style="padding:10px; border-radius:6px; border:none;">
+  <button id="login-btn">Ingresar</button>
+  <p id="login-error" style="color:#ff8080; text-align:center; display:none;">Usuario o clave incorrectos</p>
+</div>
   <div class="interface-wrapper">
     <div id="codigo-display" class="codigo">— —</div>
 
@@ -188,11 +195,12 @@
 
   // 🗃️ Preparar registro para Supabase
   const registro = {
-    codigo: codigoAleatorio,
-    unidad: "RUTA 7",
-    creado_en: new Date().toISOString(),
-    activo: true 
-  };
+  codigo: codigoAleatorio,
+  unidad: "RUTA 7",
+  creado_en: new Date().toISOString(),
+  activo: true,
+  chofer_id: localStorage.getItem("chofer_id") || null
+};
 
   // 🔌 Enviar a Supabase
   const res = await fetch("https://sjrmzkomzlqpsfvjdnle.supabase.co/rest/v1/codigos_activos", {
@@ -217,6 +225,37 @@
     tablaDia.innerHTML += fila;
   } else {
     console.error("🔴 Error al registrar código en Supabase");
+  }
+});
+
+const loginWrapper = document.getElementById("login-wrapper");
+const panelWrapper = document.querySelector(".interface-wrapper");
+const loginBtn = document.getElementById("login-btn");
+const loginError = document.getElementById("login-error");
+
+loginBtn.addEventListener("click", async () => {
+  const usuario = document.getElementById("usuario").value.trim();
+  const clave = document.getElementById("clave").value.trim();
+
+  const { data } = await fetch(
+    "https://sjrmzkomzlqpsfvjdnle.supabase.co/rest/v1/choferes?select=id,unidad&usuario=eq." + usuario + "&clave=eq." + clave,
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        apikey: token
+      }
+    }
+  ).then(res => res.json());
+
+  if (data.length === 1) {
+    // ✅ Login exitoso
+    loginWrapper.style.display = "none";
+    panelWrapper.style.display = "flex";
+    localStorage.setItem("chofer_id", data[0].id);
+    localStorage.setItem("unidad_asignada", data[0].unidad);
+  } else {
+    // ❌ Login fallido
+    loginError.style.display = "block";
   }
 });
 </script>
