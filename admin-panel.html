@@ -1113,9 +1113,7 @@ window.activarChofer = async (id) => {
 
 // ✅ Cargar unidades desde Supabase
 async function cargarUnidades() {
-  const { data, error } = await supabase
-  .from('unidades')
-  .select('id, estado, chofer_id');
+  const { data, error } = await supabase.rpc('listar_unidades_con_chofer');
   if (error) {
     console.error('⛔ Error al cargar unidades:', error.message);
     alert('Error al cargar unidades');
@@ -1126,19 +1124,19 @@ async function cargarUnidades() {
   tabla.innerHTML = '';
 
   data.forEach(u => {
-  const fila = `<tr>
-    <td>${u.id}</td>
-    <td>${u.estado ?? '—'}</td>
-    <td>${u.chofer_id ?? '—'}</td>
-    <td>
-      <button onclick="activarUnidad('${u.id}')">✅</button>
-      <button onclick="desactivarUnidad('${u.id}')">⛔</button>
-      ${!u.chofer_id ? `<button onclick="asignarChofer('${u.id}')">🧑‍✈️ Asignar Chofer</button>` : ''}
-      <button onclick="eliminarUnidad('${u.id}')">🗑️</button>
-    </td>
-  </tr>`;
-  tabla.innerHTML += fila;
-});
+    const fila = `<tr>
+      <td>${u.id}</td>
+      <td>${u.estado ?? '—'}</td>
+      <td>${u.chofer ?? '—'}</td>
+      <td>
+        <button onclick="activarUnidad('${u.id}')">✅</button>
+        <button onclick="desactivarUnidad('${u.id}')">⛔</button>
+        ${!u.chofer ? `<button onclick="asignarChofer('${u.id}')">🧑‍✈️ Asignar Chofer</button>` : ''}
+        <button onclick="eliminarUnidad('${u.id}')">🗑️</button>
+      </td>
+    </tr>`;
+    tabla.innerHTML += fila;
+  });
 }
 
 // ✅ Agregar unidad usando RPC institucional
