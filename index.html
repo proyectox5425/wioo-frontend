@@ -169,12 +169,21 @@
 
     <div class="interface-wrapper">
       <div class="botones-pago-vertical">
+<button id="activarGratisBtn" class="btn btn-primary">
+  🕒 Activar 10 min gratis
+</button>
         <button class="boton-vertical" onclick="window.location.href='pantalla-2.1.html'">💵 Pago en efectivo</button>
         <button class="boton-vertical" onclick="window.location.href='pantalla-3.1.html'">📱 Pago Móvil</button>
         <button class="boton-vertical" onclick="window.location.href='pantalla-3.2.html'">🏦 Transferencia</button>
       </div>
       </div>
   </section>
+
+<div id="modalCorreo" style="display:none;">
+  <label for="correoInput">Ingresa tu correo:</label>
+  <input type="email" id="correoInput" required />
+  <button id="confirmarCorreoBtn">Confirmar</button>
+</div>
 
   <!-- ❓ Modal de ayuda -->
   <div id="modal-ayuda" class="modal-ayuda">
@@ -420,8 +429,75 @@ if (botonAceptar) {
   }, 300); // ⏱️ Activamos animación del logo tras 300ms
 });
 
-      
-      window.cerrarAyuda = function () {
+document.getElementById('activarGratisBtn').onclick = () => {
+  document.getElementById('modalCorreo').style.display = 'block';
+};
+
+document.getElementById('confirmarCorreoBtn').onclick = async () => {
+  const correo = document.getElementById('correoInput').value;
+  if (!correo) return alert("❌ Ingresa tu correo");
+
+  const ip = await fetch('https://api64.ipify.org?format=json')
+    .then(res => res.json())
+    .then(data => data.ip);
+
+  const video = await seleccionarVideoAleatorio(); // función que te paso ahora
+
+  reproducirVideo(video, async () => {
+    await supabase.from('activaciones_gratis').insert([
+      { correo, ip, video_url: video }
+    ]);
+
+    await fetch('https://TU_ENDPOINT_MIKROTIK/activar', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ ip, minutos: 10 })
+    });
+
+    alert('✅ Conexión activada por 10 minutos');
+    document.getElementById('modalCorreo').style.display = 'none';
+  });
+};
+
+async function seleccionarVideoAleatorio() {
+  const { data, error } = await supabase
+    .from('anuncios_publicitarios')
+    .select('url_video')
+    .eq('activo', true);
+
+  if (error || !data || data.length === 0) {
+    alert("⛔ No hay videos disponibles");
+    throw new Error("No hay videos");
+  }
+
+  const aleatorio = data[Math.floor(Math.random() * data.length)].url_video;
+  return aleatorio;
+}
+
+function reproducirVideo(videoUrl, callbackFinal) {
+  const modal = document.createElement('div');
+  modal.style = 'position:fixed;top:0;left:0;width:100%;height:100%;background:black;z-index:9999;display:flex;justify-content:center;align-items:center;flex-direction:column;';
+  
+  const video = document.createElement('video');
+  video.src = videoUrl;
+  video.width = 320;
+  video.controls = true;
+  video.autoplay = true;
+
+  const mensaje = document.createElement('p');
+  mensaje.textContent = "🎥 Mira el video completo para activar tu conexión";
+
+  modal.appendChild(mensaje);
+  modal.appendChild(video);
+  document.body.appendChild(modal);
+
+  video.addEventListener('ended', () => {
+    document.body.removeChild(modal);
+    callbackFinal();
+  });
+}      
+     
+ window.cerrarAyuda = function () {
         document.getElementById("modal-ayuda").classList.remove("active");
         logo.style.display = "block";
       };
