@@ -1524,6 +1524,7 @@ async function subirAnuncio() {
   alert("✅ Anuncio subido correctamente");
   cargarAnuncios();
 }
+window.subirAnuncio = subirAnuncio;
 
 async function cargarAnuncios() {
   const { data, error } = await supabase
