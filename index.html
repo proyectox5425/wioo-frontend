@@ -540,7 +540,8 @@ async function seleccionarVideoAleatorio() {
 document.getElementById('confirmarCorreo').onclick = async () => {
   const correo = document.getElementById('inputCorreoModal').value;
   if (!correo) return alert("❌ Ingresa tu correo");
-if (!correo.includes("@gmail.com")) return alert("❌ Usa tu correo real");
+const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+if (!regex.test(correo)) return alert("❌ Ingresa un correo válido");
 
   const ip = await fetch('https://api64.ipify.org?format=json')
     .then(res => res.json())
