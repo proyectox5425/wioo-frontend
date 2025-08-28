@@ -429,36 +429,6 @@ if (botonAceptar) {
   }, 300); // ⏱️ Activamos animación del logo tras 300ms
 });
 
-document.getElementById('activarGratisBtn').onclick = () => {
-  document.getElementById('modalCorreo').style.display = 'block';
-};
-
-document.getElementById('confirmarCorreoBtn').onclick = async () => {
-  const correo = document.getElementById('correoInput').value;
-  if (!correo) return alert("❌ Ingresa tu correo");
-
-  const ip = await fetch('https://api64.ipify.org?format=json')
-    .then(res => res.json())
-    .then(data => data.ip);
-
-  const video = await seleccionarVideoAleatorio(); // función que te paso ahora
-
-  reproducirVideo(video, async () => {
-    await supabase.from('activaciones_gratis').insert([
-      { correo, ip, video_url: video }
-    ]);
-
-    await fetch('https://TU_ENDPOINT_MIKROTIK/activar', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ ip, minutos: 10 })
-    });
-
-    alert('✅ Conexión activada por 10 minutos');
-    document.getElementById('modalCorreo').style.display = 'none';
-  });
-};
-
 async function seleccionarVideoAleatorio() {
   const { data, error } = await supabase
     .from('anuncios_publicitarios')
