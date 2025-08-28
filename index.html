@@ -540,6 +540,7 @@ async function seleccionarVideoAleatorio() {
 document.getElementById('confirmarCorreo').onclick = async () => {
   const correo = document.getElementById('inputCorreoModal').value;
   if (!correo) return alert("❌ Ingresa tu correo");
+if (!correo.includes("@gmail.com")) return alert("❌ Usa tu correo real");
 
   const ip = await fetch('https://api64.ipify.org?format=json')
     .then(res => res.json())
@@ -548,9 +549,10 @@ document.getElementById('confirmarCorreo').onclick = async () => {
   const video = await seleccionarVideoAleatorio();
 
   reproducirVideo(video, async () => {
-    await supabase.from('activaciones_gratis').insert([
-      { correo, ip, video_url: video, timestamp: new Date().toISOString() }
-    ]);
+    const { error: insertError } = await supabase.from('activaciones_gratis').insert([
+  { correo, ip, video_url: video, timestamp: new Date().toISOString() }
+]);
+if (insertError) console.error("🚨 Error al insertar activación:", insertError);
 
     alert('✅ Conexión activada por 10 minutos');
     document.getElementById('modal-correo').style.display = 'none';
@@ -558,6 +560,10 @@ document.getElementById('confirmarCorreo').onclick = async () => {
 };
 
 function reproducirVideo(videoUrl, callbackFinal) {
+  if (!videoUrl) {
+    alert("⚠️ No se pudo cargar el video. Intenta más tarde.");
+    return;
+  }
   const modal = document.createElement('div');
   modal.style = 'position:fixed;top:0;left:0;width:100%;height:100%;background:black;z-index:9999;display:flex;justify-content:center;align-items:center;flex-direction:column;';
   
