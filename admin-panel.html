@@ -284,10 +284,12 @@ table td, table th {
   </table>
       </section>
 
-<section id="anuncios" style="display:none; text-align:center; padding:40px;">
-  <h2 style="color:#7344D0;">📺 Sección de Anuncios</h2>
-  <p style="font-size:18px; margin-top:20px;">🚧 Esta sección está en construcción.</p>
-  <p style="color:#666;">Estamos definiendo su propósito institucional. Pronto estará disponible.</p>
+<section id="anuncios">
+  <h2>📺 Anuncios Publicitarios</h2>
+  <input type="file" id="videoAnuncio" accept="video/mp4">
+  <input type="text" id="nombreAnuncio" placeholder="Nombre del anuncio">
+  <button onclick="subirAnuncio()">📤 Subir anuncio</button>
+  <table id="tablaAnuncios"></table>
 </section>
 
      <section id="gestion" style="display:none;">
@@ -1486,6 +1488,89 @@ function dibujarGrafico(canvasId, etiquetas, valores, color = '#7344D0') {
     ctx.font = '12px Segoe UI';
     ctx.fillText(etiqueta.slice(5), x, canvas.height - 5); // muestra solo MM-DD
   });
+}
+
+async function subirAnuncio() {
+  const archivo = document.getElementById('videoAnuncio').files[0];
+  const nombre = document.getElementById('nombreAnuncio').value.trim();
+
+  if (!archivo || !nombre) return alert("❌ Datos incompletos");
+
+  const nombreArchivo = `${Date.now()}_${archivo.name}`;
+  const { error: uploadError } = await supabase.storage
+    .from('anuncios')
+    .upload(nombreArchivo, archivo, { upsert: false });
+
+  if (uploadError) {
+    console.error('⛔ Error al subir video:', uploadError.message);
+    alert("Error al subir video");
+    return;
+  }
+
+  const { data: urlData } = supabase.storage
+    .from('anuncios')
+    .getPublicUrl(nombreArchivo);
+
+  const { error: insertError } = await supabase
+  .from('anuncios_publicitarios')
+  .insert([{ titulo: nombre, url_video: urlData.publicUrl }]);
+
+  if (insertError) {
+    console.error('⛔ Error al registrar anuncio:', insertError.message);
+    alert("Error al registrar anuncio");
+    return;
+  }
+
+  alert("✅ Anuncio subido correctamente");
+  cargarAnuncios();
+}
+
+async function cargarAnuncios() {
+  const { data, error } = await supabase
+    .from('anuncios_publicitarios')
+    .select('*')
+    .order('creado_en', { ascending: false });
+
+  if (error) {
+    console.error('⛔ Error al cargar anuncios:', error.message);
+    alert("Error al cargar anuncios");
+    return;
+  }
+
+  const tabla = document.getElementById('tablaAnuncios');
+  tabla.innerHTML = '';
+
+  data.forEach(a => {
+  const fila = `<tr>
+    <td>${a.titulo}</td>
+    <td><video src="${a.url_video}" width="200" controls></video></td>
+    <td>${a.activo ? 'activo' : 'inactivo'}</td>
+    <td>
+      <button onclick="toggleAnuncio('${a.id}', ${a.activo})">
+        ${a.activo ? '⛔ Desactivar' : '✅ Activar'}
+      </button>
+    </td>
+  </tr>`;
+  tabla.innerHTML += fila;
+});
+}
+
+async function toggleAnuncio(id, estadoActual) {
+  const nuevoEstado = !estadoActual;
+
+const { error } = await supabase
+  .from('anuncios_publicitarios')
+  .update({ activo: nuevoEstado })
+  .eq('id', id);
+
+  if (error) {
+    console.error('⛔ Error al cambiar estado:', error.message);
+    alert("Error al cambiar estado");
+    return;
+  }
+
+  alert(`✅ Estado cambiado a ${nuevoEstado}`);
+  cargarAnuncios();
 }
   </script>
 </body>
