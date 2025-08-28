@@ -438,6 +438,26 @@ async function seleccionarVideoAleatorio() {
   return aleatorio;
 }
 
+document.getElementById('confirmarCorreo').onclick = async () => {
+  const correo = document.getElementById('inputCorreoModal').value;
+  if (!correo) return alert("❌ Ingresa tu correo");
+
+  const ip = await fetch('https://api64.ipify.org?format=json')
+    .then(res => res.json())
+    .then(data => data.ip);
+
+  const video = await seleccionarVideoAleatorio();
+
+  reproducirVideo(video, async () => {
+    await supabase.from('activaciones_gratis').insert([
+      { correo, ip, video_url: video, timestamp: new Date().toISOString() }
+    ]);
+
+    alert('✅ Conexión activada por 10 minutos');
+    document.getElementById('modal-correo').style.display = 'none';
+  });
+};
+
 function reproducirVideo(videoUrl, callbackFinal) {
   const modal = document.createElement('div');
   modal.style = 'position:fixed;top:0;left:0;width:100%;height:100%;background:black;z-index:9999;display:flex;justify-content:center;align-items:center;flex-direction:column;';
