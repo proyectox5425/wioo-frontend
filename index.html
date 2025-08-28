@@ -138,6 +138,22 @@
       background-color: #5e35b1;
     }
 
+.modal-ayuda {
+  display: none;
+  position: fixed;
+  top: 0; left: 0;
+  width: 100vw; height: 100vh;
+  background-color: rgba(0,0,0,0.6);
+  backdrop-filter: blur(4px);
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+}
+
+.modal-ayuda.active {
+  display: flex !important;
+}
+
     @keyframes fadeModal {
       from { opacity: 0; transform: scale(0.95); }
       to   { opacity: 1; transform: scale(1); }
@@ -169,7 +185,7 @@
 
     <div class="interface-wrapper">
       <div class="botones-pago-vertical">
-<button id="activarGratisBtn" class="btn btn-primary">
+<button id="activarGratisBtn" class="boton-vertical">
   🕒 Activar 10 min gratis
 </button>
         <button class="boton-vertical" onclick="window.location.href='pantalla-2.1.html'">💵 Pago en efectivo</button>
@@ -422,6 +438,10 @@ if (botonAceptar) {
     }, 1000); // ⏱️ Esperamos 1 segundo para que se vea la animación
   }, 300); // ⏱️ Activamos animación del logo tras 300ms
 });
+
+document.getElementById('activarGratisBtn').onclick = () => {
+  document.getElementById('modal-correo').style.display = 'flex';
+};
 
 async function seleccionarVideoAleatorio() {
   const { data, error } = await supabase
