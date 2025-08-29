@@ -1518,16 +1518,17 @@ if (uploadError) {
     .from('anuncios')
     .getPublicUrl(nombreArchivo);
 
-  const { error: insertError } = await supabase.rpc('insertar_test', {
+  const { data, error } = await supabase.rpc('insertar_test_log', {
   titulo: nombre,
   url: urlData.publicUrl
 });
 
-  if (insertError) {
-    console.error('⛔ Error al registrar anuncio:', insertError.message);
-    alert("Error al registrar anuncio");
-    return;
-  }
+if (error) {
+  alert("⛔ Error al ejecutar RPC");
+  console.error(error.message);
+} else {
+  alert(data); // muestra el mensaje devuelto por la función
+}
 
   alert("✅ Anuncio subido correctamente");
   cargarAnuncios();
