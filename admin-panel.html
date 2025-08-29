@@ -1494,6 +1494,10 @@ async function subirAnuncio() {
   const archivo = document.getElementById('videoAnuncio').files[0];
   const nombre = document.getElementById('nombreAnuncio').value.trim();
 
+console.log("Archivo:", archivo);
+console.log("Tipo:", archivo.type);
+console.log("Nombre:", archivo.name);
+
   if (!archivo || !nombre) return alert("❌ Datos incompletos");
   if (archivo.type !== 'video/mp4') return alert("❌ El archivo debe ser un video MP4 válido");
 
@@ -1504,11 +1508,11 @@ async function subirAnuncio() {
     .from('anuncios')
     .upload(nombreArchivo, archivo, { upsert: false });
 
-  if (uploadError) {
-    console.error('⛔ Error al subir video:', uploadError.message);
-    alert("Error al subir video");
-    return;
-  }
+if (uploadError) {
+  console.error('⛔ Error al subir video:', uploadError.message);
+  alert(`Error al subir video: ${uploadError.message}`);
+  return;
+}
 
   const { data: urlData } = supabase.storage
     .from('anuncios')
