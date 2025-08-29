@@ -1504,9 +1504,13 @@ async function subirAnuncio() {
   const nombreSanitizado = archivo.name.replace(/[^\w.-]/g, '_');
   const nombreArchivo = `${Date.now()}_${nombreSanitizado}`;
 
-  const { error: uploadError } = await supabase.storage
-    .from('anuncios')
-    .upload(nombreArchivo, archivo, { upsert: false });
+  const { data, error: uploadError } = await supabase.storage
+  .from('anuncios')
+  .upload(nombreArchivo, archivo, {
+    cacheControl: '3600',
+    upsert: false,
+    contentType: 'video/mp4'
+  });
 
   if (uploadError) {
     console.error('⛔ Error al subir video:', uploadError.message);
