@@ -1519,8 +1519,8 @@ if (uploadError) {
     .getPublicUrl(nombreArchivo);
 
   const { error: insertError } = await supabase
-    .from('anuncios_publicitarios')
-    .insert([{ titulo: nombre, url_video: urlData.publicUrl }]);
+  .from('anuncios_publicitarios')
+  .insert([{ titulo: nombre, url_video: urlData.publicUrl }], { returning: 'minimal' });
 
   if (insertError) {
     console.error('⛔ Error al registrar anuncio:', insertError.message);
