@@ -1518,7 +1518,7 @@ if (uploadError) {
     .from('anuncios')
     .getPublicUrl(nombreArchivo);
 
-  const { error: insertError } = await supabase.rpc('insertar_anuncio', {
+  const { error: insertError } = await supabase.rpc('insertar_test', {
   titulo: nombre,
   url: urlData.publicUrl
 });
