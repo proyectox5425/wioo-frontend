@@ -1368,7 +1368,10 @@ async function confirmarAsignacionEmpresa() {
 async function filtrarChoferesPorEmpresa() {
   const idEmpresa = document.getElementById('filtroEmpresa').value;
 
-  const { data, error } = await supabase
+  const tabla = document.getElementById('tablaChoferes');
+  tabla.innerHTML = "<tr><td colspan='9'>⏳ Cargando...</td></tr>";
+
+  let query = supabase
     .from('choferes')
     .select(`
       id,
@@ -1379,18 +1382,25 @@ async function filtrarChoferesPorEmpresa() {
       usuario,
       estado,
       empresa:empresa_id(nombre)
-    `)
-    .eq('empresa_id', idEmpresa);
+    `);
 
-  if (error) {
-    console.error('⛔ Error al filtrar choferes:', error.message);
-    alert('Error al filtrar choferes');
+  if (idEmpresa) {
+    query = query.eq('empresa_id', idEmpresa);
+  }
+
+  const { data, error } = await query;
+
+  if (error || !data) {
+    tabla.innerHTML = "<tr><td colspan='9'>⛔ Error al cargar choferes</td></tr>";
     return;
   }
 
-  const tabla = document.getElementById('tablaChoferes');
-  tabla.innerHTML = '';
+  if (data.length === 0) {
+    tabla.innerHTML = "<tr><td colspan='9'>📭 No hay choferes registrados</td></tr>";
+    return;
+  }
 
+  tabla.innerHTML = "";
   data.forEach(c => {
     const fila = `<tr>
       <td>${c.id}</td>
