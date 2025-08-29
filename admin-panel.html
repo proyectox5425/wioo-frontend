@@ -1518,9 +1518,10 @@ if (uploadError) {
     .from('anuncios')
     .getPublicUrl(nombreArchivo);
 
-  const { error: insertError } = await supabase
-  .from('anuncios_publicitarios')
-  .insert([{ titulo: nombre, url_video: urlData.publicUrl }], { returning: 'minimal' });
+  const { error: insertError } = await supabase.rpc('insertar_anuncio', {
+  titulo: nombre,
+  url: urlData.publicUrl
+});
 
   if (insertError) {
     console.error('⛔ Error al registrar anuncio:', insertError.message);
