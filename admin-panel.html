@@ -1495,8 +1495,11 @@ async function subirAnuncio() {
   const nombre = document.getElementById('nombreAnuncio').value.trim();
 
   if (!archivo || !nombre) return alert("❌ Datos incompletos");
+  if (archivo.type !== 'video/mp4') return alert("❌ El archivo debe ser un video MP4 válido");
 
-  const nombreArchivo = `${Date.now()}_${archivo.name}`;
+  const nombreSanitizado = archivo.name.replace(/[^\w.-]/g, '_');
+  const nombreArchivo = `${Date.now()}_${nombreSanitizado}`;
+
   const { error: uploadError } = await supabase.storage
     .from('anuncios')
     .upload(nombreArchivo, archivo, { upsert: false });
@@ -1512,8 +1515,8 @@ async function subirAnuncio() {
     .getPublicUrl(nombreArchivo);
 
   const { error: insertError } = await supabase
-  .from('anuncios_publicitarios')
-  .insert([{ titulo: nombre, url_video: urlData.publicUrl }]);
+    .from('anuncios_publicitarios')
+    .insert([{ titulo: nombre, url_video: urlData.publicUrl }]);
 
   if (insertError) {
     console.error('⛔ Error al registrar anuncio:', insertError.message);
